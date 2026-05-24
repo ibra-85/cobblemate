@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CobbleMate
 
-## Getting Started
+Compagnon web pour **Cobblemon 1.7.3** : Pokédex, builder d'équipe, assistant
+de combat, table des types, spawns et PokéSnacks.
 
-First, run the development server:
+Stack : Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 ·
+shadcn/ui (preset `b0` / style `nova` / base-ui).
+
+## Lancer en local
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
+npm run build        # production
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architecture
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├─ app/                    Pages App Router
+│  ├─ page.tsx             Dashboard
+│  ├─ pokedex/             Pokédex + [id] détail
+│  ├─ team-builder/        Builder d'équipe
+│  ├─ battle/              Assistant de combat
+│  ├─ types/               Table des 18 types
+│  ├─ moves/               Liste des attaques
+│  ├─ spawns/              Conditions de spawn
+│  └─ pokesnacks/          Catalogue + conseils
+├─ components/
+│  ├─ ui/                  Primitives shadcn/ui
+│  └─ site/                Sidebar, Header, TypeBadge, PokemonCard
+├─ features/               Logique UI par domaine
+│  ├─ pokedex/
+│  ├─ team-builder/
+│  └─ battle-helper/
+├─ data/                   Source de données JSON locale
+│  ├─ pokemon.ts
+│  ├─ moves.ts
+│  ├─ types.ts             Métadonnées (couleurs, libellés FR)
+│  ├─ spawns.ts
+│  └─ pokesnacks.ts
+├─ lib/                    Logique métier pure
+│  ├─ type-chart.ts        Table des 18 types + calculateTypeEffectiveness
+│  ├─ pokemon-utils.ts     getPokemonWeaknesses, baseStatTotal…
+│  ├─ team-analysis.ts     analyzeTeam, scoreTeam, recommendTeamChanges
+│  ├─ battle.ts            getBestTeamMemberAgainst, getBestCounters
+│  └─ search.ts            searchPokemon, filterPokemonByType…
+├─ hooks/
+│  └─ use-saved-teams.ts   Persistance localStorage
+└─ types/                  Définitions TypeScript du domaine
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Importer les 1025 Pokémon
 
-## Learn More
+Le code lit `POKEMON: Pokemon[]` depuis `src/data/pokemon.ts`. Pour passer aux
+1025 Pokémon :
 
-To learn more about Next.js, take a look at the following resources:
+1. **Récupérer un dump JSON** correspondant à l'interface `Pokemon`
+   (cf. `src/types/index.ts`). Sources :
+   - [PokeAPI](https://pokeapi.co) (REST, gratuit, sans clé)
+   - Le dossier `cobblemon/data/cobblemon/species/*.json` du mod
+   - Un dataset comme [pokemon.json](https://github.com/fanzeyi/pokemon.json)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Convertir vers le schéma `Pokemon`** :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```ts
+   // scripts/import-pokemon.ts
+   import fs from "node:fs";
+   import type { Pokemon } from "../src/types";
 
-## Deploy on Vercel
+   const raw = JSON.parse(fs.readFileSync("source.json", "utf-8"));
+   const pokemon: Pokemon[] = raw.map((p: any) => ({
+     id: p.name.fr.toLowerCase(),
+     dexNumber: p.id,
+     name: p.name.fr,
+     generation: p.generation,
+     types: p.types.map((t: string) => t.toLowerCase()),
+     abilities: p.abilities,
+     baseStats: p.base,
+     evolutions: p.evolutions ?? [],
+     notableMoves: [],
+     roles: [],
+   }));
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   fs.writeFileSync(
+     "src/data/pokemon-full.json",
+     JSON.stringify(pokemon, null, 2),
+   );
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Remplacer la source** :
+
+   ```ts
+   // src/data/pokemon.ts
+   import full from "./pokemon-full.json";
+   export const POKEMON = full as Pokemon[];
+   export const POKEMON_BY_ID = Object.fromEntries(POKEMON.map(p => [p.id, p]));
+   ```
+
+L'UI ne lit que `POKEMON[]` — aucune autre modification n'est nécessaire.
+
+## Brancher Supabase / une API plus tard
+
+La logique métier vit dans `src/lib/` et lit les données via `src/data/*`.
+Pour passer à une vraie base :
+
+1. Crée un client (`src/lib/db.ts`) exposant `getAllPokemon()`,
+   `getPokemonById(id)`, etc.
+2. Convertis `pokemon.ts` en façade asynchrone qui appelle ce client.
+3. Les fonctions pures (`calculateTypeEffectiveness`, `analyzeTeam`, etc.)
+   restent inchangées.
+
+## Personnaliser le thème
+
+```bash
+npx shadcn@latest preset decode <code>             # inspecter
+npx shadcn@latest apply <code> --only theme,font   # appliquer le thème
+npx shadcn@latest apply <code>                     # tout écraser
+```
+
+Les codes de preset se génèrent sur [ui.shadcn.com](https://ui.shadcn.com).
+Le projet est actuellement sous `b0` (style nova, palette neutre, Inter).
