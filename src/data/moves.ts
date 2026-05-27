@@ -21,6 +21,33 @@ export const MOVES: Move[] = [
   { id: "stealth-rock", name: "Piège de Roc",    type: "rock",     category: "status",   power: null,accuracy: null,pp: 20, effect: "Pose des rochers qui blessent les Pokémon qui entrent." },
   { id: "roost",        name: "Atterrissage",    type: "flying",   category: "status",   power: null,accuracy: null,pp: 5,  effect: "Restaure 50% des PV." },
   { id: "u-turn",       name: "Demi-Tour",       type: "bug",      category: "physical", power: 70,  accuracy: 100, pp: 20, effect: "Le lanceur revient au PC après l'attaque." },
+
+  // Status / setup
+  { id: "swords-dance", name: "Danse-Lames",     type: "normal",   category: "status",   power: null, accuracy: null, pp: 20, effect: "Augmente fortement l'Attaque (+2)." },
+  { id: "sleep-powder", name: "Poudre Dodo",     type: "grass",    category: "status",   power: null, accuracy: 75,   pp: 15, effect: "Endort la cible." },
+  { id: "rest",         name: "Repos",           type: "psychic",  category: "status",   power: null, accuracy: null, pp: 5,  effect: "Restaure tous les PV mais endort le lanceur 2 tours." },
+  { id: "toxic",        name: "Toxik",           type: "poison",   category: "status",   power: null, accuracy: 90,   pp: 10, effect: "Empoisonne gravement la cible." },
+  { id: "roar",         name: "Hurlement",       type: "normal",   category: "status",   power: null, accuracy: null, pp: 20, priority: -6, effect: "Force la cible à switch." },
+
+  // Physical
+  { id: "iron-tail",     name: "Queue de Fer",   type: "steel",    category: "physical", power: 100, accuracy: 75,  pp: 15, effect: "30% chance de baisser la Défense." },
+  { id: "volt-tackle",   name: "Électacle",      type: "electric", category: "physical", power: 120, accuracy: 100, pp: 15, effect: "Recul important pour le lanceur." },
+  { id: "body-slam",     name: "Plaquage",       type: "normal",   category: "physical", power: 85,  accuracy: 100, pp: 15, effect: "30% chance de paralyser." },
+  { id: "bullet-punch",  name: "Pisto-Poing",    type: "steel",    category: "physical", power: 40,  accuracy: 100, pp: 30, priority: 1 },
+  { id: "stone-edge",    name: "Lame de Roc",    type: "rock",     category: "physical", power: 100, accuracy: 80,  pp: 5,  effect: "Taux de critique élevé." },
+  { id: "crunch",        name: "Mâchouille",     type: "dark",     category: "physical", power: 80,  accuracy: 100, pp: 15, effect: "20% chance de baisser la Défense." },
+  { id: "outrage",       name: "Colère",         type: "dragon",   category: "physical", power: 120, accuracy: 100, pp: 10, effect: "Attaque 2-3 tours puis confusion." },
+  { id: "meteor-mash",   name: "Poing Météore",  type: "steel",    category: "physical", power: 90,  accuracy: 90,  pp: 10, effect: "20% chance de +1 Atk." },
+  { id: "extreme-speed", name: "Vitesse Extrême", type: "normal",  category: "physical", power: 80,  accuracy: 100, pp: 5,  priority: 2 },
+
+  // Special
+  { id: "giga-drain",    name: "Giga-Sangsue",   type: "grass",    category: "special",  power: 75,  accuracy: 100, pp: 10, effect: "Restaure 50 % des dégâts infligés." },
+  { id: "sludge-bomb",   name: "Bomb-Beurk",     type: "poison",   category: "special",  power: 90,  accuracy: 100, pp: 10, effect: "30% chance d'empoisonner." },
+  { id: "air-slash",     name: "Lame d'Air",     type: "flying",   category: "special",  power: 75,  accuracy: 95,  pp: 15, effect: "30% chance d'apeurer." },
+  { id: "dazzling-gleam", name: "Éclat Magique", type: "fairy",    category: "special",  power: 80,  accuracy: 100, pp: 10 },
+  { id: "fire-blast",    name: "Déflagration",   type: "fire",     category: "special",  power: 110, accuracy: 85,  pp: 5,  effect: "10% chance de brûlure." },
+  { id: "sleep-talk",    name: "Blabla Dodo",    type: "normal",   category: "status",   power: null, accuracy: null, pp: 10, effect: "Utilise une attaque au hasard pendant le sommeil." },
+  { id: "pursuit",       name: "Poursuite",      type: "dark",     category: "physical", power: 40,  accuracy: 100, pp: 20, effect: "Dégâts doublés si la cible switch." },
 ];
 
 export const MOVE_BY_ID: Record<string, Move> = Object.fromEntries(

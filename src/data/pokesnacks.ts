@@ -29,7 +29,7 @@ export const POKESNACKS: Pokesnack[] = [
     name: "Gelée d'Océan",
     description: "Gelée salée, parfaite pour appâter les Pokémon Eau.",
     attractsTypes: ["water", "ice"],
-    attractsPokemonIds: ["blastoise", "rotom-wash"],
+    attractsPokemonIds: ["blastoise", "rotom_wash"],
     preferredBiomes: ["ocean", "river"],
     rarity: "common",
   },
@@ -38,7 +38,7 @@ export const POKESNACKS: Pokesnack[] = [
     name: "Cracker Électrik",
     description: "Cracker pétillant qui attire les types Électrik.",
     attractsTypes: ["electric"],
-    attractsPokemonIds: ["pikachu", "rotom-wash"],
+    attractsPokemonIds: ["pikachu", "rotom_wash"],
     rarity: "uncommon",
   },
   {

@@ -166,3 +166,60 @@ export function analyzeTeam(team: Pokemon[]): TeamAnalysis {
 }
 
 export { getResistances, getWeaknesses };
+
+export interface TeamStats {
+  count: number;
+  avgBst: number;
+  hpPool: number;
+  fastestSpeed: number;
+  slowestSpeed: number;
+  /** Number of members with attack > spAtk. */
+  physical: number;
+  specialAttackers: number;
+  mixed: number;
+}
+
+/**
+ * Quick competitive snapshot: HP pool, speed range and offensive style.
+ * Helps spot common pitfalls like "all-slow team" or "all-physical wall break".
+ */
+export function getTeamStats(team: Pokemon[]): TeamStats {
+  if (team.length === 0) {
+    return {
+      count: 0,
+      avgBst: 0,
+      hpPool: 0,
+      fastestSpeed: 0,
+      slowestSpeed: 0,
+      physical: 0,
+      specialAttackers: 0,
+      mixed: 0,
+    };
+  }
+
+  const bsts = team.map((p) => {
+    const s = p.baseStats;
+    return s.hp + s.attack + s.defense + s.spAtk + s.spDef + s.speed;
+  });
+
+  let physical = 0;
+  let specialAttackers = 0;
+  let mixed = 0;
+  for (const p of team) {
+    const diff = p.baseStats.attack - p.baseStats.spAtk;
+    if (Math.abs(diff) <= 10) mixed++;
+    else if (diff > 0) physical++;
+    else specialAttackers++;
+  }
+
+  return {
+    count: team.length,
+    avgBst: Math.round(bsts.reduce((a, b) => a + b, 0) / team.length),
+    hpPool: team.reduce((acc, p) => acc + p.baseStats.hp, 0),
+    fastestSpeed: Math.max(...team.map((p) => p.baseStats.speed)),
+    slowestSpeed: Math.min(...team.map((p) => p.baseStats.speed)),
+    physical,
+    specialAttackers,
+    mixed,
+  };
+}

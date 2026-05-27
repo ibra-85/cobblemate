@@ -12,6 +12,13 @@ interface Props {
   className?: string;
   /** Tailwind size class (size-12, size-32…). Defaults to size-full. */
   size?: string;
+  /**
+   * Set `true` for the LCP image — typically the largest artwork above
+   * the fold (featured-pokemon banner, detail-page hero). Forces eager
+   * loading + `fetchpriority=high` + preload hint, silencing Next.js's
+   * LCP warning.
+   */
+  priority?: boolean;
 }
 
 /**
@@ -23,6 +30,7 @@ export function PokemonSprite({
   variant = "sprite",
   className,
   size = "size-full",
+  priority = false,
 }: Props) {
   const [errored, setErrored] = useState(false);
 
@@ -57,6 +65,7 @@ export function PokemonSprite({
         sizes="(max-width: 768px) 96px, 160px"
         className="object-contain"
         unoptimized
+        priority={priority}
         onError={() => setErrored(true)}
       />
     </div>

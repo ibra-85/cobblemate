@@ -10,6 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { TypeBadges, TypeBadge } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
@@ -27,6 +33,12 @@ import {
 import { calculateTypeEffectiveness, ALL_TYPES } from "@/lib/type-chart";
 import { TYPES_META } from "@/data/types";
 import { cn } from "@/lib/utils";
+import { StrategySheet } from "@/features/pokedex/strategy-sheet";
+import { WishlistButton } from "@/components/site/wishlist-button";
+import { CompareDialog } from "@/features/pokedex/compare-dialog";
+import { StatsRadar } from "@/features/pokedex/stats-radar";
+import { StatsVsAverage } from "@/features/pokedex/stats-vs-average";
+import { MatchupDonut } from "@/features/pokedex/matchup-donut";
 
 export function generateStaticParams() {
   return POKEMON.map((p) => ({ id: p.id }));
@@ -70,7 +82,7 @@ export default async function PokemonDetailPage({
       <Card>
         <CardContent className="flex flex-col gap-6 md:flex-row md:items-center">
           <div className="grid size-32 flex-shrink-0 place-items-center rounded-xl border bg-muted p-2">
-            <PokemonSprite pokemon={pokemon} variant="artwork" />
+            <PokemonSprite pokemon={pokemon} variant="artwork" priority />
           </div>
           <div className="flex flex-1 flex-col gap-3">
             <div className="flex flex-wrap items-baseline gap-3">
@@ -90,271 +102,296 @@ export default async function PokemonDetailPage({
                 <Badge key={r}>{r}</Badge>
               ))}
             </div>
+            <div className="flex flex-wrap gap-2">
+              <WishlistButton pokemonId={pokemon.id} pokemonName={pokemon.name} />
+              <CompareDialog pokemon={pokemon} />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Stats de base</CardTitle>
-            <CardDescription>BST {bst}</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {(Object.entries(pokemon.baseStats) as [keyof typeof pokemon.baseStats, number][]).map(
-              ([k, v]) => (
-                <div key={k} className="flex flex-col gap-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-medium uppercase tracking-wide text-muted-foreground">
-                      {k}
-                    </span>
-                    <span className="font-mono">{v}</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full bg-foreground/80"
-                      style={{ width: `${Math.min(100, (v / 200) * 100)}%` }}
-                    />
-                  </div>
-                </div>
-              ),
-            )}
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview">Aperçu</TabsTrigger>
+          <TabsTrigger value="combat">Combat & stratégie</TabsTrigger>
+          <TabsTrigger value="capture">Captures</TabsTrigger>
+        </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Faiblesses & résistances</CardTitle>
-            <CardDescription>
-              Calcul automatique avec les deux types.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4 text-sm">
-            {quadWeak.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <p className="text-xs font-semibold uppercase text-destructive">
-                  ×4 (très dangereux)
-                </p>
-                <TypeBadges types={quadWeak} size="sm" />
-              </div>
-            )}
-            <div className="flex flex-col gap-2">
-              <p className="text-xs font-semibold uppercase text-muted-foreground">
-                Faiblesses (≥×2)
-              </p>
-              <TypeBadges
-                types={weaknesses.filter((t) => !quadWeak.includes(t))}
-                size="sm"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="text-xs font-semibold uppercase text-muted-foreground">
-                Résistances
-              </p>
-              <TypeBadges types={resistances} size="sm" />
-            </div>
-            {immunities.length > 0 && (
+        <TabsContent value="overview" className="mt-4 flex flex-col gap-4">
+          <div className="grid gap-4 md:grid-cols-[1fr_1fr_1fr]">
+            <Card>
+              <CardHeader>
+                <CardTitle>Profil de stats</CardTitle>
+                <CardDescription>BST {bst} · forme du sextet</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <StatsRadar pokemon={pokemon} />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>vs moyenne roster</CardTitle>
+                <CardDescription>
+                  Où il dépasse / sous-performe.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <StatsVsAverage pokemon={pokemon} />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Matchup global</CardTitle>
+                <CardDescription>
+                  Répartition des 18 types attaquants.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MatchupDonut pokemon={pokemon} />
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Faiblesses & résistances</CardTitle>
+              <CardDescription>
+                Calcul automatique avec les deux types.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 text-sm md:grid-cols-2 lg:grid-cols-4">
+              {quadWeak.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <p className="text-xs font-semibold uppercase text-destructive">
+                    ×4 (très dangereux)
+                  </p>
+                  <TypeBadges types={quadWeak} size="sm" />
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">
-                  Immunités
+                  Faiblesses (≥×2)
                 </p>
-                <TypeBadges types={immunities} size="sm" />
+                <TypeBadges
+                  types={weaknesses.filter((t) => !quadWeak.includes(t))}
+                  size="sm"
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Matchup complet</CardTitle>
-            <CardDescription>
-              Multiplicateur subi par type attaquant.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-3 gap-2 text-xs sm:grid-cols-4">
-            {ALL_TYPES.map((t) => {
-              const m = calculateTypeEffectiveness(t, pokemon.types);
-              return (
-                <div
-                  key={t}
-                  className={cn(
-                    "flex items-center justify-between rounded-md px-2 py-1",
-                    matchupClass(m),
-                  )}
-                >
-                  <span>{TYPES_META[t].label}</span>
-                  <span className="font-mono font-semibold">×{m}</span>
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Attaques notables</CardTitle>
-            <CardDescription>
-              Sélection de moves utiles à monter.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2 text-sm">
-            {pokemon.notableMoves.map((mid) => {
-              const m = MOVE_BY_ID[mid];
-              if (!m) {
-                return (
-                  <div key={mid} className="text-muted-foreground">
-                    {mid} <span className="text-xs">(détails à venir)</span>
-                  </div>
-                );
-              }
-              return (
-                <div
-                  key={mid}
-                  className="flex items-center justify-between rounded-md border px-3 py-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <TypeBadge type={m.type} size="sm" />
-                    <span className="font-medium">{m.name}</span>
-                  </div>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {m.power ?? "—"} pwr · {m.accuracy ?? "—"} prec
-                  </span>
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-      </div>
-
-      {pokemon.evolutions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Évolutions</CardTitle>
-            <CardDescription>Chaîne d&apos;évolution Cobblemon.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-wrap items-center gap-3 text-sm">
-            <Badge variant="secondary">{pokemon.name}</Badge>
-            {pokemon.evolutions.map((e) => {
-              const target = POKEMON_BY_ID[e.to];
-              return (
-                <div key={e.to} className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">→ {e.method}</span>
-                  {target ? (
-                    <Link href={`/pokedex/${e.to}`}>
-                      <Badge variant="outline" className="hover:bg-accent">
-                        {target.name}
-                      </Badge>
-                    </Link>
-                  ) : (
-                    <Badge variant="outline">{e.to}</Badge>
-                  )}
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-      )}
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Spawns Cobblemon</CardTitle>
-            <CardDescription>
-              Où, quand et par quel temps il apparaît.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2 text-sm">
-            {spawns.length === 0 && (
-              <p className="text-muted-foreground">Aucun spawn renseigné.</p>
-            )}
-            {spawns.map((s, i) => (
-              <div key={i} className="flex flex-col gap-2 rounded-md border p-3">
-                <div className="flex flex-wrap gap-1">
-                  {s.biomes.map((b) => (
-                    <Badge key={b} variant="secondary">{b}</Badge>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {s.dayPeriod} · météo : {s.weather} · {s.dimension} · {s.rarity}
-                  {s.minY != null && ` · Y ≥ ${s.minY}`}
-                  {s.maxY != null && ` · Y ≤ ${s.maxY}`}
+              <div className="flex flex-col gap-2">
+                <p className="text-xs font-semibold uppercase text-muted-foreground">
+                  Résistances
                 </p>
+                <TypeBadges types={resistances} size="sm" />
               </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>PokéSnacks recommandés</CardTitle>
-            <CardDescription>Pour l&apos;attirer plus vite.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2 text-sm">
-            {snacks.length === 0 && (
-              <p className="text-muted-foreground">
-                Aucun PokéSnack référencé pour ce Pokémon.
-              </p>
-            )}
-            {snacks.map((s) => (
-              <div key={s.id} className="flex flex-col gap-1 rounded-md border p-3">
-                <p className="font-medium">{s.name}</p>
-                <p className="text-xs text-muted-foreground">{s.description}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-
-      {(pokemon.strategyTips || pokemon.goodPartners || pokemon.dangerousCounters) && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Stratégie</CardTitle>
-            <CardDescription>Comment l&apos;utiliser, avec qui.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
-            {pokemon.strategyTips && <p>{pokemon.strategyTips}</p>}
-            {pokemon.goodPartners && pokemon.goodPartners.length > 0 && (
-              <>
-                <Separator />
+              {immunities.length > 0 && (
                 <div className="flex flex-col gap-2">
                   <p className="text-xs font-semibold uppercase text-muted-foreground">
-                    Bons partenaires
+                    Immunités
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {pokemon.goodPartners.map((id) => {
-                      const partner = POKEMON_BY_ID[id];
-                      if (!partner) return <Badge key={id} variant="outline">{id}</Badge>;
-                      return (
-                        <Link key={id} href={`/pokedex/${id}`}>
-                          <Badge variant="outline" className="hover:bg-accent">{partner.name}</Badge>
-                        </Link>
-                      );
-                    })}
+                  <TypeBadges types={immunities} size="sm" />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Matchup détaillé</CardTitle>
+              <CardDescription>
+                Multiplicateur subi par type attaquant.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-3 gap-2 text-xs sm:grid-cols-4 lg:grid-cols-6">
+              {ALL_TYPES.map((t) => {
+                const m = calculateTypeEffectiveness(t, pokemon.types);
+                return (
+                  <div
+                    key={t}
+                    className={cn(
+                      "flex items-center justify-between rounded-md px-2 py-1",
+                      matchupClass(m),
+                    )}
+                  >
+                    <span>{TYPES_META[t].label}</span>
+                    <span className="font-mono font-semibold">×{m}</span>
                   </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          {pokemon.evolutions.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Évolutions</CardTitle>
+                <CardDescription>Chaîne d&apos;évolution Cobblemon.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-wrap items-center gap-3 text-sm">
+                <Badge variant="secondary">{pokemon.name}</Badge>
+                {pokemon.evolutions.map((e) => {
+                  const target = POKEMON_BY_ID[e.to];
+                  return (
+                    <div key={e.to} className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground">→ {e.method}</span>
+                      {target ? (
+                        <Link href={`/pokedex/${e.to}`}>
+                          <Badge variant="outline" className="hover:bg-accent">
+                            {target.name}
+                          </Badge>
+                        </Link>
+                      ) : (
+                        <Badge variant="outline">{e.to}</Badge>
+                      )}
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="combat" className="mt-4 flex flex-col gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Attaques notables</CardTitle>
+              <CardDescription>
+                Sélection de moves utiles à monter.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-2 text-sm md:grid-cols-2">
+              {pokemon.notableMoves.map((mid) => {
+                const m = MOVE_BY_ID[mid];
+                if (!m) {
+                  return (
+                    <div key={mid} className="text-muted-foreground">
+                      {mid} <span className="text-xs">(détails à venir)</span>
+                    </div>
+                  );
+                }
+                return (
+                  <div
+                    key={mid}
+                    className="flex items-center justify-between rounded-md border px-3 py-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <TypeBadge type={m.type} size="sm" />
+                      <span className="font-medium">{m.name}</span>
+                    </div>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {m.power ?? "—"} pwr · {m.accuracy ?? "—"} prec
+                    </span>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          {(pokemon.strategyTips || pokemon.goodPartners || pokemon.dangerousCounters) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Stratégie</CardTitle>
+                <CardDescription>Comment l&apos;utiliser, avec qui.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3 text-sm">
+                {pokemon.strategyTips && <p>{pokemon.strategyTips}</p>}
+                {pokemon.goodPartners && pokemon.goodPartners.length > 0 && (
+                  <>
+                    <Separator />
+                    <div className="flex flex-col gap-2">
+                      <p className="text-xs font-semibold uppercase text-muted-foreground">
+                        Bons partenaires
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {pokemon.goodPartners.map((id) => {
+                          const partner = POKEMON_BY_ID[id];
+                          if (!partner) return <Badge key={id} variant="outline">{id}</Badge>;
+                          return (
+                            <Link key={id} href={`/pokedex/${id}`}>
+                              <Badge variant="outline" className="hover:bg-accent">{partner.name}</Badge>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                )}
+                {pokemon.dangerousCounters && pokemon.dangerousCounters.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs font-semibold uppercase text-destructive">
+                      Contres dangereux
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {pokemon.dangerousCounters.map((id) => {
+                        const c = POKEMON_BY_ID[id];
+                        if (!c) return <Badge key={id} variant="outline">{id}</Badge>;
+                        return (
+                          <Link key={id} href={`/pokedex/${id}`}>
+                            <Badge variant="destructive">{c.name}</Badge>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          <StrategySheet pokemon={pokemon} />
+        </TabsContent>
+
+        <TabsContent value="capture" className="mt-4 grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Spawns Cobblemon</CardTitle>
+              <CardDescription>
+                Où, quand et par quel temps il apparaît.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2 text-sm">
+              {spawns.length === 0 && (
+                <p className="text-muted-foreground">Aucun spawn renseigné.</p>
+              )}
+              {spawns.map((s, i) => (
+                <div key={i} className="flex flex-col gap-2 rounded-md border p-3">
+                  <div className="flex flex-wrap gap-1">
+                    {s.biomes.map((b) => (
+                      <Badge key={b} variant="secondary">{b}</Badge>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {s.dayPeriod} · météo : {s.weather} · {s.dimension} · {s.rarity}
+                    {s.minY != null && ` · Y ≥ ${s.minY}`}
+                    {s.maxY != null && ` · Y ≤ ${s.maxY}`}
+                  </p>
                 </div>
-              </>
-            )}
-            {pokemon.dangerousCounters && pokemon.dangerousCounters.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <p className="text-xs font-semibold uppercase text-destructive">
-                  Contres dangereux
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>PokéSnacks recommandés</CardTitle>
+              <CardDescription>Pour l&apos;attirer plus vite.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2 text-sm">
+              {snacks.length === 0 && (
+                <p className="text-muted-foreground">
+                  Aucun PokéSnack référencé pour ce Pokémon.
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {pokemon.dangerousCounters.map((id) => {
-                    const c = POKEMON_BY_ID[id];
-                    if (!c) return <Badge key={id} variant="outline">{id}</Badge>;
-                    return (
-                      <Link key={id} href={`/pokedex/${id}`}>
-                        <Badge variant="destructive">{c.name}</Badge>
-                      </Link>
-                    );
-                  })}
+              )}
+              {snacks.map((s) => (
+                <div key={s.id} className="flex flex-col gap-1 rounded-md border p-3">
+                  <p className="font-medium">{s.name}</p>
+                  <p className="text-xs text-muted-foreground">{s.description}</p>
                 </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -3,17 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import {
-  LayoutDashboard,
-  Users,
-  Swords,
-  BookOpen,
-  MapPin,
-  Cookie,
-  Sparkles,
-  Flame,
-  Menu,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -22,22 +12,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { NAV } from "@/components/site/sidebar";
+import { useSavedTeams } from "@/hooks/use-saved-teams";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { cn } from "@/lib/utils";
-
-const NAV = [
-  { href: "/",             label: "Dashboard",  icon: LayoutDashboard },
-  { href: "/pokedex",      label: "Pokédex",    icon: BookOpen },
-  { href: "/team-builder", label: "Builder",    icon: Users },
-  { href: "/battle",       label: "Combat",     icon: Swords },
-  { href: "/types",        label: "Types",      icon: Sparkles },
-  { href: "/moves",        label: "Attaques",   icon: Flame },
-  { href: "/spawns",       label: "Spawns",     icon: MapPin },
-  { href: "/pokesnacks",   label: "PokéSnacks", icon: Cookie },
-];
 
 export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { teams } = useSavedTeams();
+  const { ids: wishlistIds } = useWishlist();
+
+  function badgeValue(b: (typeof NAV)[number]["badge"]) {
+    if (b === "teams" && teams.length > 0) return teams.length;
+    if (b === "wishlist" && wishlistIds.length > 0) return wishlistIds.length;
+    return null;
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -54,9 +44,10 @@ export function MobileNav() {
           <SheetTitle className="font-heading">CobbleMate</SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-1 p-2">
-          {NAV.map(({ href, label, icon: Icon }) => {
+          {NAV.map(({ href, label, icon: Icon, badge }) => {
             const active =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
+            const count = badgeValue(badge);
             return (
               <Link
                 key={href}
@@ -70,7 +61,12 @@ export function MobileNav() {
                 )}
               >
                 <Icon className="size-4" />
-                {label}
+                <span className="flex-1">{label}</span>
+                {count !== null && (
+                  <span className="rounded-full bg-muted px-1.5 text-[10px] font-semibold text-foreground">
+                    {count}
+                  </span>
+                )}
               </Link>
             );
           })}

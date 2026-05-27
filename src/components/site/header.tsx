@@ -15,7 +15,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { POKEMON } from "@/data/pokemon";
 import { MOVES } from "@/data/moves";
+import { MOVE_BY_ID } from "@/data/moves";
 import { MobileNav } from "@/components/site/mobile-nav";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 
 export function Header() {
   const router = useRouter();
@@ -24,7 +26,6 @@ export function Header() {
   const pokemon = useMemo(() => POKEMON, []);
   const moves = useMemo(() => MOVES, []);
 
-  // Ctrl+K / Cmd+K opens the palette.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -53,8 +54,8 @@ export function Header() {
         </kbd>
       </Button>
 
-      <div className="ml-auto hidden text-xs text-muted-foreground md:block">
-        Cobblemon 1.7.3 · v0.1
+      <div className="ml-auto flex items-center gap-2">
+        <ThemeToggle />
       </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
@@ -80,21 +81,32 @@ export function Header() {
               ))}
             </CommandGroup>
             <CommandGroup heading="Attaques">
-              {moves.map((m) => (
-                <CommandItem
-                  key={m.id}
-                  value={`${m.name} ${m.id}`}
-                  onSelect={() => {
-                    setOpen(false);
-                    router.push(`/moves?focus=${m.id}`);
-                  }}
-                >
-                  {m.name}
-                  <span className="ml-auto text-xs text-muted-foreground">
-                    {m.type} · {m.category}
-                  </span>
-                </CommandItem>
-              ))}
+              {moves.map((m) => {
+                const move = MOVE_BY_ID[m.id];
+                return (
+                  <CommandItem
+                    key={m.id}
+                    value={`${m.name} ${m.id}`}
+                    onSelect={() => {
+                      setOpen(false);
+                      // Moves no longer have a dedicated page — surface the
+                      // first Pokémon that knows the move so the user gets
+                      // somewhere useful.
+                      const learner = POKEMON.find((p) =>
+                        p.notableMoves.includes(m.id),
+                      );
+                      router.push(
+                        learner ? `/pokedex/${learner.id}` : "/pokedex",
+                      );
+                    }}
+                  >
+                    {move?.name ?? m.name}
+                    <span className="ml-auto text-xs text-muted-foreground">
+                      {m.type} · {m.category}
+                    </span>
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           </CommandList>
         </Command>

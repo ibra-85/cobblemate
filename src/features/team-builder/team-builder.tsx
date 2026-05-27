@@ -1,18 +1,28 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Save, Trash2, X } from "lucide-react";
+import { Save, Trash2, X, Dices } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
-import { POKEMON_BY_ID } from "@/data/pokemon";
+import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
 import type { TeamSlot } from "@/types";
 import { analyzeTeam, resolveTeam } from "@/lib/team-analysis";
 import { PokemonPicker } from "./pokemon-picker";
 import { TeamAnalysisPanel } from "./team-analysis-panel";
+import { TeamMatchupMatrix } from "./team-matchup-matrix";
+import { TeamOffensiveMatrix } from "./team-offensive-matrix";
+import { TeamShareDialog } from "./team-share-dialog";
+import { TeamStatsCard } from "./team-stats-card";
 import { toast } from "sonner";
 
 const EMPTY = (): TeamSlot[] => Array.from({ length: 6 }, () => ({ pokemonId: null }));
@@ -37,7 +47,9 @@ export function TeamBuilder() {
   const teamIds = slots.map((s) => s.pokemonId).filter(Boolean) as string[];
 
   function setSlot(index: number, pokemonId: string | null) {
-    setSlots((prev) => prev.map((s, i) => (i === index ? { ...s, pokemonId } : s)));
+    setSlots((prev) =>
+      prev.map((s, i) => (i === index ? { ...s, pokemonId } : s)),
+    );
   }
 
   function saveCurrent() {
@@ -57,6 +69,19 @@ export function TeamBuilder() {
     setName("Équipe sans titre");
   }
 
+  function randomTeam() {
+    const pool = [...POKEMON];
+    const picked: string[] = [];
+    while (picked.length < 6 && pool.length > 0) {
+      const idx = Math.floor(Math.random() * pool.length);
+      picked.push(pool.splice(idx, 1)[0]!.id);
+    }
+    setEditingId(null);
+    setSlots(picked.map((id) => ({ pokemonId: id })));
+    setName("Équipe aléatoire");
+    toast.success("Équipe aléatoire générée.");
+  }
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       <div className="flex flex-col gap-4">
@@ -71,8 +96,21 @@ export function TeamBuilder() {
             {editingId ? "Mettre à jour" : "Sauvegarder"}
           </Button>
           <Button variant="outline" onClick={newTeam}>
-            Nouvelle équipe
+            Nouvelle
           </Button>
+          <Button variant="outline" onClick={randomTeam}>
+            <Dices data-icon="inline-start" />
+            Aléatoire
+          </Button>
+          <TeamShareDialog
+            slots={slots}
+            name={name}
+            onImport={(importedName, importedSlots) => {
+              setName(importedName);
+              setSlots(importedSlots);
+              setEditingId(null);
+            }}
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -114,6 +152,23 @@ export function TeamBuilder() {
             );
           })}
         </div>
+
+        <Tabs defaultValue="stats">
+          <TabsList>
+            <TabsTrigger value="stats">Snapshot</TabsTrigger>
+            <TabsTrigger value="defense">Matrice défensive</TabsTrigger>
+            <TabsTrigger value="offense">Matrice offensive</TabsTrigger>
+          </TabsList>
+          <TabsContent value="stats" className="mt-3">
+            <TeamStatsCard team={team} />
+          </TabsContent>
+          <TabsContent value="defense" className="mt-3">
+            <TeamMatchupMatrix team={team} />
+          </TabsContent>
+          <TabsContent value="offense" className="mt-3">
+            <TeamOffensiveMatrix team={team} />
+          </TabsContent>
+        </Tabs>
 
         {hydrated && teams.length > 0 && (
           <Card>

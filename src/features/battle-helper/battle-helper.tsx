@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Crown, AlertTriangle, Zap, ShieldCheck, Skull } from "lucide-react";
+import { Crown, AlertTriangle, Zap, ShieldCheck, Skull, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,8 +23,9 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/u
 import { TypeBadge, TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
+import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
-import { buildBattleRecommendation } from "@/lib/battle";
+import { buildBattleRecommendation, getBestCounters } from "@/lib/battle";
 import { resolveTeam } from "@/lib/team-analysis";
 import type { TeamSlot } from "@/types";
 
@@ -47,6 +48,11 @@ export function BattleHelper() {
   const reco = useMemo(
     () => (opponent ? buildBattleRecommendation(team, opponent) : null),
     [team, opponent],
+  );
+
+  const rosterCounters = useMemo(
+    () => (opponent ? getBestCounters(opponent).slice(0, 5) : []),
+    [opponent],
   );
 
   const best =
@@ -112,24 +118,44 @@ export function BattleHelper() {
                   </div>
                 );
               }
+              // Ad-hoc mode: use the same picker as the team builder.
+              if (!p) {
+                return (
+                  <PokemonPicker
+                    key={i}
+                    onPick={(id) => setAdHocSlot(i, id)}
+                    excludeIds={
+                      adHocSlots
+                        .map((x) => x.pokemonId)
+                        .filter((x): x is string => Boolean(x))
+                    }
+                    trigger={
+                      <button
+                        type="button"
+                        className="grid h-20 w-full place-items-center rounded-md border-2 border-dashed text-xs text-muted-foreground hover:border-primary hover:text-primary"
+                      >
+                        + Slot {i + 1}
+                      </button>
+                    }
+                  />
+                );
+              }
               return (
-                <Select
+                <div
                   key={i}
-                  value={s.pokemonId ?? "none"}
-                  onValueChange={(v) => setAdHocSlot(i, v === "none" ? null : v)}
+                  className="relative flex h-20 flex-col items-center justify-center gap-1 rounded-md border bg-card px-2 text-center text-xs"
                 >
-                  <SelectTrigger className="h-20">
-                    <SelectValue placeholder={`Slot ${i + 1}`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="none">— vide —</SelectItem>
-                      {POKEMON.map((p) => (
-                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  <button
+                    type="button"
+                    onClick={() => setAdHocSlot(i, null)}
+                    className="absolute right-1 top-1 grid size-5 place-items-center rounded-full text-muted-foreground hover:text-destructive"
+                    aria-label="Retirer"
+                  >
+                    <X className="size-3" />
+                  </button>
+                  <PokemonSprite pokemon={p} size="size-10" />
+                  <span className="truncate">{p.name}</span>
+                </div>
               );
             })}
           </div>
@@ -323,6 +349,32 @@ export function BattleHelper() {
                 )}
               </CardContent>
             </Card>
+
+            {rosterCounters.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Top contres du roster</CardTitle>
+                  <CardDescription>
+                    Les meilleurs Pokémon de toute la base contre {opponent.name}.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-1 text-sm">
+                  {rosterCounters.map((c) => (
+                    <Link
+                      key={c.pokemon.id}
+                      href={`/pokedex/${c.pokemon.id}`}
+                      className="flex items-center gap-3 rounded-md border px-2 py-1.5 hover:bg-accent"
+                    >
+                      <PokemonSprite pokemon={c.pokemon} size="size-8" />
+                      <span className="flex-1 font-medium">{c.pokemon.name}</span>
+                      <span className="font-mono text-xs text-muted-foreground">
+                        ×{c.bestOffense} / ×{c.worstIncoming}
+                      </span>
+                    </Link>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
 
             <Card>
               <CardHeader>

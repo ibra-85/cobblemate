@@ -1,49 +1,85 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
+import {
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import Link from "next/link";
+import {
+  Search,
+  X,
+  LayoutGrid,
+  Rows3,
+  ArrowDownUp,
+} from "lucide-react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PokemonCard } from "@/components/site/pokemon-card";
-import { POKEMON } from "@/data/pokemon";
-import { ALL_BIOMES, SPAWNS } from "@/data/spawns";
-import { TYPES_META } from "@/data/types";
-import type { PokemonRole, PokemonTypeId, Rarity } from "@/types";
 import {
-  filterPokemonByGeneration,
-  filterPokemonBySpawn,
-  filterPokemonByType,
-  searchPokemon,
-} from "@/lib/search";
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PokemonCard } from "@/components/site/pokemon-card";
+import { PokemonSprite } from "@/components/site/pokemon-sprite";
+import { TypeBadges } from "@/components/site/type-badge";
+import { POKEMON } from "@/data/pokemon";
+import { SPAWNS } from "@/data/spawns";
+import type { Pokemon } from "@/types";
+import { baseStatTotal } from "@/lib/pokemon-utils";
+import { searchPokemon } from "@/lib/search";
+import { cn } from "@/lib/utils";
+import { FiltersBar, type ActiveFilter } from "./filters-bar";
 
-const ROLES: PokemonRole[] = [
-  "physical-sweeper",
-  "special-sweeper",
-  "physical-wall",
-  "special-wall",
-  "mixed-wall",
-  "support",
-  "hazard-setter",
-  "pivot",
-  "revenge-killer",
-  "wallbreaker",
-  "lead",
+type SortKey = "dex" | "name" | "bst" | "hp" | "attack" | "defense" | "spAtk" | "spDef" | "speed";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "dex",     label: "N° National Dex" },
+  { value: "name",    label: "Nom (A→Z)" },
+  { value: "bst",     label: "Puissance totale" },
+  { value: "hp",      label: "HP" },
+  { value: "attack",  label: "Attaque" },
+  { value: "defense", label: "Défense" },
+  { value: "spAtk",   label: "Atk. Spé" },
+  { value: "spDef",   label: "Déf. Spé" },
+  { value: "speed",   label: "Vitesse" },
 ];
 
-const RARITIES: Rarity[] = ["common", "uncommon", "rare", "ultra-rare", "legendary"];
+const ROSTER_BST = POKEMON.map((p) => baseStatTotal(p));
+const BST_MIN = Math.min(...ROSTER_BST);
+const BST_MAX = Math.max(...ROSTER_BST);
+
+// Page size for the grid. Cards mount lazily as the user scrolls past the
+// sentinel — keeps initial render under 100ms even with the full 1186-mon
+// roster, and typing in the search box stays responsive (only the visible
+// slice re-renders).
+const PAGE_SIZE = 60;
 
 export function PokedexExplorer() {
   const [query, setQuery] = useState("");
-  const [type, setType] = useState<PokemonTypeId | "all">("all");
-  const [gen, setGen] = useState<string>("all");
-  const [role, setRole] = useState<PokemonRole | "all">("all");
-  const [biome, setBiome] = useState<string>("all");
-  const [rarity, setRarity] = useState<Rarity | "all">("all");
+  // `useDeferredValue` decouples the typed input from the heavy
+  // filter+sort+render pipeline: the input updates immediately, the
+  // filtered list catches up on the next idle frame.
+  const deferredQuery = useDeferredValue(query);
+  const [filters, setFilters] = useState<ActiveFilter[]>([]);
+  const [sortKey, setSortKey] = useState<SortKey>("dex");
+  const [sortDesc, setSortDesc] = useState(false);
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const generations = useMemo(
     () => Array.from(new Set(POKEMON.map((p) => p.generation))).sort(),
@@ -52,97 +88,314 @@ export function PokedexExplorer() {
 
   const filtered = useMemo(() => {
     let list = POKEMON;
-    if (query) list = searchPokemon(query, list);
-    if (type !== "all") list = filterPokemonByType(type, list);
-    if (gen !== "all") list = filterPokemonByGeneration(Number(gen), list);
-    if (role !== "all") list = list.filter((p) => p.roles.includes(role));
-    if (biome !== "all") {
-      list = filterPokemonBySpawn((s) => s.biomes.includes(biome), list);
+    if (deferredQuery) list = searchPokemon(deferredQuery, list);
+
+    for (const f of filters) {
+      if (f.kind === "power") {
+        const [lo, hi] = f.range;
+        list = list.filter((p) => {
+          const b = baseStatTotal(p);
+          return b >= lo && b <= hi;
+        });
+        continue;
+      }
+      if (f.values.length === 0) continue;
+      list = list.filter((p) => {
+        const matches = matchFilter(p, f.kind, f.values);
+        return f.mode === "exclude" ? !matches : matches;
+      });
     }
-    if (rarity !== "all") {
-      const ids = new Set(SPAWNS.filter((s) => s.rarity === rarity).map((s) => s.pokemonId));
-      list = list.filter((p) => ids.has(p.id));
-    }
-    return list;
-  }, [query, type, gen, role, biome, rarity]);
+
+    return list.slice().sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "dex") cmp = a.dexNumber - b.dexNumber;
+      else if (sortKey === "name") cmp = a.name.localeCompare(b.name);
+      else if (sortKey === "bst") cmp = baseStatTotal(a) - baseStatTotal(b);
+      else cmp = a.baseStats[sortKey] - b.baseStats[sortKey];
+      return sortDesc ? -cmp : cmp;
+    });
+  }, [deferredQuery, filters, sortKey, sortDesc]);
+
+  // Reset the visible window whenever the result set changes — otherwise
+  // a search that narrows to 12 results would still try to render 60.
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [deferredQuery, filters, sortKey, sortDesc, view]);
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    if (visibleCount >= filtered.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
+        }
+      },
+      { rootMargin: "400px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [filtered.length, visibleCount, view]);
+
+  const visible = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount],
+  );
+
+  const hasAny = query.length > 0 || filters.length > 0;
+
+  function resetAll() {
+    setQuery("");
+    setFilters([]);
+    setSortKey("dex");
+    setSortDesc(false);
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-3 md:grid-cols-6">
-        <div className="md:col-span-2">
-          <Input
-            placeholder="Recherche par nom, ID ou n° National Dex…"
+    <div className="flex flex-col gap-5">
+      {/* Single-row toolbar: search + filters + sort + view */}
+      <div className="flex flex-wrap items-center gap-2">
+        <InputGroup className="min-w-[14rem] flex-1 sm:max-w-xs">
+          <InputGroupAddon>
+            <Search className="size-4 opacity-60" />
+          </InputGroupAddon>
+          <InputGroupInput
+            placeholder="Rechercher un Pokémon…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          {query && (
+            <InputGroupAddon
+              className="cursor-pointer"
+              onClick={() => setQuery("")}
+            >
+              <X className="size-4 opacity-60 hover:opacity-100" />
+            </InputGroupAddon>
+          )}
+        </InputGroup>
+
+        <FiltersBar
+          filters={filters}
+          onChange={setFilters}
+          context={{
+            generations,
+            powerMin: BST_MIN,
+            powerMax: BST_MAX,
+          }}
+        />
+
+        <div className="ml-auto flex items-center gap-2">
+          <Select value={sortKey} onValueChange={(v) => v && setSortKey(v as SortKey)}>
+            <SelectTrigger className="min-w-[10rem] bg-background">
+              <SelectValue placeholder="Tri">
+                {(value) =>
+                  SORT_OPTIONS.find((o) => o.value === value)?.label ?? "Tri"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {SORT_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setSortDesc((v) => !v)}
+            aria-label="Inverser le sens du tri"
+            title={sortDesc ? "Décroissant" : "Croissant"}
+          >
+            <ArrowDownUp
+              className={cn(
+                "size-4 transition-transform",
+                sortDesc && "rotate-180",
+              )}
+            />
+          </Button>
+
+          <ToggleGroup
+            value={[view]}
+            onValueChange={(v) => {
+              const next = Array.isArray(v) ? v[v.length - 1] : v;
+              if (next === "grid" || next === "list") setView(next);
+            }}
+          >
+            <ToggleGroupItem value="grid" aria-label="Grille">
+              <LayoutGrid className="size-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="list" aria-label="Liste compacte">
+              <Rows3 className="size-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
-
-        <Select value={type} onValueChange={(v) => setType(v as PokemonTypeId | "all")}>
-          <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous les types</SelectItem>
-            {(Object.keys(TYPES_META) as PokemonTypeId[]).map((t) => (
-              <SelectItem key={t} value={t}>{TYPES_META[t].label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={gen} onValueChange={(v) => setGen(v ?? "all")}>
-          <SelectTrigger><SelectValue placeholder="Génération" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toutes générations</SelectItem>
-            {generations.map((g) => (
-              <SelectItem key={g} value={String(g)}>Gen {g}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={role} onValueChange={(v) => setRole(v as PokemonRole | "all")}>
-          <SelectTrigger><SelectValue placeholder="Rôle" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous les rôles</SelectItem>
-            {ROLES.map((r) => (
-              <SelectItem key={r} value={r}>{r}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={biome} onValueChange={(v) => setBiome(v ?? "all")}>
-          <SelectTrigger><SelectValue placeholder="Biome" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous biomes</SelectItem>
-            {ALL_BIOMES.map((b) => (
-              <SelectItem key={b} value={b}>{b}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={rarity} onValueChange={(v) => setRarity(v as Rarity | "all")}>
-          <SelectTrigger><SelectValue placeholder="Rareté" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toutes raretés</SelectItem>
-            {RARITIES.map((r) => (
-              <SelectItem key={r} value={r}>{r}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        {filtered.length} Pokémon · {POKEMON.length} dans la base
-      </p>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {filtered.map((p) => (
-          <PokemonCard key={p.id} pokemon={p} />
-        ))}
+      {/* Result summary */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>
+          <strong className="text-foreground">{filtered.length}</strong> /{" "}
+          {POKEMON.length} Pokémon
+          {hasAny ? " correspondant aux filtres" : ""}
+          {visibleCount < filtered.length && (
+            <>
+              {" "}— affichage de{" "}
+              <strong className="text-foreground">{visibleCount}</strong>
+            </>
+          )}
+        </span>
+        {hasAny && (
+          <button
+            type="button"
+            onClick={resetAll}
+            className="inline-flex items-center gap-1 hover:text-foreground"
+          >
+            <X className="size-3" />
+            Tout réinitialiser
+          </button>
+        )}
       </div>
 
-      {filtered.length === 0 && (
-        <div className="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground">
-          Aucun Pokémon ne correspond à ces filtres.
+      {/* Results */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed p-12 text-center">
+          <div className="grid size-12 place-items-center rounded-full bg-muted text-muted-foreground">
+            <Search className="size-5" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="font-medium">Aucun Pokémon trouvé</p>
+            <p className="text-sm text-muted-foreground">
+              Essaie de retirer un filtre ou de chercher un autre nom.
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={resetAll}>
+            <X data-icon="inline-start" />
+            Réinitialiser
+          </Button>
         </div>
+      ) : view === "grid" ? (
+        <>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {visible.map((p) => (
+              <PokemonCard key={p.id} pokemon={p} />
+            ))}
+          </div>
+          {visibleCount < filtered.length && (
+            <div
+              ref={sentinelRef}
+              className="flex items-center justify-center py-6 text-xs text-muted-foreground"
+            >
+              Chargement de {Math.min(PAGE_SIZE, filtered.length - visibleCount)} Pokémon
+              supplémentaires…
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <CompactList list={visible} />
+          {visibleCount < filtered.length && (
+            <div
+              ref={sentinelRef}
+              className="flex items-center justify-center py-4 text-xs text-muted-foreground"
+            >
+              Chargement de {Math.min(PAGE_SIZE, filtered.length - visibleCount)} lignes
+              supplémentaires…
+            </div>
+          )}
+        </>
       )}
+    </div>
+  );
+}
+
+// Filter matcher — kept colocated for clarity; pure functions of the data.
+function matchFilter(
+  p: Pokemon,
+  kind: Exclude<ActiveFilter["kind"], "power">,
+  values: string[],
+): boolean {
+  switch (kind) {
+    case "type":
+      return (p.types as string[]).some((t) => values.includes(t));
+    case "generation":
+      return values.includes(String(p.generation));
+    case "role":
+      return (p.roles as string[]).some((r) => values.includes(r));
+    case "biome": {
+      const matchingIds = new Set(
+        SPAWNS.filter((s) => s.biomes.some((b) => values.includes(b))).map(
+          (s) => s.pokemonId,
+        ),
+      );
+      return matchingIds.has(p.id);
+    }
+    case "rarity": {
+      const matchingIds = new Set(
+        SPAWNS.filter((s) => values.includes(s.rarity)).map((s) => s.pokemonId),
+      );
+      return matchingIds.has(p.id);
+    }
+  }
+}
+
+function CompactList({ list }: { list: Pokemon[] }) {
+  return (
+    <div className="overflow-x-auto rounded-xl border">
+      <table className="w-full text-sm">
+        <thead className="border-b bg-muted/40 text-xs uppercase text-muted-foreground">
+          <tr>
+            <th className="p-3 text-left">Pokémon</th>
+            <th className="p-3 text-left">Types</th>
+            <th className="p-3 text-right">HP</th>
+            <th className="p-3 text-right">Atk</th>
+            <th className="p-3 text-right">Déf</th>
+            <th className="p-3 text-right">SpA</th>
+            <th className="p-3 text-right">SpD</th>
+            <th className="p-3 text-right">Vit</th>
+            <th className="p-3 text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.map((p) => (
+            <tr key={p.id} className="border-b last:border-0 hover:bg-accent/40">
+              <td className="p-3">
+                <Link
+                  href={`/pokedex/${p.id}`}
+                  className="flex items-center gap-3 hover:text-foreground"
+                >
+                  <PokemonSprite pokemon={p} size="size-9" />
+                  <div className="flex flex-col">
+                    <span className="font-medium">{p.name}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground">
+                      #{p.dexNumber.toString().padStart(4, "0")}
+                    </span>
+                  </div>
+                </Link>
+              </td>
+              <td className="p-3">
+                <TypeBadges types={p.types} size="sm" />
+              </td>
+              <td className="p-3 text-right font-mono">{p.baseStats.hp}</td>
+              <td className="p-3 text-right font-mono">{p.baseStats.attack}</td>
+              <td className="p-3 text-right font-mono">{p.baseStats.defense}</td>
+              <td className="p-3 text-right font-mono">{p.baseStats.spAtk}</td>
+              <td className="p-3 text-right font-mono">{p.baseStats.spDef}</td>
+              <td className="p-3 text-right font-mono">{p.baseStats.speed}</td>
+              <td className="p-3 text-right">
+                <Badge variant="secondary" className="font-mono">
+                  {baseStatTotal(p)}
+                </Badge>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
