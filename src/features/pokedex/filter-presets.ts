@@ -2,7 +2,6 @@ import {
   Crown,
   Sword,
   Shield,
-  Flame,
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
@@ -30,10 +29,10 @@ function cat(kind: CategoricalKind, values: string[]): ActiveFilter {
 export const FILTER_PRESETS: FilterPreset[] = [
   {
     id: "legendaries",
-    label: "Légendaires",
-    description: "Pokémon de rareté légendaire uniquement.",
+    label: "Légendaires & mythiques",
+    description: "Espèces étiquetées 'legendary' ou 'mythical' par Cobblemon.",
     icon: Crown,
-    build: () => [cat("rarity", ["legendary"])],
+    build: () => [cat("category", ["legendary", "mythical"])],
   },
   {
     id: "ultra-rare-roster",
@@ -63,12 +62,5 @@ export const FILTER_PRESETS: FilterPreset[] = [
     description: "Encaisseurs physiques, spéciaux et mixtes.",
     icon: Shield,
     build: () => [cat("role", ["physical-wall", "special-wall", "mixed-wall"])],
-  },
-  {
-    id: "gen1-fire",
-    label: "Feu Gen 1",
-    description: "Type Feu de la première génération.",
-    icon: Flame,
-    build: () => [cat("type", ["fire"]), cat("generation", ["1"])],
   },
 ];

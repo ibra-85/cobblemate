@@ -14,7 +14,6 @@ export const RARITY_META: Record<Rarity, RarityMeta> = {
   uncommon:     { id: "uncommon",     label: "Peu commun",   color: "#22c55e", tier: 1 },
   rare:         { id: "rare",         label: "Rare",         color: "#3b82f6", tier: 2 },
   "ultra-rare": { id: "ultra-rare",   label: "Ultra-rare",   color: "#a855f7", tier: 3 },
-  legendary:    { id: "legendary",    label: "Légendaire",   color: "#f59e0b", tier: 4 },
 };
 
 export const ALL_RARITIES = (Object.keys(RARITY_META) as Rarity[])

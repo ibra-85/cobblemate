@@ -18,6 +18,7 @@ import { WishlistButton } from "@/components/site/wishlist-button";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { getPokesnacksForPokemon, getSpawnsForPokemon } from "@/lib/search";
+import { biomeLabel } from "@/data/biomes";
 
 export function WishlistView() {
   const { ids, hydrated, clear } = useWishlist();
@@ -57,7 +58,7 @@ export function WishlistView() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {items.map((p) => {
-          const spawns = getSpawnsForPokemon(p.id);
+          const spawn = getSpawnsForPokemon(p.id);
           const snacks = getPokesnacksForPokemon(p.id);
           return (
             <Card key={p.id}>
@@ -85,21 +86,22 @@ export function WishlistView() {
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col gap-3 text-sm">
-                {spawns.length > 0 ? (
+                {spawn ? (
                   <div className="flex flex-col gap-1">
                     <p className="text-xs uppercase text-muted-foreground">
                       Où le trouver
                     </p>
-                    {spawns.map((s, i) => (
-                      <p key={i} className="text-xs">
-                        <span className="font-medium">{s.biomes.join(", ")}</span>{" "}
-                        · {s.dayPeriod} · {s.weather} · {s.rarity}
-                      </p>
-                    ))}
+                    <p className="text-xs">
+                      <span className="font-medium">
+                        {spawn.biomes.slice(0, 4).map(biomeLabel).join(", ")}
+                      </span>
+                      {" · "}
+                      {spawn.times.join("/")} · {spawn.rarities.join("/")}
+                    </p>
                   </div>
                 ) : (
                   <p className="text-xs text-muted-foreground">
-                    Pas de spawn renseigné — vérifie un Pokémon proche.
+                    Pas de spawn naturel — obtenu via évolution ou objet clé.
                   </p>
                 )}
 

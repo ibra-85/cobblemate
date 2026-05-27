@@ -13,7 +13,13 @@
  * an include/exclude toggle covers every realistic use case.
  */
 
-export type CategoricalKind = "type" | "generation" | "role" | "biome" | "rarity";
+export type CategoricalKind =
+  | "type"
+  | "generation"
+  | "role"
+  | "biome"
+  | "rarity"
+  | "category";
 export type FilterKind = CategoricalKind | "power";
 
 export type FilterMode = "include" | "exclude";

@@ -5,9 +5,11 @@ import {
   MapPin,
   Sparkles,
   Gauge,
+  Crown,
   type LucideIcon,
 } from "lucide-react";
-import { ALL_BIOMES, biomeLabel } from "@/data/spawns";
+import { ALL_BIOMES } from "@/data/spawns";
+import { biomeLabel } from "@/data/biomes";
 import { TYPES_META } from "@/data/types";
 import { ROLE_META, ALL_ROLES } from "@/data/roles";
 import { RARITY_META, ALL_RARITIES } from "@/data/rarities";
@@ -26,6 +28,7 @@ export const FILTER_KIND_META: Record<FilterKind, FilterKindMeta> = {
   role:       { kind: "role",       label: "Rôle",        icon: Swords },
   biome:      { kind: "biome",      label: "Biome",       icon: MapPin },
   rarity:     { kind: "rarity",     label: "Rareté",      icon: Sparkles },
+  category:   { kind: "category",   label: "Catégorie",   icon: Crown },
   power:      { kind: "power",      label: "Puissance",   icon: Gauge },
 };
 
@@ -35,7 +38,23 @@ export const CATEGORICAL_KINDS: CategoricalKind[] = [
   "role",
   "biome",
   "rarity",
+  "category",
 ];
+
+/**
+ * Species-label "category" filter — surfaces the official Cobblemon
+ * tags carried in `species-extras-generated.json`. Distinct from rarity:
+ * a Pokémon's rarity is its spawn bucket (common/uncommon/rare/ultra-rare),
+ * a Pokémon's category is what kind of mon it is (legendary, mythical, …).
+ */
+export const POKEMON_CATEGORIES = [
+  { value: "legendary",   label: "Légendaire" },
+  { value: "mythical",    label: "Mythique" },
+  { value: "paradox",     label: "Paradoxe" },
+  { value: "ultra_beast", label: "Ultra-Chimère" },
+] as const;
+
+export type PokemonCategory = (typeof POKEMON_CATEGORIES)[number]["value"];
 
 export interface FilterOption {
   value: string;
@@ -65,15 +84,24 @@ export function getOptions(kind: CategoricalKind, ctx: FilterContext): FilterOpt
         label: ROLE_META[r].label,
       }));
     case "biome":
-      return ALL_BIOMES.map((b) => ({
-        value: b,
-        label: biomeLabel(b),
-      }));
+      // The dataset has 300+ distinct biome keys when raw modded biome
+      // ids are counted. Restrict the dropdown to abstract Cobblemon
+      // categories (the `is_*` tag family) — they're stable, mod-agnostic,
+      // and cover everything the spawn pool can reference.
+      return ALL_BIOMES
+        .filter((b) => /(^|\/)is_/.test(b) && !b.includes(":"))
+        .map((b) => ({ value: b, label: biomeLabel(b) }))
+        .sort((a, b) => a.label.localeCompare(b.label));
     case "rarity":
       return ALL_RARITIES.map((r) => ({
         value: r,
         label: RARITY_META[r].label,
         color: RARITY_META[r].color,
+      }));
+    case "category":
+      return POKEMON_CATEGORIES.map((c) => ({
+        value: c.value,
+        label: c.label,
       }));
   }
 }
@@ -91,6 +119,8 @@ export function formatValue(kind: CategoricalKind, value: string): string {
       return biomeLabel(value);
     case "rarity":
       return RARITY_META[value as keyof typeof RARITY_META]?.label ?? value;
+    case "category":
+      return POKEMON_CATEGORIES.find((c) => c.value === value)?.label ?? value;
   }
 }
 
