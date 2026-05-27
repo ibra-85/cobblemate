@@ -1,0 +1,1150 @@
+{
+  "items": {
+    "cobblemon:aguav_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:apicot_berry": {
+      "effects": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:spd",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:aspear_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "water_1",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "water_2",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:babiri_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "steel",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:belue_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:bluk_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:charti_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "rock",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:cheri_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "fairy",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "grass",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:chesto_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "human_like",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "flying",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:chilan_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "normal",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:chople_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "fighting",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:coba_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "flying",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:colbur_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "dark",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:cornn_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:custap_berry": {
+      "effects": [
+        {
+          "type": "drops_reroll",
+          "chance": 1,
+          "value": 1
+        }
+      ]
+    },
+    "cobblemon:durin_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:eggant_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "ditto",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:enigma_berry": {
+      "effects": [
+        {
+          "type": "ha_chance",
+          "chance": 0.05,
+          "value": null
+        }
+      ]
+    },
+    "cobblemon:figy_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:ganlon_berry": {
+      "effects": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:def",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "minecraft:glow_berries": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 0.33
+        }
+      ]
+    },
+    "cobblemon:grepa_berry": {
+      "effects": [
+        {
+          "type": "ev",
+          "subcategory": "spd",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "cobblemon:haban_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "dragon",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:hondew_berry": {
+      "effects": [
+        {
+          "type": "ev",
+          "subcategory": "spa",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "cobblemon:hopo_berry": {
+      "effects": [
+        {
+          "type": "alpha_chance",
+          "chance": 0.02,
+          "value": null
+        }
+      ]
+    },
+    "cobblemon:iapapa_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:jaboca_berry": {
+      "effects": [
+        {
+          "type": "size",
+          "chance": 1,
+          "value": 50
+        }
+      ]
+    },
+    "cobblemon:kasib_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "ghost",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:kebia_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "poison",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:kee_berry": {
+      "effects": [
+        {
+          "type": "gender_chance",
+          "subcategory": "cobblemon:female",
+          "chance": 0.25,
+          "value": null
+        }
+      ]
+    },
+    "cobblemon:kelpsy_berry": {
+      "effects": [
+        {
+          "type": "ev",
+          "subcategory": "atk",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "cobblemon:lansat_berry": {
+      "effects": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:hp",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:leppa_berry": {
+      "effects": [
+        {
+          "type": "level_raise",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:liechi_berry": {
+      "effects": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:atk",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:lum_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "dragon",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "monster",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:magost_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:mago_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:maranga_berry": {
+      "effects": [
+        {
+          "type": "gender_chance",
+          "subcategory": "cobblemon:male",
+          "chance": 0.25,
+          "value": null
+        }
+      ]
+    },
+    "cobblemon:micle_berry": {
+      "effects": [
+        {
+          "type": "mark_chance",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:nanab_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:nomel_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:occa_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "fire",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:oran_berry": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 0.33
+        }
+      ]
+    },
+    "cobblemon:pamtre_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:passho_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "water",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:payapa_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "psychic",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:pecha_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "water_3",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "bug",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:persim_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "mineral",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "amorphous",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:petaya_berry": {
+      "effects": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:spa",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:pinap_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:pomeg_berry": {
+      "effects": [
+        {
+          "type": "ev",
+          "subcategory": "hp",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "cobblemon:qualot_berry": {
+      "effects": [
+        {
+          "type": "ev",
+          "subcategory": "def",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "cobblemon:rabuta_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:rawst_berry": {
+      "effects": [
+        {
+          "type": "egg_group",
+          "subcategory": "field",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:razz_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:rindo_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "grass",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:roseli_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "fairy",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:rowap_berry": {
+      "effects": [
+        {
+          "type": "size",
+          "chance": 1,
+          "value": -50
+        }
+      ]
+    },
+    "cobblemon:salac_berry": {
+      "effects": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:spe",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "cobblemon:shuca_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "ground",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:sitrus_berry": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 0.5
+        }
+      ]
+    },
+    "cobblemon:spelon_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:starf_berry": {
+      "effects": [
+        {
+          "type": "shiny_reroll",
+          "chance": 1,
+          "value": 4
+        }
+      ]
+    },
+    "minecraft:sweet_berries": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 0.25
+        }
+      ],
+      "color": "red"
+    },
+    "cobblemon:tamato_berry": {
+      "effects": [
+        {
+          "type": "ev",
+          "subcategory": "spe",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "cobblemon:tanga_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "bug",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:touga_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:wacan_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "electric",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "cobblemon:watmel_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:wepear_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:wiki_berry": {
+      "effects": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "cobblemon:yache_berry": {
+      "effects": [
+        {
+          "type": "typing",
+          "subcategory": "ice",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "minecraft:apple": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 0.5
+        }
+      ],
+      "color": "red"
+    },
+    "minecraft:enchanted_golden_apple": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 1
+        },
+        {
+          "type": "rarity_bucket",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "shiny_reroll",
+          "chance": 1,
+          "value": 9
+        }
+      ],
+      "color": "yellow"
+    },
+    "minecraft:glistering_melon_slice": {
+      "effects": [
+        {
+          "type": "rarity_bucket",
+          "chance": 1,
+          "value": 1
+        }
+      ],
+      "color": "yellow"
+    },
+    "minecraft:golden_apple": {
+      "effects": [
+        {
+          "type": "bite_time",
+          "chance": 1,
+          "value": 0.75
+        },
+        {
+          "type": "rarity_bucket",
+          "chance": 1,
+          "value": 1
+        },
+        {
+          "type": "shiny_reroll",
+          "chance": 1,
+          "value": 1
+        }
+      ],
+      "color": "yellow"
+    },
+    "minecraft:golden_carrot": {
+      "effects": [
+        {
+          "type": "rarity_bucket",
+          "chance": 1,
+          "value": 1
+        }
+      ],
+      "color": "yellow"
+    },
+    "cobblemon:poke_bait": {
+      "effects": []
+    },
+    "cobblemon:sweet_heart": {
+      "effects": [
+        {
+          "type": "friendship",
+          "chance": 1,
+          "value": 35
+        }
+      ]
+    },
+    "minecraft:allium": {
+      "effects": [],
+      "color": "magenta"
+    },
+    "minecraft:azure_bluet": {
+      "effects": [],
+      "color": "light_gray"
+    },
+    "minecraft:beef": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:beetroot": {
+      "effects": [],
+      "color": "red"
+    },
+    "cobblemon:berry_sweet": {
+      "effects": [],
+      "color": "blue"
+    },
+    "cobblemon:big_root": {
+      "effects": [],
+      "color": "brown"
+    },
+    "cobblemon:blue_mint_leaf": {
+      "effects": [],
+      "color": "blue"
+    },
+    "minecraft:blue_orchid": {
+      "effects": [],
+      "color": "light_blue"
+    },
+    "minecraft:brown_mushroom": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:carrot": {
+      "effects": [],
+      "color": "orange"
+    },
+    "minecraft:chicken": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:chorus_flower": {
+      "effects": [],
+      "color": "purple"
+    },
+    "cobblemon:clover_sweet": {
+      "effects": [],
+      "color": "green"
+    },
+    "minecraft:cod": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:cornflower": {
+      "effects": [],
+      "color": "blue"
+    },
+    "cobblemon:cyan_mint_leaf": {
+      "effects": [],
+      "color": "cyan"
+    },
+    "minecraft:dandelion": {
+      "effects": [],
+      "color": "yellow"
+    },
+    "minecraft:dead_bush": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:dried_kelp": {
+      "effects": [],
+      "color": "gray"
+    },
+    "minecraft:egg": {
+      "effects": [],
+      "color": "white"
+    },
+    "cobblemon:energy_root": {
+      "effects": [],
+      "color": "brown"
+    },
+    "cobblemon:flower_sweet": {
+      "effects": [],
+      "color": "orange"
+    },
+    "cobblemon:galarica_nuts": {
+      "effects": [],
+      "color": "orange"
+    },
+    "cobblemon:green_mint_leaf": {
+      "effects": [],
+      "color": "green"
+    },
+    "minecraft:honey_bottle": {
+      "effects": [],
+      "color": "yellow"
+    },
+    "minecraft:lilac": {
+      "effects": [],
+      "color": "magenta"
+    },
+    "minecraft:lily_of_the_valley": {
+      "effects": [],
+      "color": "white"
+    },
+    "cobblemon:love_sweet": {
+      "effects": [],
+      "color": "pink"
+    },
+    "cobblemon:medicinal_leek": {
+      "effects": [],
+      "color": "magenta"
+    },
+    "cobblemon:mental_herb": {
+      "effects": [],
+      "color": "light_blue"
+    },
+    "minecraft:milk_bucket": {
+      "effects": [],
+      "color": "white"
+    },
+    "cobblemon:mirror_herb": {
+      "effects": [],
+      "color": "lime"
+    },
+    "cobblemon:moomoo_milk": {
+      "effects": [],
+      "color": "white"
+    },
+    "minecraft:mutton": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:orange_tulip": {
+      "effects": [],
+      "color": "orange"
+    },
+    "minecraft:oxeye_daisy": {
+      "effects": [],
+      "color": "white"
+    },
+    "minecraft:peony": {
+      "effects": [],
+      "color": "pink"
+    },
+    "cobblemon:pep_up_flower": {
+      "effects": [],
+      "color": "white"
+    },
+    "cobblemon:pink_mint_leaf": {
+      "effects": [],
+      "color": "pink"
+    },
+    "minecraft:pink_petals": {
+      "effects": [],
+      "color": "pink"
+    },
+    "minecraft:pink_tulip": {
+      "effects": [],
+      "color": "pink"
+    },
+    "minecraft:pitcher_plant": {
+      "effects": [],
+      "color": "cyan"
+    },
+    "minecraft:poisonous_potato": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:poppy": {
+      "effects": [],
+      "color": "red"
+    },
+    "minecraft:porkchop": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:potato": {
+      "effects": [],
+      "color": "brown"
+    },
+    "cobblemon:power_herb": {
+      "effects": [],
+      "color": "red"
+    },
+    "minecraft:pumpkin": {
+      "effects": [],
+      "color": "orange"
+    },
+    "minecraft:rabbit": {
+      "effects": [],
+      "color": "brown"
+    },
+    "cobblemon:red_mint_leaf": {
+      "effects": [],
+      "color": "red"
+    },
+    "minecraft:red_mushroom": {
+      "effects": [],
+      "color": "red"
+    },
+    "minecraft:red_tulip": {
+      "effects": [],
+      "color": "red"
+    },
+    "cobblemon:revival_herb": {
+      "effects": [],
+      "color": "green"
+    },
+    "cobblemon:ribbon_sweet": {
+      "effects": [],
+      "color": "purple"
+    },
+    "minecraft:rose_bush": {
+      "effects": [],
+      "color": "red"
+    },
+    "minecraft:rotten_flesh": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:salmon": {
+      "effects": [],
+      "color": "brown"
+    },
+    "minecraft:spore_blossom": {
+      "effects": [],
+      "color": "pink"
+    },
+    "cobblemon:star_sweet": {
+      "effects": [],
+      "color": "yellow"
+    },
+    "cobblemon:strawberry_sweet": {
+      "effects": [],
+      "color": "red"
+    },
+    "minecraft:sugar": {
+      "effects": [],
+      "color": "white"
+    },
+    "minecraft:sunflower": {
+      "effects": [],
+      "color": "yellow"
+    },
+    "cobblemon:tasty_tail": {
+      "effects": [],
+      "color": "pink"
+    },
+    "minecraft:torchflower": {
+      "effects": [],
+      "color": "orange"
+    },
+    "cobblemon:vivichoke": {
+      "effects": [],
+      "color": "green"
+    },
+    "cobblemon:white_herb": {
+      "effects": [],
+      "color": "white"
+    },
+    "cobblemon:white_mint_leaf": {
+      "effects": [],
+      "color": "white"
+    },
+    "minecraft:white_tulip": {
+      "effects": [],
+      "color": "white"
+    },
+    "minecraft:wildflowers": {
+      "effects": [],
+      "color": "yellow"
+    },
+    "minecraft:wither_rose": {
+      "effects": [],
+      "color": "black"
+    }
+  },
+  "recipe": {
+    "type": "cobblemon:cooking_pot",
+    "pattern": [
+      "MMM",
+      "HVH",
+      "GGG"
+    ],
+    "key": {
+      "M": {
+        "tag": "c:drinks/milk"
+      },
+      "H": {
+        "item": "minecraft:honey_bottle"
+      },
+      "V": {
+        "item": "cobblemon:vivichoke"
+      },
+      "G": {
+        "item": "cobblemon:hearty_grains"
+      }
+    },
+    "result": "cobblemon:poke_snack",
+    "seasoningTag": "cobblemon:recipe_filters/bait_seasoning",
+    "seasoningProcessors": [
+      "food_colour",
+      "ingredient",
+      "spawn_bait"
+    ]
+  },
+  "validSeasonings": [
+    "minecraft:apple",
+    "minecraft:enchanted_golden_apple",
+    "minecraft:glistering_melon_slice",
+    "minecraft:glow_berries",
+    "minecraft:golden_apple",
+    "minecraft:golden_carrot",
+    "minecraft:sweet_berries",
+    "#cobblemon:berries"
+  ]
+}
