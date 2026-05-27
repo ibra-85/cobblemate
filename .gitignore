@@ -43,3 +43,6 @@ next-env.d.ts
 # ai
 /.agents/
 /.claude/
+
+# build script scratch (extracted Cobblemon data, sheet snapshots, …)
+/tmp/

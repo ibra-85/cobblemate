@@ -39,6 +39,7 @@ import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { TypeBadges } from "@/components/site/type-badge";
 import { POKEMON } from "@/data/pokemon";
 import { SPAWNS } from "@/data/spawns";
+import { SPECIES_EXTRAS_BY_ID } from "@/data/species-extras";
 import type { Pokemon } from "@/types";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import { searchPokemon } from "@/lib/search";
@@ -337,9 +338,15 @@ function matchFilter(
     }
     case "rarity": {
       const matchingIds = new Set(
-        SPAWNS.filter((s) => values.includes(s.rarity)).map((s) => s.pokemonId),
+        SPAWNS
+          .filter((s) => s.rarities.some((r) => values.includes(r)))
+          .map((s) => s.pokemonId),
       );
       return matchingIds.has(p.id);
+    }
+    case "category": {
+      const labels = SPECIES_EXTRAS_BY_ID[p.id]?.labels ?? [];
+      return labels.some((l) => values.includes(l));
     }
   }
 }

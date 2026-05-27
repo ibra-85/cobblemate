@@ -7,6 +7,7 @@ import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { getSpawnsForPokemon } from "@/lib/search";
+import { biomeLabel } from "@/data/biomes";
 
 export function WishlistPreview() {
   const { ids, hydrated } = useWishlist();
@@ -50,7 +51,7 @@ export function WishlistPreview() {
   return (
     <div className="flex flex-1 flex-col gap-2">
       {items.slice(0, 5).map((p) => {
-        const spawn = getSpawnsForPokemon(p.id)[0];
+        const spawn = getSpawnsForPokemon(p.id);
         return (
           <Link
             key={p.id}
@@ -64,11 +65,17 @@ export function WishlistPreview() {
               <span className="truncate font-medium">{p.name}</span>
               {spawn ? (
                 <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
-                  <Badge variant="outline" className="text-[10px]">
-                    {spawn.biomes[0]}
-                  </Badge>
-                  <span>·</span>
-                  <span>{spawn.rarity}</span>
+                  {spawn.biomes[0] && (
+                    <Badge variant="outline" className="text-[10px]">
+                      {biomeLabel(spawn.biomes[0])}
+                    </Badge>
+                  )}
+                  {spawn.rarities[0] && (
+                    <>
+                      <span>·</span>
+                      <span>{spawn.rarities[0]}</span>
+                    </>
+                  )}
                 </div>
               ) : (
                 <span className="text-xs text-muted-foreground">

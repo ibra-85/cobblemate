@@ -1,5 +1,5 @@
 import { POKEMON } from "@/data/pokemon";
-import { SPAWNS } from "@/data/spawns";
+import { SPAWNS, SPAWNS_BY_ID, type SpawnAggregate } from "@/data/spawns";
 import { POKESNACKS } from "@/data/pokesnacks";
 import type { Pokemon, PokemonTypeId, Rarity } from "@/types";
 
@@ -29,7 +29,7 @@ export function filterPokemonByGeneration(gen: number, list: Pokemon[] = POKEMON
 }
 
 export function filterPokemonBySpawn(
-  predicate: (spawn: (typeof SPAWNS)[number]) => boolean,
+  predicate: (spawn: SpawnAggregate) => boolean,
   list: Pokemon[] = POKEMON,
 ) {
   const ids = new Set(SPAWNS.filter(predicate).map((s) => s.pokemonId));
@@ -37,7 +37,9 @@ export function filterPokemonBySpawn(
 }
 
 export function filterPokemonByRarity(rarity: Rarity, list: Pokemon[] = POKEMON) {
-  const ids = new Set(SPAWNS.filter((s) => s.rarity === rarity).map((s) => s.pokemonId));
+  const ids = new Set(
+    SPAWNS.filter((s) => s.rarities.includes(rarity)).map((s) => s.pokemonId),
+  );
   return list.filter((p) => ids.has(p.id));
 }
 
@@ -52,6 +54,7 @@ export function getPokesnacksForPokemon(pokemonId: string) {
   );
 }
 
-export function getSpawnsForPokemon(pokemonId: string) {
-  return SPAWNS.filter((s) => s.pokemonId === pokemonId);
+/** The aggregated spawn record for a Pokémon, or undefined if none. */
+export function getSpawnsForPokemon(pokemonId: string): SpawnAggregate | undefined {
+  return SPAWNS_BY_ID[pokemonId];
 }

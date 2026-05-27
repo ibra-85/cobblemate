@@ -26,10 +26,7 @@ import {
   getPokemonWeaknesses,
   baseStatTotal,
 } from "@/lib/pokemon-utils";
-import {
-  getPokesnacksForPokemon,
-  getSpawnsForPokemon,
-} from "@/lib/search";
+import { getSpawnsForPokemon } from "@/lib/search";
 import { calculateTypeEffectiveness, ALL_TYPES } from "@/lib/type-chart";
 import { TYPES_META } from "@/data/types";
 import { cn } from "@/lib/utils";
@@ -39,6 +36,9 @@ import { CompareDialog } from "@/features/pokedex/compare-dialog";
 import { StatsRadar } from "@/features/pokedex/stats-radar";
 import { StatsVsAverage } from "@/features/pokedex/stats-vs-average";
 import { MatchupDonut } from "@/features/pokedex/matchup-donut";
+import { BaitRecommendations } from "@/features/pokedex/bait-recommendations";
+import { SpawnDetails } from "@/features/pokedex/spawn-details";
+import { SpeciesExtrasCard } from "@/features/pokedex/species-extras-card";
 
 export function generateStaticParams() {
   return POKEMON.map((p) => ({ id: p.id }));
@@ -67,7 +67,6 @@ export default async function PokemonDetailPage({
     (t) => calculateTypeEffectiveness(t, pokemon.types) === 4,
   );
   const spawns = getSpawnsForPokemon(pokemon.id);
-  const snacks = getPokesnacksForPokemon(pokemon.id);
   const bst = baseStatTotal(pokemon);
 
   return (
@@ -342,54 +341,41 @@ export default async function PokemonDetailPage({
           <StrategySheet pokemon={pokemon} />
         </TabsContent>
 
-        <TabsContent value="capture" className="mt-4 grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Spawns Cobblemon</CardTitle>
-              <CardDescription>
-                Où, quand et par quel temps il apparaît.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2 text-sm">
-              {spawns.length === 0 && (
-                <p className="text-muted-foreground">Aucun spawn renseigné.</p>
-              )}
-              {spawns.map((s, i) => (
-                <div key={i} className="flex flex-col gap-2 rounded-md border p-3">
-                  <div className="flex flex-wrap gap-1">
-                    {s.biomes.map((b) => (
-                      <Badge key={b} variant="secondary">{b}</Badge>
-                    ))}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {s.dayPeriod} · météo : {s.weather} · {s.dimension} · {s.rarity}
-                    {s.minY != null && ` · Y ≥ ${s.minY}`}
-                    {s.maxY != null && ` · Y ≤ ${s.maxY}`}
+        <TabsContent value="capture" className="mt-4 flex flex-col gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Spawns Cobblemon</CardTitle>
+                <CardDescription>
+                  Où, quand et par quel temps il apparaît.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3 text-sm">
+                {!spawns ? (
+                  <p className="text-muted-foreground">
+                    Aucun spawn naturel — obtenu via évolution, structure
+                    ou objet clé.
                   </p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                ) : (
+                  <SpawnDetails spawn={spawns} />
+                )}
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>PokéSnacks recommandés</CardTitle>
-              <CardDescription>Pour l&apos;attirer plus vite.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2 text-sm">
-              {snacks.length === 0 && (
-                <p className="text-muted-foreground">
-                  Aucun PokéSnack référencé pour ce Pokémon.
-                </p>
-              )}
-              {snacks.map((s) => (
-                <div key={s.id} className="flex flex-col gap-1 rounded-md border p-3">
-                  <p className="font-medium">{s.name}</p>
-                  <p className="text-xs text-muted-foreground">{s.description}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Poké Snack recommandé</CardTitle>
+                <CardDescription>
+                  Appâts Cobblemon : par type, et boosts génériques.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <BaitRecommendations pokemon={pokemon} />
+              </CardContent>
+            </Card>
+          </div>
+
+          <SpeciesExtrasCard pokemonId={pokemon.id} />
         </TabsContent>
       </Tabs>
     </div>

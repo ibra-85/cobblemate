@@ -1,61 +1,71 @@
-import type { SpawnCondition } from "@/types";
+import generated from "./spawns-generated.json";
+import type { Rarity } from "@/types";
 
 /**
- * Sample spawn conditions. Cobblemon spawn JSONs live in
- * `config/cobblemon/spawn_pool_world/*.json` — the schema matches very
- * closely so a converter script can replace this file 1:1.
+ * Aggregated spawn data per Pokémon id, built from the Cobblemon mod
+ * (`spawn_pool_world/` + `habitat_pools/`) and the Myths & Legends
+ * datapack. Rebuild with: `node scripts/build-spawns-data.mjs`.
+ *
+ * One entry per Pokémon — multiple spawn rules collapse into unions of
+ * their conditions. Use the array form `SPAWNS` for filter predicates,
+ * `SPAWNS_BY_ID` for direct lookup on detail pages.
  */
-export const SPAWNS: SpawnCondition[] = [
-  { pokemonId: "bulbasaur",  biomes: ["forest", "plains"],            dayPeriod: "day",   weather: "any",   dimension: "overworld", rarity: "uncommon" },
-  { pokemonId: "ivysaur",    biomes: ["forest", "jungle"],            dayPeriod: "day",   weather: "any",   dimension: "overworld", rarity: "rare" },
-  { pokemonId: "venusaur",   biomes: ["jungle", "swamp"],             dayPeriod: "day",   weather: "any",   dimension: "overworld", rarity: "ultra-rare" },
-  { pokemonId: "raichu",     biomes: ["plains", "meadow"],            dayPeriod: "day",   weather: "thunder", dimension: "overworld", rarity: "rare" },
-  { pokemonId: "charizard",  biomes: ["badlands", "savanna"],         dayPeriod: "day",   weather: "clear", dimension: "overworld", rarity: "ultra-rare", minY: 60 },
-  { pokemonId: "blastoise",  biomes: ["ocean", "deep_ocean"],         dayPeriod: "any",   weather: "any",   dimension: "overworld", rarity: "rare" },
-  { pokemonId: "pikachu",    biomes: ["forest", "plains", "meadow"],  dayPeriod: "day",   weather: "any",   dimension: "overworld", rarity: "uncommon" },
-  { pokemonId: "snorlax",    biomes: ["plains", "meadow"],            dayPeriod: "night", weather: "any",   dimension: "overworld", rarity: "rare" },
-  { pokemonId: "gengar",     biomes: ["dark_forest", "swamp"],        dayPeriod: "night", weather: "any",   dimension: "overworld", rarity: "rare" },
-  { pokemonId: "garchomp",   biomes: ["badlands", "desert"],          dayPeriod: "any",   weather: "any",   dimension: "overworld", rarity: "ultra-rare", maxY: 40 },
-  { pokemonId: "lucario",    biomes: ["mountain", "stony_peaks"],     dayPeriod: "any",   weather: "any",   dimension: "overworld", rarity: "rare" },
-  { pokemonId: "togekiss",   biomes: ["meadow", "cherry_grove"],      dayPeriod: "day",   weather: "clear", dimension: "overworld", rarity: "ultra-rare" },
-  { pokemonId: "rotom_wash", biomes: ["river", "ocean"],              dayPeriod: "any",   weather: "rain",  dimension: "overworld", rarity: "rare" },
-  { pokemonId: "scizor",     biomes: ["forest", "birch_forest"],      dayPeriod: "day",   weather: "any",   dimension: "overworld", rarity: "uncommon" },
-  { pokemonId: "tyranitar",  biomes: ["badlands", "stony_peaks"],     dayPeriod: "any",   weather: "any",   dimension: "overworld", rarity: "ultra-rare", maxY: 30 },
-];
 
-export const ALL_BIOMES = Array.from(new Set(SPAWNS.flatMap((s) => s.biomes))).sort();
-
-/**
- * Localized labels for known Cobblemon / Minecraft biome ids. Falls back
- * gracefully (via `biomeLabel()`) for any biome not in this map — handy
- * when the SPAWNS list is later replaced by the full Cobblemon pool.
- */
-export const BIOME_LABELS: Record<string, string> = {
-  badlands:      "Badlands",
-  birch_forest:  "Forêt de bouleaux",
-  cherry_grove:  "Bosquet de cerisiers",
-  dark_forest:   "Forêt sombre",
-  deep_ocean:    "Océan profond",
-  desert:        "Désert",
-  forest:        "Forêt",
-  jungle:        "Jungle",
-  meadow:        "Prairie",
-  mountain:      "Montagne",
-  ocean:         "Océan",
-  plains:        "Plaines",
-  river:         "Rivière",
-  savanna:       "Savane",
-  stony_peaks:   "Pics rocheux",
-  swamp:         "Marais",
-};
-
-/** Best-effort label for a biome id (falls back to a humanized form). */
-export function biomeLabel(id: string): string {
-  return (
-    BIOME_LABELS[id] ??
-    id
-      .split("_")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ")
-  );
+export interface ItemRequirement {
+  id: string;
+  count: number;
+  consume: boolean;
 }
+
+export interface SpawnAggregate {
+  pokemonId: string;
+  rarities: Rarity[];
+  /** Cobblemon biome tag keys (`is_jungle`) or raw biome ids (`minecraft:frozen_peaks`). */
+  biomes: string[];
+  excludedBiomes: string[];
+  /** "any" | "day" | "night" | "dusk" */
+  times: string[];
+  /** "any" | "clear" | "rain" */
+  weathers: string[];
+  /** "grounded" | "submerged" | "fishing" | "surface" | "seafloor" | … */
+  contexts: string[];
+  /** Habitat ids (e.g. "abandoned_fortress") — empty for natural-only spawns. */
+  structures: string[];
+  /** Key items required to trigger the spawn (Myths & Legends). */
+  keyItems: string[];
+  /** Items the spawn consumes/checks (Myths & Legends). */
+  itemRequirements: ItemRequirement[];
+  /** Overall level window across all rules. */
+  levelRange: [number, number] | null;
+  /** Origin labels for traceability ("cobblemon-mod/spawn_pool_world", …). */
+  sources: string[];
+}
+
+type GeneratedEntry = Omit<SpawnAggregate, "pokemonId">;
+
+// `generated`'s JSON-derived type widens `levelRange` to `number[]` —
+// cast through `unknown` because the build script guarantees the tuple
+// shape (or null).
+export const SPAWNS_BY_ID: Record<string, SpawnAggregate> = Object.fromEntries(
+  Object.entries(generated as unknown as Record<string, GeneratedEntry>).map(
+    ([id, value]) => [id, { pokemonId: id, ...value }],
+  ),
+);
+
+export const SPAWNS: SpawnAggregate[] = Object.values(SPAWNS_BY_ID);
+
+// ─── Aggregate accessors used by the filter UI ───────────────────────
+
+export const ALL_BIOMES: string[] = Array.from(
+  new Set(SPAWNS.flatMap((s) => s.biomes)),
+).sort();
+
+export const ALL_STRUCTURES: string[] = Array.from(
+  new Set(SPAWNS.flatMap((s) => s.structures)),
+).sort();
+
+export const ALL_RARITIES_IN_DATA: Rarity[] = Array.from(
+  new Set(SPAWNS.flatMap((s) => s.rarities)),
+) as Rarity[];
+
+export { biomeLabel } from "./biomes";

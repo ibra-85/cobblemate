@@ -42,7 +42,14 @@ export type PokemonRole =
   | "lead"
   | "wallbreaker";
 
-export type Rarity = "common" | "uncommon" | "rare" | "ultra-rare" | "legendary";
+/**
+ * Spawn-pool rarity buckets — these are the only four values Cobblemon's
+ * `spawn_pool_world` files use (verifiable in-game with mods like
+ * PokéNav). "Legendary" is **not** a rarity: it's a species *label* (see
+ * `SPECIES_EXTRAS_BY_ID[id].labels` in `src/data/species-extras.ts`) and
+ * is surfaced via the dedicated "Catégorie" filter, not the rarity one.
+ */
+export type Rarity = "common" | "uncommon" | "rare" | "ultra-rare";
 
 export type DayPeriod = "day" | "night" | "dawn" | "dusk" | "any";
 export type Weather = "clear" | "rain" | "thunder" | "snow" | "any";
@@ -74,6 +81,12 @@ export interface Evolution {
   method: string;
 }
 
+/**
+ * @deprecated Use `SpawnAggregate` from `@/data/spawns` instead. The
+ * aggregated shape is produced by `scripts/build-spawns-data.mjs` and
+ * unions every spawn rule for a Pokémon (covering 950+ entries vs the
+ * hand-written 15 this type was designed for).
+ */
 export interface SpawnCondition {
   pokemonId: string;
   biomes: string[];

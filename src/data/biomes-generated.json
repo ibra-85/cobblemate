@@ -1,0 +1,1755 @@
+{
+  "is_arid": {
+    "biomes": [
+      "biomesoplenty:lush_desert",
+      "biomesoplenty:lush_savanna",
+      "blooming_biosphere:chaparral",
+      "clifftree:desert_cliff",
+      "clifftree:oasis",
+      "clifftree:shrubland",
+      "darkerdepths:sandy_catacombs",
+      "minecraft:desert",
+      "terralith:ancient_sands",
+      "terralith:arid_highlands",
+      "terralith:ashen_savanna",
+      "terralith:brushland",
+      "terralith:cave/desert_caves",
+      "terralith:desert_canyon",
+      "terralith:desert_oasis",
+      "terralith:desert_spires",
+      "terralith:fractured_savanna",
+      "terralith:hot_shrubland",
+      "terralith:lush_desert",
+      "terralith:red_oasis",
+      "terralith:sandstone_valley",
+      "terralith:savanna_badlands",
+      "terralith:savanna_slopes",
+      "terralith:shrubland",
+      "terralith:warped_mesa",
+      "terralith:white_mesa",
+      "wythers:badlands_desert",
+      "wythers:danakil_desert",
+      "wythers:desert_island",
+      "wythers:granite_canyon",
+      "wythers:kwongan_heath",
+      "wythers:outback_desert",
+      "wythers:red_desert",
+      "wythers:sandy_jungle",
+      "wythers:tropical_forest",
+      "wythers:tropical_forest_canyon"
+    ],
+    "tagRefs": [
+      "c:is_badlands",
+      "c:is_desert",
+      "c:is_savanna",
+      "clifftree:dry_badlands",
+      "clifftree:is_desert",
+      "minecraft:is_badlands",
+      "minecraft:is_savanna",
+      "wythers:is_desert"
+    ]
+  },
+  "is_badlands": {
+    "biomes": [
+      "terralith:ashen_savanna",
+      "terralith:red_oasis",
+      "terralith:warped_mesa",
+      "terralith:white_mesa",
+      "wythers:danakil_desert"
+    ],
+    "tagRefs": [
+      "c:is_badlands",
+      "clifftree:dry_badlands",
+      "minecraft:is_badlands"
+    ]
+  },
+  "is_bamboo": {
+    "biomes": [
+      "biomeswevegone:crag_gardens",
+      "minecraft:bamboo_jungle",
+      "wythers:bamboo_jungle_canyon",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:bamboo_jungle_swamp",
+      "wythers:bamboo_swamp",
+      "wythers:jade_highlands",
+      "wythers:maple_mountains",
+      "wythers:mushroom_island",
+      "wythers:sakura_forest",
+      "wythers:sandy_jungle",
+      "wythers:sparse_bamboo_jungle",
+      "wythers:waterlily_swamp"
+    ],
+    "tagRefs": []
+  },
+  "is_beach": {
+    "biomes": [
+      "biomesoplenty:dune_beach",
+      "wythers:guelta",
+      "wythers:sand_dunes"
+    ],
+    "tagRefs": [
+      "minecraft:is_beach"
+    ]
+  },
+  "is_cave": {
+    "biomes": [
+      "biomesoplenty:glowing_grotto",
+      "biomesoplenty:spider_nest",
+      "minecraft:dripstone_caves",
+      "minecraft:lush_caves",
+      "terralith:cave/andesite_caves",
+      "terralith:cave/desert_caves",
+      "terralith:cave/diorite_caves",
+      "terralith:cave/fungal_caves",
+      "terralith:cave/granite_caves",
+      "terralith:cave/infested_caves",
+      "terralith:cave/thermal_caves",
+      "terralith:cave/underground_jungle",
+      "wythers:calcite_caverns",
+      "wythers:deep_dark_incursion",
+      "wythers:deep_underground",
+      "wythers:fungous_dripstone_caves",
+      "wythers:lichenous_caves",
+      "wythers:lichenous_dripstone_caves",
+      "wythers:lush_dripstone_caves",
+      "wythers:lush_fungous_dripstone_caves",
+      "wythers:lush_shroom_caves",
+      "wythers:mossy_caves",
+      "wythers:mossy_dripstone_caves",
+      "wythers:mushroom_caves",
+      "wythers:underground",
+      "wythers:volcanic_chamber"
+    ],
+    "tagRefs": [
+      "c:is_cave",
+      "c:is_underground",
+      "clifftree:all_caves"
+    ]
+  },
+  "is_cherry_blossom": {
+    "biomes": [
+      "biomeswevegone:sakura_grove",
+      "blooming_biosphere:snowy_cherry_grove",
+      "minecraft:cherry_grove",
+      "terralith:sakura_grove",
+      "terralith:sakura_valley",
+      "wythers:sakura_forest"
+    ],
+    "tagRefs": []
+  },
+  "is_coast": {
+    "biomes": [
+      "biomesoplenty:dune_beach",
+      "blooming_biosphere:tidepools",
+      "minecraft:stony_shore",
+      "terralith:basalt_cliffs",
+      "terralith:granite_cliffs",
+      "terralith:white_cliffs",
+      "wythers:calcite_coast",
+      "wythers:coastal_mangroves",
+      "wythers:cold_island",
+      "wythers:cold_stony_shore",
+      "wythers:deepslate_shore",
+      "wythers:frigid_island",
+      "wythers:frozen_island",
+      "wythers:gravelly_beach",
+      "wythers:guelta",
+      "wythers:icy_shore",
+      "wythers:mediterranean_island",
+      "wythers:sand_dunes",
+      "wythers:temperate_island",
+      "wythers:tropical_island",
+      "wythers:warm_stony_shore"
+    ],
+    "tagRefs": [
+      "c:is_beach",
+      "c:is_stony_shores",
+      "clifftree:is_cliff",
+      "minecraft:is_beach"
+    ]
+  },
+  "is_cold": {
+    "biomes": [
+      "biomesoplenty:aspen_forest",
+      "biomesoplenty:auroral_garden",
+      "biomesoplenty:bog",
+      "biomesoplenty:cold_desert",
+      "biomesoplenty:coniferous_forest",
+      "biomesoplenty:dead_forest",
+      "biomesoplenty:fir_clearing",
+      "biomesoplenty:forested_field",
+      "biomesoplenty:hot_springs",
+      "biomesoplenty:jade_cliffs",
+      "biomesoplenty:maple_woods",
+      "biomesoplenty:mediterranean_forest",
+      "biomesoplenty:muskeg",
+      "biomesoplenty:old_growth_dead_forest",
+      "biomesoplenty:pumpkin_patch",
+      "biomesoplenty:redwood_forest",
+      "biomesoplenty:seasonal_forest",
+      "biomesoplenty:seasonal_orchard",
+      "biomesoplenty:snowy_coniferous_forest",
+      "biomesoplenty:snowy_fir_clearing",
+      "biomesoplenty:snowy_maple_woods",
+      "biomesoplenty:tundra",
+      "biomesoplenty:wetland",
+      "biomeswevegone:crimson_tundra",
+      "blooming_biosphere:autumnal_forest",
+      "blooming_biosphere:snowy_cherry_grove",
+      "clifftree:bog",
+      "clifftree:cold_caves",
+      "clifftree:cold_river",
+      "clifftree:frozen_caves",
+      "clifftree:glacier_cliff",
+      "clifftree:glacier_valley",
+      "clifftree:snowy_diorite_shore",
+      "clifftree:snowy_old_growth_taiga",
+      "clifftree:tundra",
+      "minecraft:cold_ocean",
+      "minecraft:deep_cold_ocean",
+      "minecraft:deep_frozen_ocean",
+      "minecraft:frozen_ocean",
+      "minecraft:frozen_peaks",
+      "minecraft:frozen_river",
+      "minecraft:grove",
+      "minecraft:ice_spikes",
+      "minecraft:jagged_peaks",
+      "minecraft:snowy_beach",
+      "minecraft:snowy_plains",
+      "minecraft:snowy_slopes",
+      "minecraft:snowy_taiga",
+      "minecraft:stony_peaks",
+      "terralith:alpha_islands_winter",
+      "terralith:alpine_grove",
+      "terralith:bryce_canyon",
+      "terralith:cave/frostfire_caves",
+      "terralith:cloud_forest",
+      "terralith:cold_shrubland",
+      "terralith:emerald_peaks",
+      "terralith:frozen_cliffs",
+      "terralith:glacial_chasm",
+      "terralith:gravel_desert",
+      "terralith:haze_mountain",
+      "terralith:ice_marsh",
+      "terralith:moonlight_grove",
+      "terralith:moonlight_valley",
+      "terralith:rocky_mountains",
+      "terralith:rocky_shrubland",
+      "terralith:scarlet_mountains",
+      "terralith:shield",
+      "terralith:siberian_grove",
+      "terralith:siberian_taiga",
+      "terralith:skylands_winter",
+      "terralith:snowy_badlands",
+      "terralith:snowy_cherry_grove",
+      "terralith:snowy_maple_forest",
+      "terralith:snowy_shield",
+      "terralith:windswept_spires",
+      "terralith:wintry_forest",
+      "terralith:wintry_lowlands",
+      "terralith:yellowstone",
+      "terralith:yosemite_lowlands",
+      "wythers:ancient_taiga",
+      "wythers:andesite_crags",
+      "wythers:aspen_crags",
+      "wythers:berry_bog",
+      "wythers:birch_taiga",
+      "wythers:boreal_forest_red",
+      "wythers:boreal_forest_yellow",
+      "wythers:cold_island",
+      "wythers:crimson_tundra",
+      "wythers:deep_icy_ocean",
+      "wythers:deep_snowy_taiga",
+      "wythers:fen",
+      "wythers:flooded_temperate_rainforest",
+      "wythers:forested_highlands",
+      "wythers:frigid_island",
+      "wythers:frozen_island",
+      "wythers:glacial_cliffs",
+      "wythers:huangshan_highlands",
+      "wythers:ice_cap",
+      "wythers:icy_crags",
+      "wythers:icy_ocean",
+      "wythers:jade_highlands",
+      "wythers:larch_taiga",
+      "wythers:old_growth_taiga_crags",
+      "wythers:old_growth_taiga_swamp",
+      "wythers:pine_barrens",
+      "wythers:snowy_bog",
+      "wythers:snowy_canyon",
+      "wythers:snowy_fen",
+      "wythers:snowy_peaks",
+      "wythers:snowy_thermal_taiga",
+      "wythers:snowy_tundra",
+      "wythers:taiga_crags",
+      "wythers:temperate_rainforest",
+      "wythers:temperate_rainforest_crags",
+      "wythers:thermal_taiga",
+      "wythers:thermal_taiga_crags",
+      "wythers:tundra"
+    ],
+    "tagRefs": [
+      "c:is_cold",
+      "c:is_cold/overworld",
+      "c:is_icy",
+      "c:is_mountain/peak",
+      "c:is_snowy",
+      "c:is_snowy_plains",
+      "c:is_taiga",
+      "c:snowy",
+      "c:tree/coniferous",
+      "minecraft:is_taiga"
+    ]
+  },
+  "is_cold_ocean": {
+    "biomes": [
+      "minecraft:cold_ocean",
+      "minecraft:deep_cold_ocean"
+    ],
+    "tagRefs": []
+  },
+  "is_deep_dark": {
+    "biomes": [
+      "minecraft:deep_dark",
+      "terralith:cave/crystal_caves",
+      "terralith:cave/deep_caves",
+      "terralith:cave/frostfire_caves",
+      "terralith:cave/mantle_caves",
+      "terralith:cave/tuff_caves",
+      "wythers:deep_dark_forest",
+      "wythers:deep_dark_incursion"
+    ],
+    "tagRefs": []
+  },
+  "is_deep_ocean": {
+    "biomes": [
+      "wythers:deep_icy_ocean"
+    ],
+    "tagRefs": [
+      "c:is_deep_ocean",
+      "minecraft:is_deep_ocean"
+    ]
+  },
+  "is_desert": {
+    "biomes": [
+      "biomesoplenty:lush_desert",
+      "clifftree:desert_cliff",
+      "darkerdepths:sandy_catacombs",
+      "minecraft:desert",
+      "terralith:ancient_sands",
+      "terralith:cave/desert_caves",
+      "terralith:desert_canyon",
+      "terralith:desert_oasis",
+      "terralith:desert_spires",
+      "terralith:lush_desert",
+      "terralith:red_oasis",
+      "terralith:sandstone_valley",
+      "wythers:badlands_desert",
+      "wythers:desert_island",
+      "wythers:kwongan_heath",
+      "wythers:outback_desert",
+      "wythers:red_desert",
+      "wythers:sandy_jungle"
+    ],
+    "tagRefs": [
+      "c:is_desert",
+      "clifftree:is_desert",
+      "wythers:is_desert"
+    ]
+  },
+  "is_dripstone": {
+    "biomes": [
+      "biomesoplenty:fungal_jungle",
+      "biomeswevegone:dead_sea",
+      "minecraft:dripstone_caves",
+      "terralith:fractured_savanna",
+      "terralith:stony_spires",
+      "wythers:fungous_dripstone_caves",
+      "wythers:lichenous_dripstone_caves",
+      "wythers:lush_dripstone_caves",
+      "wythers:lush_fungous_dripstone_caves",
+      "wythers:mossy_dripstone_caves"
+    ],
+    "tagRefs": []
+  },
+  "is_end": {
+    "biomes": [
+      "endercon:end_border",
+      "endercon:end_hallows"
+    ],
+    "tagRefs": [
+      "c:is_end",
+      "minecraft:is_end"
+    ]
+  },
+  "is_floral": {
+    "biomes": [
+      "biomesoplenty:field",
+      "biomesoplenty:highland_moor",
+      "biomesoplenty:lavender_field",
+      "biomesoplenty:lavender_forest",
+      "biomesoplenty:lush_savanna",
+      "biomesoplenty:mystic_grove",
+      "biomesoplenty:orchard",
+      "biomeswevegone:rose_fields",
+      "biomeswevegone:sakura_grove",
+      "biomeswevegone:skyris_vale",
+      "blooming_biosphere:snowy_cherry_grove",
+      "minecraft:cherry_grove",
+      "minecraft:flower_forest",
+      "minecraft:meadow",
+      "minecraft:sunflower_plains",
+      "terralith:blooming_plateau",
+      "terralith:blooming_valley",
+      "terralith:cloud_forest",
+      "terralith:lavender_forest",
+      "terralith:lavender_valley",
+      "terralith:sakura_grove",
+      "terralith:sakura_valley",
+      "wythers:autumnal_flower_forest",
+      "wythers:flowering_pantanal",
+      "wythers:jacaranda_savanna",
+      "wythers:lapacho_plains",
+      "wythers:sakura_forest",
+      "wythers:spring_flower_fields",
+      "wythers:spring_flower_forest"
+    ],
+    "tagRefs": [
+      "c:flower_forest",
+      "c:is_floral"
+    ]
+  },
+  "is_forest": {
+    "biomes": [
+      "biomesoplenty:lavender_forest",
+      "biomesoplenty:maple_woods",
+      "biomesoplenty:mediterranean_forest",
+      "biomesoplenty:mystic_grove",
+      "biomesoplenty:old_growth_woodland",
+      "biomesoplenty:ominous_woods",
+      "biomesoplenty:orchard",
+      "biomesoplenty:origin_valley",
+      "biomesoplenty:prairie",
+      "biomesoplenty:seasonal_forest",
+      "biomesoplenty:seasonal_orchard",
+      "biomesoplenty:woodland",
+      "blooming_biosphere:autumnal_forest",
+      "blooming_biosphere:oak_woodland",
+      "minecraft:cherry_grove",
+      "terralith:alpha_islands",
+      "terralith:alpha_islands_winter",
+      "terralith:blooming_valley",
+      "terralith:forested_highlands",
+      "terralith:lavender_forest",
+      "terralith:lavender_valley",
+      "terralith:mirage_isles",
+      "terralith:sakura_grove",
+      "terralith:sakura_valley",
+      "terralith:temperate_highlands",
+      "wythers:birch_taiga",
+      "wythers:boreal_forest_red",
+      "wythers:boreal_forest_yellow",
+      "wythers:dry_tropical_forest",
+      "wythers:tangled_forest",
+      "wythers:tropical_forest"
+    ],
+    "tagRefs": [
+      "c:is_flower_forest",
+      "c:is_forest",
+      "c:tree/deciduous",
+      "minecraft:is_forest"
+    ]
+  },
+  "is_freezing": {
+    "biomes": [
+      "biomesoplenty:auroral_garden",
+      "biomesoplenty:muskeg",
+      "biomesoplenty:snowy_coniferous_forest",
+      "biomesoplenty:snowy_fir_clearing",
+      "biomesoplenty:snowy_maple_woods",
+      "blooming_biosphere:snowy_cherry_grove",
+      "clifftree:bog",
+      "clifftree:frozen_caves",
+      "clifftree:glacier_cliff",
+      "clifftree:glacier_valley",
+      "clifftree:snowy_diorite_shore",
+      "clifftree:snowy_old_growth_taiga",
+      "clifftree:tundra",
+      "minecraft:deep_frozen_ocean",
+      "minecraft:frozen_ocean",
+      "minecraft:frozen_peaks",
+      "minecraft:frozen_river",
+      "minecraft:grove",
+      "minecraft:ice_spikes",
+      "minecraft:jagged_peaks",
+      "minecraft:snowy_beach",
+      "minecraft:snowy_plains",
+      "minecraft:snowy_slopes",
+      "minecraft:snowy_taiga",
+      "terralith:alpha_islands_winter",
+      "terralith:alpine_grove",
+      "terralith:cave/frostfire_caves",
+      "terralith:cold_shrubland",
+      "terralith:emerald_peaks",
+      "terralith:frozen_cliffs",
+      "terralith:glacial_chasm",
+      "terralith:ice_marsh",
+      "terralith:scarlet_mountains",
+      "terralith:siberian_grove",
+      "terralith:skylands_winter",
+      "terralith:snowy_badlands",
+      "terralith:snowy_cherry_grove",
+      "terralith:snowy_maple_forest",
+      "terralith:snowy_shield",
+      "terralith:wintry_forest",
+      "terralith:wintry_lowlands",
+      "wythers:cold_island",
+      "wythers:crimson_tundra",
+      "wythers:deep_icy_ocean",
+      "wythers:deep_snowy_taiga",
+      "wythers:frozen_island",
+      "wythers:glacial_cliffs",
+      "wythers:huangshan_highlands",
+      "wythers:ice_cap",
+      "wythers:icy_crags",
+      "wythers:icy_ocean",
+      "wythers:jade_highlands",
+      "wythers:snowy_bog",
+      "wythers:snowy_canyon",
+      "wythers:snowy_fen",
+      "wythers:snowy_peaks",
+      "wythers:snowy_thermal_taiga",
+      "wythers:snowy_tundra"
+    ],
+    "tagRefs": [
+      "c:is_icy",
+      "c:is_snowy",
+      "c:snowy"
+    ]
+  },
+  "is_freshwater": {
+    "biomes": [
+      "biomesoplenty:bayou",
+      "biomesoplenty:bog",
+      "biomesoplenty:floodplain",
+      "biomesoplenty:marsh",
+      "biomesoplenty:wetland",
+      "blooming_biosphere:marsh",
+      "minecraft:mangrove_swamp",
+      "minecraft:swamp",
+      "terralith:ice_marsh",
+      "terralith:orchid_swamp",
+      "terralith:warm_river",
+      "wythers:billabong",
+      "wythers:desert_lakes",
+      "wythers:guelta",
+      "wythers:tropical_forest_river"
+    ],
+    "tagRefs": [
+      "c:is_river",
+      "c:is_swamp",
+      "clifftree:is_swamp",
+      "minecraft:is_river",
+      "wythers:is_swamp"
+    ]
+  },
+  "is_frozen_ocean": {
+    "biomes": [
+      "minecraft:deep_frozen_ocean",
+      "minecraft:frozen_ocean",
+      "terralith:frozen_cliffs",
+      "wythers:deep_icy_ocean",
+      "wythers:icy_ocean"
+    ],
+    "tagRefs": []
+  },
+  "is_glacial": {
+    "biomes": [
+      "clifftree:glacier_cliff",
+      "clifftree:glacier_valley",
+      "minecraft:frozen_peaks",
+      "minecraft:ice_spikes",
+      "terralith:cave/frostfire_caves",
+      "terralith:frozen_cliffs",
+      "terralith:glacial_chasm",
+      "wythers:frozen_island",
+      "wythers:glacial_cliffs",
+      "wythers:ice_cap",
+      "wythers:icy_crags"
+    ],
+    "tagRefs": [
+      "c:is_icy"
+    ]
+  },
+  "is_grassland": {
+    "biomes": [
+      "biomesoplenty:clover_patch",
+      "biomesoplenty:field",
+      "biomesoplenty:fir_clearing",
+      "biomesoplenty:grassland",
+      "biomesoplenty:highland",
+      "biomesoplenty:highland_moor",
+      "biomesoplenty:lavender_field",
+      "biomesoplenty:lush_desert",
+      "biomesoplenty:lush_savanna",
+      "biomesoplenty:marsh",
+      "biomesoplenty:orchard",
+      "biomesoplenty:pasture",
+      "biomesoplenty:prairie",
+      "biomesoplenty:seasonal_orchard",
+      "blooming_biosphere:chaparral",
+      "clifftree:oasis",
+      "clifftree:shrubland",
+      "clifftree:sparse_forest",
+      "minecraft:meadow",
+      "minecraft:plains",
+      "minecraft:sunflower_plains",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:ashen_savanna",
+      "terralith:blooming_plateau",
+      "terralith:brushland",
+      "terralith:desert_oasis",
+      "terralith:fractured_savanna",
+      "terralith:highlands",
+      "terralith:hot_shrubland",
+      "terralith:red_oasis",
+      "terralith:savanna_badlands",
+      "terralith:savanna_slopes",
+      "terralith:shrubland",
+      "terralith:steppe",
+      "terralith:valley_clearing",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:berry_bog",
+      "wythers:cool_forest_edge",
+      "wythers:dry_tropical_grassland",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:forest_edge",
+      "wythers:forested_highlands",
+      "wythers:granite_canyon",
+      "wythers:highland_tropical_rainforest",
+      "wythers:highlands",
+      "wythers:huangshan_highlands",
+      "wythers:jade_highlands",
+      "wythers:spring_flower_fields",
+      "wythers:subtropical_forest_edge",
+      "wythers:tropical_forest",
+      "wythers:tropical_forest_canyon",
+      "wythers:tropical_grassland",
+      "wythers:wistman_woods"
+    ],
+    "tagRefs": [
+      "c:is_plains",
+      "c:is_savanna",
+      "minecraft:is_savanna"
+    ]
+  },
+  "is_highlands": {
+    "biomes": [
+      "biomesoplenty:highland",
+      "biomesoplenty:highland_moor",
+      "minecraft:meadow",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:blooming_plateau",
+      "terralith:highlands",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:forested_highlands",
+      "wythers:highland_tropical_rainforest",
+      "wythers:highlands",
+      "wythers:huangshan_highlands",
+      "wythers:jade_highlands",
+      "wythers:wistman_woods"
+    ],
+    "tagRefs": []
+  },
+  "is_hills": {
+    "biomes": [
+      "biomesoplenty:highland",
+      "biomesoplenty:highland_moor",
+      "biomesoplenty:jade_cliffs",
+      "biomesoplenty:mediterranean_forest",
+      "minecraft:meadow",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:blooming_plateau",
+      "terralith:blooming_valley",
+      "terralith:forested_highlands",
+      "terralith:highlands",
+      "terralith:lavender_valley",
+      "terralith:lush_valley",
+      "terralith:moonlight_valley",
+      "terralith:sakura_valley",
+      "terralith:savanna_slopes",
+      "terralith:temperate_highlands",
+      "terralith:yosemite_lowlands",
+      "wythers:autumnal_crags",
+      "wythers:ayers_rock",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:forested_highlands",
+      "wythers:highland_tropical_rainforest",
+      "wythers:highlands",
+      "wythers:huangshan_highlands",
+      "wythers:icy_crags",
+      "wythers:jade_highlands",
+      "wythers:old_growth_taiga_crags",
+      "wythers:taiga_crags",
+      "wythers:temperate_rainforest_crags",
+      "wythers:thermal_taiga_crags",
+      "wythers:windswept_jungle",
+      "wythers:wistman_woods"
+    ],
+    "tagRefs": [
+      "c:is_hill",
+      "c:is_mountain/slope",
+      "c:is_windswept",
+      "minecraft:is_hill"
+    ]
+  },
+  "is_island": {
+    "biomes": [
+      "biomesoplenty:tropics",
+      "biomeswevegone:lush_stacks",
+      "minecraft:mushroom_fields",
+      "terralith:alpha_islands",
+      "terralith:alpha_islands_winter",
+      "terralith:mirage_isles",
+      "terralith:warped_mesa",
+      "wythers:cold_island",
+      "wythers:desert_island",
+      "wythers:frigid_island",
+      "wythers:frozen_island",
+      "wythers:jungle_island",
+      "wythers:mediterranean_island",
+      "wythers:mediterranean_island_thermal_springs",
+      "wythers:mushroom_island",
+      "wythers:temperate_island",
+      "wythers:tropical_beach",
+      "wythers:tropical_island",
+      "wythers:tropical_volcano"
+    ],
+    "tagRefs": []
+  },
+  "is_jungle": {
+    "biomes": [
+      "biomesoplenty:floodplain",
+      "biomesoplenty:rainforest",
+      "blooming_biosphere:rainforest",
+      "clifftree:tropical_river",
+      "terralith:cave/underground_jungle",
+      "wythers:dripleaf_swamp",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:highland_tropical_rainforest",
+      "wythers:humid_tropical_grassland",
+      "wythers:jungle_canyon",
+      "wythers:subtropical_forest",
+      "wythers:subtropical_forest_edge",
+      "wythers:subtropical_grassland",
+      "wythers:tropical_forest",
+      "wythers:tropical_forest_canyon",
+      "wythers:tropical_grassland",
+      "wythers:tropical_island",
+      "wythers:tropical_rainforest"
+    ],
+    "tagRefs": [
+      "c:is_jungle",
+      "minecraft:is_jungle"
+    ]
+  },
+  "is_lukewarm_ocean": {
+    "biomes": [
+      "minecraft:deep_lukewarm_ocean",
+      "minecraft:lukewarm_ocean",
+      "wythers:tropical_beach",
+      "wythers:tropical_island",
+      "wythers:warm_stony_shore"
+    ],
+    "tagRefs": []
+  },
+  "is_lush": {
+    "biomes": [
+      "biomeswevegone:lush_stacks",
+      "minecraft:lush_caves",
+      "terralith:cave/fungal_caves",
+      "terralith:cave/underground_jungle",
+      "wythers:dripleaf_swamp",
+      "wythers:lichenous_caves",
+      "wythers:lichenous_dripstone_caves",
+      "wythers:lush_dripstone_caves",
+      "wythers:lush_fungous_dripstone_caves",
+      "wythers:lush_shroom_caves"
+    ],
+    "tagRefs": [
+      "c:is_lush"
+    ]
+  },
+  "is_magical": {
+    "biomes": [
+      "biomesoplenty:aspen_forest",
+      "biomesoplenty:mystic_grove",
+      "minecraft:dark_forest",
+      "terralith:amethyst_canyon",
+      "terralith:amethyst_rainforest",
+      "terralith:mirage_isles",
+      "terralith:moonlight_grove",
+      "terralith:moonlight_valley",
+      "wythers:lantern_river",
+      "wythers:mushroom_island",
+      "wythers:snowy_thermal_taiga"
+    ],
+    "tagRefs": [
+      "c:is_magical",
+      "wythers:is_dark_forest"
+    ]
+  },
+  "is_mirage_island": {
+    "biomes": [
+      "terralith:mirage_isles"
+    ],
+    "tagRefs": []
+  },
+  "is_mountain": {
+    "biomes": [
+      "biomesoplenty:crag",
+      "biomesoplenty:highland",
+      "biomesoplenty:highland_moor",
+      "biomesoplenty:jade_cliffs",
+      "biomesoplenty:mediterranean_forest",
+      "blooming_biosphere:snowy_cherry_grove",
+      "minecraft:meadow",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:blooming_plateau",
+      "terralith:blooming_valley",
+      "terralith:forested_highlands",
+      "terralith:highlands",
+      "terralith:lavender_valley",
+      "terralith:lush_valley",
+      "terralith:moonlight_valley",
+      "terralith:sakura_valley",
+      "terralith:savanna_slopes",
+      "terralith:stony_spires",
+      "terralith:temperate_highlands",
+      "terralith:volcanic_peaks",
+      "terralith:windswept_spires",
+      "terralith:yosemite_cliffs",
+      "terralith:yosemite_lowlands",
+      "wythers:autumnal_crags",
+      "wythers:ayers_rock",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:forested_highlands",
+      "wythers:highland_tropical_rainforest",
+      "wythers:highlands",
+      "wythers:huangshan_highlands",
+      "wythers:icy_crags",
+      "wythers:jade_highlands",
+      "wythers:old_growth_taiga_crags",
+      "wythers:taiga_crags",
+      "wythers:temperate_rainforest_crags",
+      "wythers:thermal_taiga_crags",
+      "wythers:tibesti_mountains",
+      "wythers:tropical_volcano",
+      "wythers:tsingy_forest",
+      "wythers:volcano",
+      "wythers:windswept_jungle",
+      "wythers:wistman_woods"
+    ],
+    "tagRefs": [
+      "c:is_hill",
+      "c:is_mountain",
+      "c:is_mountain/slope",
+      "c:is_windswept",
+      "minecraft:is_hill",
+      "minecraft:is_mountain"
+    ]
+  },
+  "is_mushroom": {
+    "biomes": [
+      "biomesoplenty:fungal_jungle",
+      "biomesoplenty:glowing_grotto",
+      "biomesoplenty:mystic_grove",
+      "biomeswevegone:forgotten_forest",
+      "biomeswevegone:tropical_rainforest",
+      "biomeswevegone:weeping_witch_forest",
+      "blooming_biosphere:rainforest",
+      "darkerdepths:glowshroom_forest",
+      "minecraft:dark_forest",
+      "minecraft:mushroom_fields",
+      "terralith:cave/fungal_caves",
+      "terralith:mirage_isles",
+      "wythers:ancient_taiga",
+      "wythers:deep_dark_incursion",
+      "wythers:forbidden_forest",
+      "wythers:mushroom_island",
+      "wythers:phantasmal_forest"
+    ],
+    "tagRefs": [
+      "c:is_mushroom",
+      "c:is_mushroom_island"
+    ]
+  },
+  "is_ocean": {
+    "biomes": [
+      "biomeswevegone:lush_stacks",
+      "blooming_biosphere:tidepools",
+      "clifftree:stone_ocean",
+      "minecraft:cold_ocean",
+      "minecraft:deep_cold_ocean",
+      "minecraft:deep_frozen_ocean",
+      "minecraft:deep_lukewarm_ocean",
+      "minecraft:deep_ocean",
+      "minecraft:frozen_ocean",
+      "minecraft:lukewarm_ocean",
+      "minecraft:ocean",
+      "minecraft:warm_ocean",
+      "terralith:frozen_cliffs",
+      "wythers:deep_icy_ocean",
+      "wythers:icy_ocean",
+      "wythers:tropical_beach",
+      "wythers:tropical_island",
+      "wythers:warm_stony_shore"
+    ],
+    "tagRefs": [
+      "c:is_deep_ocean",
+      "c:is_ocean",
+      "minecraft:is_deep_ocean",
+      "minecraft:is_ocean"
+    ]
+  },
+  "is_overworld": {
+    "biomes": [],
+    "tagRefs": [
+      "c:is_overworld",
+      "minecraft:is_overworld"
+    ]
+  },
+  "is_peak": {
+    "biomes": [
+      "minecraft:frozen_peaks",
+      "minecraft:jagged_peaks",
+      "minecraft:snowy_slopes",
+      "minecraft:stony_peaks",
+      "terralith:emerald_peaks",
+      "terralith:rocky_mountains",
+      "terralith:scarlet_mountains",
+      "terralith:windswept_spires",
+      "wythers:andesite_crags",
+      "wythers:aspen_crags"
+    ],
+    "tagRefs": [
+      "c:is_mountain/peak"
+    ]
+  },
+  "is_plains": {
+    "biomes": [
+      "biomesoplenty:clover_patch",
+      "biomesoplenty:field",
+      "biomesoplenty:fir_clearing",
+      "biomesoplenty:grassland",
+      "biomesoplenty:highland",
+      "biomesoplenty:highland_moor",
+      "biomesoplenty:lavender_field",
+      "biomesoplenty:marsh",
+      "biomesoplenty:orchard",
+      "biomesoplenty:pasture",
+      "biomesoplenty:prairie",
+      "biomesoplenty:seasonal_orchard",
+      "blooming_biosphere:chaparral",
+      "clifftree:sparse_forest",
+      "minecraft:meadow",
+      "minecraft:plains",
+      "minecraft:sunflower_plains",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:blooming_plateau",
+      "terralith:brushland",
+      "terralith:highlands",
+      "terralith:shrubland",
+      "terralith:steppe",
+      "terralith:valley_clearing",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:berry_bog",
+      "wythers:cool_forest_edge",
+      "wythers:dry_tropical_grassland",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:forest_edge",
+      "wythers:forested_highlands",
+      "wythers:highland_tropical_rainforest",
+      "wythers:highlands",
+      "wythers:huangshan_highlands",
+      "wythers:jade_highlands",
+      "wythers:spring_flower_fields",
+      "wythers:subtropical_forest_edge",
+      "wythers:tropical_grassland",
+      "wythers:wistman_woods"
+    ],
+    "tagRefs": [
+      "c:is_plains"
+    ]
+  },
+  "is_plateau": {
+    "biomes": [
+      "minecraft:savanna_plateau",
+      "wythers:ayers_rock"
+    ],
+    "tagRefs": [
+      "c:is_plateau"
+    ]
+  },
+  "is_river": {
+    "biomes": [
+      "terralith:warm_river",
+      "wythers:guelta",
+      "wythers:tropical_forest_river"
+    ],
+    "tagRefs": [
+      "c:is_river",
+      "minecraft:is_river"
+    ]
+  },
+  "is_sandy": {
+    "biomes": [
+      "biomesoplenty:lush_desert",
+      "clifftree:desert_cliff",
+      "clifftree:warm_river",
+      "darkerdepths:sandy_catacombs",
+      "minecraft:desert",
+      "terralith:ancient_sands",
+      "terralith:ashen_savanna",
+      "terralith:cave/desert_caves",
+      "terralith:desert_canyon",
+      "terralith:desert_oasis",
+      "terralith:desert_spires",
+      "terralith:lush_desert",
+      "terralith:red_oasis",
+      "terralith:sandstone_valley",
+      "terralith:warped_mesa",
+      "terralith:white_mesa",
+      "wythers:badlands_desert",
+      "wythers:danakil_desert",
+      "wythers:desert_island",
+      "wythers:kwongan_heath",
+      "wythers:outback_desert",
+      "wythers:red_desert",
+      "wythers:sandy_jungle"
+    ],
+    "tagRefs": [
+      "c:is_badlands",
+      "c:is_desert",
+      "c:is_sandy",
+      "clifftree:dry_badlands",
+      "clifftree:is_desert",
+      "minecraft:is_badlands",
+      "wythers:is_desert"
+    ]
+  },
+  "is_savanna": {
+    "biomes": [
+      "biomesoplenty:lush_desert",
+      "biomesoplenty:lush_savanna",
+      "blooming_biosphere:chaparral",
+      "clifftree:oasis",
+      "clifftree:shrubland",
+      "terralith:arid_highlands",
+      "terralith:ashen_savanna",
+      "terralith:brushland",
+      "terralith:desert_oasis",
+      "terralith:fractured_savanna",
+      "terralith:hot_shrubland",
+      "terralith:red_oasis",
+      "terralith:savanna_badlands",
+      "terralith:savanna_slopes",
+      "terralith:shrubland",
+      "wythers:granite_canyon",
+      "wythers:tropical_forest",
+      "wythers:tropical_forest_canyon"
+    ],
+    "tagRefs": [
+      "c:is_savanna",
+      "minecraft:is_savanna"
+    ]
+  },
+  "is_shrubland": {
+    "biomes": [
+      "biomesoplenty:bog",
+      "biomesoplenty:dryland",
+      "biomesoplenty:field",
+      "biomesoplenty:fungal_jungle",
+      "biomesoplenty:lush_desert",
+      "biomesoplenty:mediterranean_forest",
+      "biomesoplenty:pumpkin_patch",
+      "biomesoplenty:rocky_shrubland",
+      "biomesoplenty:scrubland",
+      "biomesoplenty:shrubland",
+      "biomeswevegone:firecracker_chaparral",
+      "biomeswevegone:sierra_badlands",
+      "blooming_biosphere:chaparral",
+      "clifftree:shrubland",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:brushland",
+      "terralith:cold_shrubland",
+      "terralith:hot_shrubland",
+      "terralith:rocky_shrubland",
+      "terralith:shrubland",
+      "wythers:berry_bog",
+      "wythers:chaparral",
+      "wythers:crimson_tundra",
+      "wythers:dry_tropical_grassland",
+      "wythers:eucalyptus_salubris_woodland",
+      "wythers:forest_edge",
+      "wythers:kwongan_heath",
+      "wythers:mediterranean_island",
+      "wythers:outback",
+      "wythers:scrub_forest",
+      "wythers:scrubland",
+      "wythers:tropical_grassland",
+      "wythers:tundra"
+    ],
+    "tagRefs": []
+  },
+  "is_sky": {
+    "biomes": [
+      "terralith:skylands_autumn",
+      "terralith:skylands_spring",
+      "terralith:skylands_summer",
+      "terralith:skylands_winter"
+    ],
+    "tagRefs": []
+  },
+  "is_snowy": {
+    "biomes": [
+      "biomesoplenty:auroral_garden",
+      "biomesoplenty:muskeg",
+      "biomesoplenty:snowy_coniferous_forest",
+      "biomesoplenty:snowy_fir_clearing",
+      "biomesoplenty:snowy_maple_woods",
+      "blooming_biosphere:snowy_cherry_grove",
+      "clifftree:bog",
+      "clifftree:glacier_cliff",
+      "clifftree:glacier_valley",
+      "clifftree:snowy_diorite_shore",
+      "clifftree:snowy_old_growth_taiga",
+      "clifftree:tundra",
+      "minecraft:frozen_peaks",
+      "minecraft:grove",
+      "minecraft:ice_spikes",
+      "minecraft:jagged_peaks",
+      "minecraft:snowy_beach",
+      "minecraft:snowy_plains",
+      "minecraft:snowy_slopes",
+      "minecraft:snowy_taiga",
+      "terralith:alpha_islands_winter",
+      "terralith:alpine_grove",
+      "terralith:cave/frostfire_caves",
+      "terralith:cold_shrubland",
+      "terralith:emerald_peaks",
+      "terralith:frozen_cliffs",
+      "terralith:glacial_chasm",
+      "terralith:ice_marsh",
+      "terralith:scarlet_mountains",
+      "terralith:siberian_grove",
+      "terralith:skylands_winter",
+      "terralith:snowy_badlands",
+      "terralith:snowy_cherry_grove",
+      "terralith:snowy_maple_forest",
+      "terralith:snowy_shield",
+      "terralith:wintry_forest",
+      "terralith:wintry_lowlands",
+      "wythers:cold_island",
+      "wythers:crimson_tundra",
+      "wythers:deep_snowy_taiga",
+      "wythers:frozen_island",
+      "wythers:glacial_cliffs",
+      "wythers:huangshan_highlands",
+      "wythers:ice_cap",
+      "wythers:icy_crags",
+      "wythers:jade_highlands",
+      "wythers:snowy_bog",
+      "wythers:snowy_canyon",
+      "wythers:snowy_fen",
+      "wythers:snowy_peaks",
+      "wythers:snowy_thermal_taiga",
+      "wythers:snowy_tundra"
+    ],
+    "tagRefs": [
+      "c:is_icy",
+      "c:is_snowy"
+    ]
+  },
+  "is_snowy_forest": {
+    "biomes": [
+      "biomesoplenty:auroral_garden",
+      "biomesoplenty:muskeg",
+      "biomesoplenty:snowy_maple_woods",
+      "blooming_biosphere:snowy_cherry_grove",
+      "terralith:alpha_islands_winter",
+      "terralith:ice_marsh",
+      "terralith:siberian_grove",
+      "terralith:snowy_cherry_grove",
+      "terralith:snowy_maple_forest",
+      "wythers:huangshan_highlands",
+      "wythers:jade_highlands",
+      "wythers:snowy_fen"
+    ],
+    "tagRefs": []
+  },
+  "is_snowy_taiga": {
+    "biomes": [
+      "biomesoplenty:snowy_coniferous_forest",
+      "biomesoplenty:snowy_fir_clearing",
+      "biomesoplenty:snowy_maple_woods",
+      "clifftree:snowy_old_growth_taiga",
+      "minecraft:grove",
+      "minecraft:snowy_taiga",
+      "terralith:alpine_grove",
+      "terralith:cold_shrubland",
+      "terralith:siberian_grove",
+      "terralith:snowy_maple_forest",
+      "terralith:snowy_shield",
+      "terralith:wintry_forest",
+      "terralith:wintry_lowlands",
+      "wythers:cold_island",
+      "wythers:deep_snowy_taiga",
+      "wythers:snowy_thermal_taiga"
+    ],
+    "tagRefs": []
+  },
+  "is_spooky": {
+    "biomes": [
+      "biomesoplenty:ominous_woods",
+      "biomeswevegone:ebony_woods",
+      "biomeswevegone:overgrowth_woodlands",
+      "biomeswevegone:pale_bog",
+      "biomeswevegone:weeping_witch_forest",
+      "minecraft:dark_forest",
+      "wythers:ancient_taiga",
+      "wythers:tangled_forest",
+      "wythers:twilight_meadow"
+    ],
+    "tagRefs": [
+      "c:is_spooky",
+      "wythers:is_dark_forest"
+    ]
+  },
+  "is_stony_beach": {
+    "biomes": [
+      "minecraft:stony_shore",
+      "wythers:gravelly_beach",
+      "wythers:warm_stony_shore"
+    ],
+    "tagRefs": [
+      "c:is_stony_shores",
+      "minecraft:is_beach"
+    ]
+  },
+  "is_swamp": {
+    "biomes": [
+      "biomesoplenty:bayou",
+      "biomesoplenty:bog",
+      "biomesoplenty:floodplain",
+      "biomesoplenty:marsh",
+      "biomesoplenty:wetland",
+      "blooming_biosphere:marsh",
+      "minecraft:mangrove_swamp",
+      "minecraft:swamp",
+      "terralith:ice_marsh",
+      "terralith:orchid_swamp",
+      "wythers:billabong"
+    ],
+    "tagRefs": [
+      "c:is_swamp",
+      "clifftree:is_swamp",
+      "wythers:is_swamp"
+    ]
+  },
+  "is_taiga": {
+    "biomes": [
+      "biomesoplenty:coniferous_forest",
+      "biomesoplenty:dead_forest",
+      "biomesoplenty:fir_clearing",
+      "biomesoplenty:forested_field",
+      "biomesoplenty:jade_cliffs",
+      "biomesoplenty:mediterranean_forest",
+      "biomesoplenty:redwood_forest",
+      "biomesoplenty:snowy_coniferous_forest",
+      "biomesoplenty:snowy_fir_clearing",
+      "biomesoplenty:snowy_maple_woods",
+      "biomesoplenty:wetland",
+      "blooming_biosphere:autumnal_forest",
+      "clifftree:cold_river",
+      "clifftree:snowy_old_growth_taiga",
+      "minecraft:grove",
+      "minecraft:snowy_taiga",
+      "terralith:alpine_grove",
+      "terralith:bryce_canyon",
+      "terralith:cloud_forest",
+      "terralith:cold_shrubland",
+      "terralith:haze_mountain",
+      "terralith:ice_marsh",
+      "terralith:moonlight_grove",
+      "terralith:moonlight_valley",
+      "terralith:shield",
+      "terralith:siberian_grove",
+      "terralith:siberian_taiga",
+      "terralith:snowy_maple_forest",
+      "terralith:snowy_shield",
+      "terralith:wintry_forest",
+      "terralith:wintry_lowlands",
+      "terralith:yellowstone",
+      "terralith:yosemite_lowlands",
+      "wythers:ancient_taiga",
+      "wythers:birch_taiga",
+      "wythers:boreal_forest_red",
+      "wythers:boreal_forest_yellow",
+      "wythers:cold_island",
+      "wythers:deep_snowy_taiga",
+      "wythers:fen",
+      "wythers:flooded_temperate_rainforest",
+      "wythers:forested_highlands",
+      "wythers:huangshan_highlands",
+      "wythers:jade_highlands",
+      "wythers:larch_taiga",
+      "wythers:old_growth_taiga_crags",
+      "wythers:old_growth_taiga_swamp",
+      "wythers:pine_barrens",
+      "wythers:snowy_thermal_taiga",
+      "wythers:taiga_crags",
+      "wythers:temperate_rainforest",
+      "wythers:temperate_rainforest_crags",
+      "wythers:thermal_taiga",
+      "wythers:thermal_taiga_crags"
+    ],
+    "tagRefs": [
+      "c:is_taiga",
+      "c:tree/coniferous",
+      "minecraft:is_taiga"
+    ]
+  },
+  "is_temperate": {
+    "biomes": [
+      "biomesoplenty:clover_patch",
+      "biomesoplenty:field",
+      "biomesoplenty:fir_clearing",
+      "biomesoplenty:grassland",
+      "biomesoplenty:highland",
+      "biomesoplenty:highland_moor",
+      "biomesoplenty:lavender_field",
+      "biomesoplenty:lavender_forest",
+      "biomesoplenty:maple_woods",
+      "biomesoplenty:marsh",
+      "biomesoplenty:mediterranean_forest",
+      "biomesoplenty:mystic_grove",
+      "biomesoplenty:old_growth_woodland",
+      "biomesoplenty:ominous_woods",
+      "biomesoplenty:orchard",
+      "biomesoplenty:origin_valley",
+      "biomesoplenty:pasture",
+      "biomesoplenty:prairie",
+      "biomesoplenty:seasonal_forest",
+      "biomesoplenty:seasonal_orchard",
+      "biomesoplenty:woodland",
+      "blooming_biosphere:autumnal_forest",
+      "blooming_biosphere:chaparral",
+      "blooming_biosphere:oak_woodland",
+      "clifftree:sparse_forest",
+      "minecraft:cherry_grove",
+      "minecraft:meadow",
+      "minecraft:plains",
+      "minecraft:sunflower_plains",
+      "terralith:alpha_islands",
+      "terralith:alpha_islands_winter",
+      "terralith:alpine_highlands",
+      "terralith:arid_highlands",
+      "terralith:blooming_plateau",
+      "terralith:blooming_valley",
+      "terralith:brushland",
+      "terralith:forested_highlands",
+      "terralith:highlands",
+      "terralith:lavender_forest",
+      "terralith:lavender_valley",
+      "terralith:mirage_isles",
+      "terralith:sakura_grove",
+      "terralith:sakura_valley",
+      "terralith:shrubland",
+      "terralith:steppe",
+      "terralith:temperate_highlands",
+      "terralith:valley_clearing",
+      "wythers:bamboo_jungle_highlands",
+      "wythers:berry_bog",
+      "wythers:birch_taiga",
+      "wythers:boreal_forest_red",
+      "wythers:boreal_forest_yellow",
+      "wythers:cool_forest_edge",
+      "wythers:dry_tropical_forest",
+      "wythers:dry_tropical_grassland",
+      "wythers:eucalyptus_deanei_forest",
+      "wythers:forest_edge",
+      "wythers:forested_highlands",
+      "wythers:highland_tropical_rainforest",
+      "wythers:highlands",
+      "wythers:huangshan_highlands",
+      "wythers:jade_highlands",
+      "wythers:spring_flower_fields",
+      "wythers:subtropical_forest_edge",
+      "wythers:tangled_forest",
+      "wythers:tropical_forest",
+      "wythers:tropical_grassland",
+      "wythers:wistman_woods"
+    ],
+    "tagRefs": [
+      "c:is_flower_forest",
+      "c:is_forest",
+      "c:is_plains",
+      "c:tree/deciduous",
+      "minecraft:is_forest"
+    ]
+  },
+  "is_temperate_ocean": {
+    "biomes": [
+      "clifftree:stone_ocean",
+      "minecraft:deep_ocean",
+      "minecraft:ocean"
+    ],
+    "tagRefs": []
+  },
+  "is_thermal": {
+    "biomes": [
+      "biomesoplenty:hot_springs",
+      "clifftree:inferno",
+      "terralith:caldera",
+      "terralith:cave/thermal_caves",
+      "terralith:yellowstone",
+      "wythers:calcite_caverns",
+      "wythers:danakil_desert",
+      "wythers:mediterranean_island_thermal_springs",
+      "wythers:snowy_thermal_taiga",
+      "wythers:thermal_taiga",
+      "wythers:thermal_taiga_crags",
+      "wythers:tibesti_mountains"
+    ],
+    "tagRefs": []
+  },
+  "is_tropical_island": {
+    "biomes": [
+      "biomesoplenty:tropics",
+      "wythers:tropical_beach",
+      "wythers:tropical_island",
+      "wythers:tropical_volcano"
+    ],
+    "tagRefs": []
+  },
+  "is_tundra": {
+    "biomes": [
+      "biomesoplenty:cold_desert",
+      "biomesoplenty:muskeg",
+      "biomesoplenty:snowy_fir_clearing",
+      "biomesoplenty:tundra",
+      "biomeswevegone:crimson_tundra",
+      "clifftree:bog",
+      "clifftree:tundra",
+      "minecraft:ice_spikes",
+      "minecraft:snowy_plains",
+      "terralith:cold_shrubland",
+      "terralith:gravel_desert",
+      "terralith:rocky_shrubland",
+      "terralith:snowy_badlands",
+      "terralith:yellowstone",
+      "wythers:crimson_tundra",
+      "wythers:frigid_island",
+      "wythers:ice_cap",
+      "wythers:icy_crags",
+      "wythers:snowy_tundra",
+      "wythers:tundra"
+    ],
+    "tagRefs": [
+      "c:is_snowy_plains"
+    ]
+  },
+  "is_volcanic": {
+    "biomes": [
+      "biomesoplenty:volcanic_plains",
+      "biomesoplenty:volcano",
+      "darkerdepths:molten_cavern",
+      "terralith:cave/mantle_caves",
+      "terralith:volcanic_crater",
+      "terralith:volcanic_peaks",
+      "wythers:icy_volcano",
+      "wythers:tropical_volcano",
+      "wythers:volcanic_chamber",
+      "wythers:volcanic_crater",
+      "wythers:volcano"
+    ],
+    "tagRefs": []
+  },
+  "is_warm_ocean": {
+    "biomes": [
+      "biomeswevegone:lush_stacks",
+      "blooming_biosphere:tidepools",
+      "minecraft:warm_ocean"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_basalt": {
+    "biomes": [
+      "betternether:flooded_deltas",
+      "cinderscapes:blackstone_shales",
+      "incendium:ash_barrens",
+      "incendium:volcanic_deltas",
+      "incendium:withered_forest",
+      "minecraft:basalt_deltas"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_crimson": {
+    "biomes": [
+      "betternether:crimson_glowing_woods",
+      "betternether:crimson_pinewood",
+      "betternether:nether_swampland",
+      "betternether:nether_swampland_terraces",
+      "gardens_of_the_dead:whistling_woods",
+      "minecraft:crimson_forest",
+      "netherdescent:crimson_gardens"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_desert": {
+    "biomes": [
+      "betternether:gravel_desert",
+      "betternether:soul_plain",
+      "incendium:infernal_dunes",
+      "incendium:weeping_valley",
+      "minecraft:soul_sand_valley"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_forest": {
+    "biomes": [
+      "betternether:nether_jungle",
+      "betternether:nether_swampland",
+      "betternether:nether_swampland_terraces",
+      "betternether:old_swampland",
+      "betternether:upside_down_forest"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_frozen": {
+    "biomes": [],
+    "tagRefs": []
+  },
+  "nether/is_fungus": {
+    "biomes": [
+      "betternether:crimson_glowing_woods",
+      "betternether:crimson_pinewood",
+      "betternether:nether_mushroom_forest",
+      "betternether:nether_mushroom_forest_edge",
+      "betternether:old_fungiwoods",
+      "betternether:old_warped_woods",
+      "cinderscapes:luminous_grove",
+      "gardens_of_the_dead:soulblight_forest",
+      "gardens_of_the_dead:whistling_woods",
+      "incendium:inverted_forest",
+      "minecraft:crimson_forest",
+      "minecraft:warped_forest",
+      "netherdescent:crimson_gardens",
+      "netherdescent:embur_bog",
+      "netherdescent:wailing_garth"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_mountain": {
+    "biomes": [
+      "incendium:volcanic_deltas",
+      "minecraft:basalt_deltas"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_overgrowth": {
+    "biomes": [
+      "betternether:bone_reef",
+      "betternether:nether_grasslands",
+      "betternether:soul_plain",
+      "betternether:sulfuric_bone_reef",
+      "betternether:upside_down_forest",
+      "betternether:upside_down_forest_cleared",
+      "biomesoplenty:overgrowth",
+      "netherdescent:sythian_torrids"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_quartz": {
+    "biomes": [
+      "cinderscapes:quartz_cavern",
+      "incendium:quartz_flats"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_soul_fire": {
+    "biomes": [
+      "incendium:quartz_flats",
+      "incendium:weeping_valley",
+      "minecraft:soul_sand_valley"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_soul_sand": {
+    "biomes": [
+      "betternether:nether_grasslands",
+      "betternether:nether_swampland",
+      "betternether:nether_swampland_terraces",
+      "betternether:old_swampland",
+      "betternether:poor_nether_grasslands",
+      "betternether:soul_plain",
+      "betternether:wart_forest",
+      "betternether:wart_forest_edge",
+      "cinderscapes:ashy_shoals",
+      "cinderscapes:blackstone_shales",
+      "gardens_of_the_dead:soulblight_forest",
+      "incendium:weeping_valley",
+      "minecraft:soul_sand_valley",
+      "netherdescent:wailing_garth"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_toxic": {
+    "biomes": [
+      "biomesoplenty:erupting_inferno",
+      "incendium:toxic_heap",
+      "netherdescent:wailing_garth"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_warped": {
+    "biomes": [
+      "betternether:nether_jungle",
+      "betternether:old_warped_woods",
+      "minecraft:warped_forest",
+      "netherdescent:wailing_garth"
+    ],
+    "tagRefs": []
+  },
+  "nether/is_wasteland": {
+    "biomes": [
+      "betternether:magma_land",
+      "betternether:nether_grasslands",
+      "betternether:poor_nether_grasslands",
+      "biomesoplenty:crystalline_chasm",
+      "biomesoplenty:erupting_inferno",
+      "cinderscapes:ashy_shoals",
+      "cinderscapes:quartz_cavern",
+      "incendium:ash_barrens",
+      "incendium:toxic_heap",
+      "minecraft:nether_wastes"
+    ],
+    "tagRefs": []
+  },
+  "space/is_fiery": {
+    "biomes": [
+      "space:mercury_hotspot",
+      "space:mercury_plains",
+      "space:venus_highlands",
+      "space:venus_lava_caves",
+      "space:venus_lowlands",
+      "space:venus_midlands",
+      "space:venus_volcanic_plains",
+      "stellaris:infernal_venus_barrens"
+    ],
+    "tagRefs": [
+      "stellaris:mercury_biomes"
+    ]
+  },
+  "space/is_icy": {
+    "biomes": [
+      "stellaris:mars_ice_spikes"
+    ],
+    "tagRefs": [
+      "space:ice_craters"
+    ]
+  },
+  "space/is_mars": {
+    "biomes": [
+      "space:mars_dripstone",
+      "space:mars_highlands",
+      "space:mars_ice",
+      "space:mars_lowlands",
+      "space:mars_lush_caves",
+      "space:mars_midlands"
+    ],
+    "tagRefs": [
+      "stellaris:mars_biomes"
+    ]
+  },
+  "space/is_mercury": {
+    "biomes": [
+      "space:mercury_hotspot",
+      "space:mercury_ice",
+      "space:mercury_plains"
+    ],
+    "tagRefs": [
+      "stellaris:mercury_biomes"
+    ]
+  },
+  "space/is_moon": {
+    "biomes": [
+      "space:moon_highlands",
+      "space:moon_ice",
+      "space:moon_lowlands",
+      "space:moon_midlands",
+      "space:moon_rocks",
+      "swe:moon"
+    ],
+    "tagRefs": [
+      "stellaris:moon_biomes"
+    ]
+  },
+  "space/is_space": {
+    "biomes": [
+      "space:mars_dripstone",
+      "space:mars_highlands",
+      "space:mars_ice",
+      "space:mars_lowlands",
+      "space:mars_lush_caves",
+      "space:mars_midlands",
+      "space:mercury_hotspot",
+      "space:mercury_ice",
+      "space:mercury_plains",
+      "space:moon_highlands",
+      "space:moon_ice",
+      "space:moon_lowlands",
+      "space:moon_midlands",
+      "space:moon_rocks",
+      "space:space",
+      "space:venus_highlands",
+      "space:venus_lava_caves",
+      "space:venus_lowlands",
+      "space:venus_midlands",
+      "space:venus_plankton_bloom",
+      "space:venus_sky",
+      "space:venus_volcanic_plains",
+      "swe:moon"
+    ],
+    "tagRefs": [
+      "stellaris:mars_biomes",
+      "stellaris:mercury_biomes",
+      "stellaris:moon_biomes",
+      "stellaris:venus_biomes"
+    ]
+  },
+  "space/is_venus": {
+    "biomes": [
+      "space:venus_highlands",
+      "space:venus_lava_caves",
+      "space:venus_lowlands",
+      "space:venus_midlands",
+      "space:venus_plankton_bloom",
+      "space:venus_sky",
+      "space:venus_volcanic_plains"
+    ],
+    "tagRefs": [
+      "stellaris:venus_biomes"
+    ]
+  }
+}

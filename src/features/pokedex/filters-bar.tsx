@@ -522,15 +522,12 @@ function ValuesSummary({ filter }: { filter: CategoricalFilter }) {
 
 function pluralValues(kind: CategoricalKind, n: number): string {
   const base =
-    kind === "type"
-      ? "type"
-      : kind === "generation"
-        ? "génération"
-        : kind === "role"
-          ? "rôle"
-          : kind === "biome"
-            ? "biome"
-            : "rareté";
+    kind === "type"       ? "type" :
+    kind === "generation" ? "génération" :
+    kind === "role"       ? "rôle" :
+    kind === "biome"      ? "biome" :
+    kind === "category"   ? "catégorie" :
+    "rareté";
   return n > 1 ? base + "s" : base;
 }
 
