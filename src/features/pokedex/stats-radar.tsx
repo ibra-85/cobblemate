@@ -9,25 +9,21 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import type { Pokemon } from "@/types";
 
-const config = {
-  base: {
-    label: "Stats",
-    color: "var(--chart-1)",
-  },
-  compare: {
-    label: "Comparaison",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
-
 interface Props {
   pokemon: Pokemon;
   compareWith?: Pokemon;
+  /** Override the radar's default colour for the primary mon. Used by
+   *  the compare dialog so the radar matches the A/B tone scheme. */
+  colorA?: string;
+  /** Override the comparison mon's colour. */
+  colorB?: string;
 }
 
 const STAT_KEYS: { key: keyof Pokemon["baseStats"]; label: string }[] = [
@@ -44,42 +40,67 @@ const STAT_KEYS: { key: keyof Pokemon["baseStats"]; label: string }[] = [
  * the typical max for non-legendary base stats so 180 = max). An optional
  * `compareWith` overlays a second polygon for side-by-side comparison.
  */
-export function StatsRadar({ pokemon, compareWith }: Props) {
+export function StatsRadar({ pokemon, compareWith, colorA, colorB }: Props) {
   const data = STAT_KEYS.map(({ key, label }) => ({
     stat: label,
     base: pokemon.baseStats[key],
     compare: compareWith?.baseStats[key],
   }));
 
+  const fillA = colorA ?? "var(--color-base)";
+  const fillB = colorB ?? "var(--color-compare)";
+
+  // Per-mon labels so the legend at the bottom uses the actual mon
+  // names rather than the generic "Stats / Comparaison" defaults.
+  const liveConfig = {
+    base: {
+      label: pokemon.name,
+      color: fillA,
+    },
+    compare: {
+      label: compareWith?.name ?? "Comparaison",
+      color: fillB,
+    },
+  } satisfies ChartConfig;
+
   return (
-    <ChartContainer config={config} className="mx-auto aspect-square max-h-[260px] w-full">
-      <RadarChart data={data}>
+    <ChartContainer config={liveConfig} className="aspect-auto h-[280px] w-full">
+      {/* Extra horizontal padding on the wrapper saves the longest
+          ticks ("Déf.Spé", "Atk.Spé") from being clipped at the edge
+          of the polar layout. */}
+      <RadarChart data={data} margin={{ top: 8, right: 24, bottom: 0, left: 24 }}>
         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
         <PolarGrid stroke="var(--border)" />
         <PolarAngleAxis
           dataKey="stat"
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+          tickSize={6}
         />
         <Radar
           dataKey="base"
           name={pokemon.name}
-          fill="var(--color-base)"
+          fill={fillA}
           fillOpacity={0.35}
-          stroke="var(--color-base)"
+          stroke={fillA}
           strokeWidth={2}
-          dot={{ r: 3, fillOpacity: 1 }}
+          dot={{ r: 3, fillOpacity: 1, fill: fillA }}
         />
         {compareWith && (
           <Radar
             dataKey="compare"
             name={compareWith.name}
-            fill="var(--color-compare)"
-            fillOpacity={0.2}
-            stroke="var(--color-compare)"
+            fill={fillB}
+            fillOpacity={0.15}
+            stroke={fillB}
             strokeWidth={2}
-            dot={{ r: 3, fillOpacity: 1 }}
+            // Dashed outline so the comparison polygon is unmistakable
+            // even when the two colours don't separate well (printing,
+            // colour-blindness, overlap regions).
+            strokeDasharray="5 4"
+            dot={{ r: 3, fillOpacity: 1, fill: fillB }}
           />
         )}
+        {compareWith && <ChartLegend content={<ChartLegendContent />} />}
       </RadarChart>
     </ChartContainer>
   );

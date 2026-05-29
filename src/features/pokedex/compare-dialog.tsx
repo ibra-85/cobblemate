@@ -21,7 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
-import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
+import { POKEMON_BY_ID } from "@/data/pokemon";
 import type { Pokemon, PokemonTypeId } from "@/types";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import { calculateTypeEffectiveness, ALL_TYPES } from "@/lib/type-chart";
@@ -29,14 +29,28 @@ import { cn } from "@/lib/utils";
 import { searchPokemon } from "@/lib/search";
 import { StatsRadar } from "@/features/pokedex/stats-radar";
 
-const STATS: { key: keyof Pokemon["baseStats"]; label: string }[] = [
-  { key: "hp",      label: "HP" },
-  { key: "attack",  label: "Atk" },
-  { key: "defense", label: "Déf" },
-  { key: "spAtk",   label: "Atk.Spé" },
-  { key: "spDef",   label: "Déf.Spé" },
-  { key: "speed",   label: "Vit" },
-];
+// Color tokens — kept as constants so the bar SVG, badge tones and
+// border accents stay perfectly in sync. Blue vs amber reads with
+// high contrast in both light and dark themes.
+const TONE_A = {
+  raw:      "#2563eb",                                                      // tailwind blue-600
+  bg:       "bg-blue-400/5",
+  border:   "border-blue-500/40",
+  text:     "text-blue-700 dark:text-blue-300",
+  bar:      "bg-blue-500",
+  dot:      "bg-blue-500",
+  ring:     "ring-blue-500/40",
+};
+const TONE_B = {
+  raw:      "#d97706",                                                      // tailwind amber-600
+  bg:       "bg-amber-400/5",
+  border:   "border-amber-500/40",
+  text:     "text-amber-700 dark:text-amber-300",
+  bar:      "bg-amber-500",
+  dot:      "bg-amber-500",
+  ring:     "ring-amber-500/40",
+};
+type Tone = typeof TONE_A;
 
 interface Props {
   pokemon: Pokemon;
@@ -46,8 +60,12 @@ interface Props {
 
 /**
  * In-page compare flow: opens a dialog where the user picks a second
- * Pokémon, then renders stat bars + matchup verdict inline. Replaces the
- * old /compare page.
+ * Pokémon, then renders stat bars + matchup verdict inline.
+ *
+ * Visual encoding: A (the page's mon) is **blue**, B (the picked
+ * mon) is **amber**. The colour shows up on the header card, every
+ * stat bar, both matchup badges, and the radar overlay — so the eye
+ * instantly knows which side a number belongs to.
  */
 export function CompareDialog({ pokemon, iconOnly = false }: Props) {
   const [open, setOpen] = useState(false);
@@ -125,10 +143,24 @@ export function CompareDialog({ pokemon, iconOnly = false }: Props) {
           )
         }
       />
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>
-            Comparer {pokemon.name} avec…
+          <DialogTitle className="flex flex-wrap items-center gap-2">
+            <span className="flex items-center gap-1.5">
+              <span className={cn("size-2 rounded-full", TONE_A.dot)} aria-hidden />
+              <span className={cn("font-semibold", TONE_A.text)}>{pokemon.name}</span>
+            </span>
+            {other ? (
+              <>
+                <span className="text-muted-foreground">vs</span>
+                <span className="flex items-center gap-1.5">
+                  <span className={cn("size-2 rounded-full", TONE_B.dot)} aria-hidden />
+                  <span className={cn("font-semibold", TONE_B.text)}>{other.name}</span>
+                </span>
+              </>
+            ) : (
+              <span className="text-muted-foreground">avec…</span>
+            )}
           </DialogTitle>
           <DialogDescription>
             Stats côte à côte, matchup direct, faiblesses partagées.
@@ -136,68 +168,36 @@ export function CompareDialog({ pokemon, iconOnly = false }: Props) {
         </DialogHeader>
 
         {!other ? (
-          <div className="flex flex-col gap-3">
-            <InputGroup>
-              <InputGroupAddon>
-                <Search className="size-4 opacity-60" />
-              </InputGroupAddon>
-              <InputGroupInput
-                autoFocus
-                placeholder="Cherche un Pokémon…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </InputGroup>
-            <ScrollArea className="h-72">
-              <div className="flex flex-col gap-1 pr-2">
-                {candidates.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => setOtherId(p.id)}
-                    className="flex items-center gap-3 rounded-md border border-transparent px-3 py-2 text-left hover:border-border hover:bg-accent"
-                  >
-                    <PokemonSprite pokemon={p} size="size-10" />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-sm font-medium">{p.name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        #{p.dexNumber}
-                      </span>
-                    </div>
-                    <TypeBadges types={p.types} size="sm" />
-                  </button>
-                ))}
-                {candidates.length === 0 && (
-                  <p className="py-8 text-center text-sm text-muted-foreground">
-                    Aucun résultat.
-                  </p>
-                )}
-              </div>
-            </ScrollArea>
-          </div>
+          <PickPanel
+            query={query}
+            onQuery={setQuery}
+            candidates={candidates}
+            onPick={setOtherId}
+          />
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-3">
-              <PokemonHeader p={pokemon} />
-              <PokemonHeader p={other} />
+            <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-3">
+              <PokemonHeader p={pokemon} tone={TONE_A} />
+              <div className="flex items-center justify-center">
+                <span className="grid size-8 place-items-center rounded-full bg-card text-xs font-bold uppercase text-muted-foreground">
+                  vs
+                </span>
+              </div>
+              <PokemonHeader p={other} tone={TONE_B} />
             </div>
 
             <Separator />
 
-            <div className="grid gap-4 md:grid-cols-[1fr_220px]">
-              <div className="flex flex-col gap-2">
-                {STATS.map((s) => (
-                  <StatRow
-                    key={s.key}
-                    label={s.label}
-                    a={pokemon.baseStats[s.key]}
-                    b={other.baseStats[s.key]}
-                  />
-                ))}
-              </div>
-              <div className="hidden md:block">
-                <StatsRadar pokemon={pokemon} compareWith={other} />
-              </div>
+            {/* Radar centred on its own — the bar variant gave more
+                heat than light, so the polygon overlay carries the
+                stat-comparison weight by itself. */}
+            <div className="mx-auto w-full max-w-sm">
+              <StatsRadar
+                pokemon={pokemon}
+                compareWith={other}
+                colorA={TONE_A.raw}
+                colorB={TONE_B.raw}
+              />
             </div>
 
             <Separator />
@@ -207,40 +207,18 @@ export function CompareDialog({ pokemon, iconOnly = false }: Props) {
                 <p className="text-xs uppercase text-muted-foreground">
                   Matchup direct
                 </p>
-                <div className="flex items-center justify-between">
-                  <span>
-                    {pokemon.name} → {other.name}
-                  </span>
-                  <Badge
-                    variant={
-                      (matchupAtoB ?? 0) >= 2
-                        ? "default"
-                        : (matchupAtoB ?? 0) === 0
-                          ? "secondary"
-                          : "outline"
-                    }
-                    className="font-mono"
-                  >
-                    ×{matchupAtoB}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>
-                    {other.name} → {pokemon.name}
-                  </span>
-                  <Badge
-                    variant={
-                      (matchupBtoA ?? 0) >= 2
-                        ? "default"
-                        : (matchupBtoA ?? 0) === 0
-                          ? "secondary"
-                          : "outline"
-                    }
-                    className="font-mono"
-                  >
-                    ×{matchupBtoA}
-                  </Badge>
-                </div>
+                <MatchupRow
+                  fromName={pokemon.name}
+                  toName={other.name}
+                  mult={matchupAtoB}
+                  tone={TONE_A}
+                />
+                <MatchupRow
+                  fromName={other.name}
+                  toName={pokemon.name}
+                  mult={matchupBtoA}
+                  tone={TONE_B}
+                />
               </div>
 
               <div className="flex flex-col gap-2 rounded-md border p-3 text-sm">
@@ -276,17 +254,86 @@ export function CompareDialog({ pokemon, iconOnly = false }: Props) {
   );
 }
 
-function PokemonHeader({ p }: { p: Pokemon }) {
+function PickPanel({
+  query,
+  onQuery,
+  candidates,
+  onPick,
+}: {
+  query: string;
+  onQuery: (q: string) => void;
+  candidates: Pokemon[];
+  onPick: (id: string) => void;
+}) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md border bg-card p-3 text-center">
-      <div className="grid size-16 place-items-center rounded-md bg-muted p-1">
+    <div className="flex flex-col gap-3">
+      <InputGroup>
+        <InputGroupAddon>
+          <Search className="size-4 opacity-60" />
+        </InputGroupAddon>
+        <InputGroupInput
+          autoFocus
+          placeholder="Cherche un Pokémon…"
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+        />
+      </InputGroup>
+      <ScrollArea className="h-72">
+        <div className="flex flex-col gap-1 pr-2">
+          {candidates.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => onPick(p.id)}
+              className="flex items-center gap-3 rounded-md border border-transparent px-3 py-2 text-left hover:border-border hover:bg-accent"
+            >
+              <PokemonSprite pokemon={p} size="size-10" />
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate text-sm font-medium">{p.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  #{p.dexNumber}
+                </span>
+              </div>
+              <TypeBadges types={p.types} size="sm" />
+            </button>
+          ))}
+          {candidates.length === 0 && (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              Aucun résultat.
+            </p>
+          )}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+}
+
+function PokemonHeader({
+  p,
+  tone,
+}: {
+  p: Pokemon;
+  tone: Tone;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative flex flex-col items-center gap-2 overflow-hidden rounded-md border p-3 text-center ring-1 ring-inset",
+        tone.bg,
+        tone.border,
+        tone.ring,
+      )}
+    >
+      <div className="grid size-16 place-items-center rounded-md bg-background/60 p-1">
         <PokemonSprite pokemon={p} variant="artwork" />
       </div>
       <div className="flex flex-col gap-0.5">
         <p className="font-mono text-[10px] text-muted-foreground">
           #{p.dexNumber}
         </p>
-        <p className="font-heading text-sm font-bold">{p.name}</p>
+        <p className={cn("font-heading text-sm font-bold", tone.text)}>
+          {p.name}
+        </p>
       </div>
       <TypeBadges types={p.types} size="sm" />
       <Badge variant="secondary" className="text-[10px]">
@@ -296,47 +343,32 @@ function PokemonHeader({ p }: { p: Pokemon }) {
   );
 }
 
-function StatRow({ label, a, b }: { label: string; a: number; b: number }) {
-  const max = Math.max(a, b, 1);
+function MatchupRow({
+  fromName,
+  toName,
+  mult,
+  tone,
+}: {
+  fromName: string;
+  toName: string;
+  mult: number | null;
+  tone: Tone;
+}) {
+  const m = mult ?? 0;
   return (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-xs">
-      <div className="flex items-center justify-end gap-2">
-        <span
-          className={cn(
-            "font-mono tabular-nums",
-            a > b && "font-bold",
-            a < b && "text-muted-foreground",
-          )}
-        >
-          {a}
-        </span>
-        <div className="h-1.5 w-full max-w-[120px] overflow-hidden rounded-full bg-muted">
-          <div
-            className="ml-auto h-full bg-foreground/70"
-            style={{ width: `${(a / max) * 100}%`, marginLeft: "auto" }}
-          />
-        </div>
-      </div>
-      <span className="px-2 text-[10px] font-semibold uppercase text-muted-foreground">
-        {label}
+    <div className="flex items-center justify-between gap-2">
+      <span className="flex min-w-0 items-center gap-1.5 truncate">
+        <span className={cn("size-2 shrink-0 rounded-full", tone.dot)} aria-hidden />
+        <span className={cn("font-medium truncate", tone.text)}>{fromName}</span>
+        <span className="text-muted-foreground">→</span>
+        <span className="truncate">{toName}</span>
       </span>
-      <div className="flex items-center gap-2">
-        <div className="h-1.5 w-full max-w-[120px] overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full bg-foreground/70"
-            style={{ width: `${(b / max) * 100}%` }}
-          />
-        </div>
-        <span
-          className={cn(
-            "font-mono tabular-nums",
-            b > a && "font-bold",
-            b < a && "text-muted-foreground",
-          )}
-        >
-          {b}
-        </span>
-      </div>
+      <Badge
+        variant={m >= 2 ? "default" : m === 0 ? "secondary" : "outline"}
+        className="shrink-0 font-mono"
+      >
+        ×{m}
+      </Badge>
     </div>
   );
 }

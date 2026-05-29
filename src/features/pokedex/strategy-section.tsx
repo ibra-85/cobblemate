@@ -329,7 +329,9 @@ function UsageCard({ stats }: { stats: SmogonStats }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3 lg:grid-cols-3">
+        {/* Stacked: each category gets its full width so the share
+            bars read more clearly and long names stop truncating. */}
+        <div className="flex flex-col gap-3">
           <ShareCard title="Talents les + joués">
             {stats.abilities.map((a) => (
               <ShareRow key={a.name} share={a.share}>

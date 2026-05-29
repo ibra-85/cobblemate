@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, MapPin } from "lucide-react";
+import { ChevronDown, MapPin, Clock, CloudSun, Layers, Key, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +10,21 @@ import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { SPAWNS_BY_BIOME, type SpawnAggregate } from "@/data/spawns";
 import { biomeLabel } from "@/data/biomes";
+import { getSpeciesExtras } from "@/data/species-extras";
 import type { Pokemon, Rarity } from "@/types";
+
+const TIME_LABEL: Record<string, string> = {
+  any: "Toute heure", day: "Jour", night: "Nuit", dusk: "Crépuscule", dawn: "Aube",
+};
+
+const WEATHER_LABEL: Record<string, string> = {
+  any: "Toute météo", clear: "Beau temps", rain: "Pluie",
+};
+
+const CONTEXT_LABEL: Record<string, string> = {
+  grounded: "Sol", submerged: "Sous l'eau", surface: "Surface",
+  seafloor: "Fond marin", fishing: "Pêche",
+};
 
 const RARITY_LABEL: Record<Rarity, string> = {
   common: "Commun", uncommon: "Peu commun", rare: "Rare", "ultra-rare": "Ultra rare",
@@ -70,6 +84,8 @@ export function CatchingGuide({ pokemon, spawn }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
+      <SpawnMetaStrip spawn={spawn} pokemonId={pokemon.id} />
+
       {cobblemonBiomes.map((biome, i) => (
         <div key={biome}>
           {i > 0 && <Separator className="mb-4" />}
@@ -82,6 +98,109 @@ export function CatchingGuide({ pokemon, spawn }: Props) {
         </div>
       ))}
     </div>
+  );
+}
+
+/**
+ * Top strip absorbing the spawn data that used to clutter the hero
+ * details column: niveau, contexte, heure, météo, objet-clé, catch
+ * rate. Each chip is omitted when the underlying value is `any` /
+ * empty so the strip stays tight for common cases.
+ */
+function SpawnMetaStrip({
+  spawn,
+  pokemonId,
+}: {
+  spawn: SpawnAggregate;
+  pokemonId: string;
+}) {
+  const extras = getSpeciesExtras(pokemonId);
+
+  const contexts = spawn.contexts.filter((c) => c !== "any");
+  const times = spawn.times.filter((t) => t !== "any");
+  const weathers = spawn.weathers.filter((w) => w !== "any");
+  const keyItem = spawn.keyItems[0];
+  const catchRate = extras?.catchRate;
+
+  // Bail out cleanly if there's nothing meaningful to surface —
+  // common for very generic spawns where everything is "any".
+  if (
+    !spawn.levelRange &&
+    contexts.length === 0 &&
+    times.length === 0 &&
+    weathers.length === 0 &&
+    !keyItem &&
+    catchRate == null
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {spawn.levelRange && (
+        <MetaChip icon={<Target className="size-3.5" />} label="Niveau">
+          <span className="font-mono">{spawn.levelRange[0]}–{spawn.levelRange[1]}</span>
+        </MetaChip>
+      )}
+      {contexts.length > 0 && (
+        <MetaChip icon={<Layers className="size-3.5" />} label="Contexte">
+          {contexts.map((c) => CONTEXT_LABEL[c] ?? c).join(" · ")}
+        </MetaChip>
+      )}
+      {times.length > 0 && (
+        <MetaChip icon={<Clock className="size-3.5" />} label="Heure">
+          {times.map((t) => TIME_LABEL[t] ?? t).join(" · ")}
+        </MetaChip>
+      )}
+      {weathers.length > 0 && (
+        <MetaChip icon={<CloudSun className="size-3.5" />} label="Météo">
+          {weathers.map((w) => WEATHER_LABEL[w] ?? w).join(" · ")}
+        </MetaChip>
+      )}
+      {keyItem && (
+        <MetaChip
+          icon={<Key className="size-3.5" />}
+          label="Objet-clé"
+          tone="amber"
+        >
+          <span className="font-mono">{keyItem}</span>
+        </MetaChip>
+      )}
+      {catchRate != null && (
+        <MetaChip icon={<Target className="size-3.5" />} label="Capture">
+          <span className="font-mono">{catchRate} / 255</span>
+        </MetaChip>
+      )}
+    </div>
+  );
+}
+
+function MetaChip({
+  icon,
+  label,
+  tone,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  /** Optional accent for key-items so the rare gated mechanic stands out. */
+  tone?: "amber";
+  children: React.ReactNode;
+}) {
+  const toneClasses =
+    tone === "amber"
+      ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+      : "bg-muted/40";
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs ${toneClasses}`}
+    >
+      <span className="text-muted-foreground">{icon}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      <span className="text-foreground">{children}</span>
+    </span>
   );
 }
 

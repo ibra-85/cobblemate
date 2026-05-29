@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
 import { getSpawnsForPokemon } from "@/lib/search";
 import { PokemonHero } from "@/features/pokedex/pokemon-hero";
+import { EvolutionColumn } from "@/features/pokedex/evolution-column";
+import { hasEvolutions } from "@/features/pokedex/evolution-chain";
 import { WeaknessCompact } from "@/features/pokedex/weakness-compact";
 import { PokeSnackCooking } from "@/features/pokedex/poke-snack-cooking";
 import { CatchingGuide } from "@/features/pokedex/catching-guide";
@@ -41,7 +43,19 @@ export default async function PokemonDetailPage({
         <ArrowLeft className="size-4" /> Retour au Pokédex
       </Link>
 
-      <PokemonHero pokemon={pokemon} spawn={spawn} />
+      {/* Hero + evolutions column. The two-column grid only kicks in
+          at `xl` (1280px+) — below that the hero would lose ~300px of
+          breathing room and its inner artwork/details/stats grid
+          starts wrapping. Solo species collapse the grid to a single
+          column regardless. */}
+      {hasEvolutions(pokemon) ? (
+        <div className="grid items-stretch gap-6 xl:grid-cols-[1fr_300px]">
+          <PokemonHero pokemon={pokemon} spawn={spawn} />
+          <EvolutionColumn pokemon={pokemon} />
+        </div>
+      ) : (
+        <PokemonHero pokemon={pokemon} spawn={spawn} />
+      )}
 
       {/* Stratégie : conseils auto-déduits + notes curatées si dispo */}
       <SectionCard

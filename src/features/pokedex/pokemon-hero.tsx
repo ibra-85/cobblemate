@@ -1,44 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypeBadges } from "@/components/site/type-badge";
-import { calculateTypeEffectiveness, ALL_TYPES } from "@/lib/type-chart";
-import { TYPES_META } from "@/data/types";
-import type { PokemonTypeId } from "@/types";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { WishlistButton } from "@/components/site/wishlist-button";
 import { CompareDialog } from "@/features/pokedex/compare-dialog";
 import { PokemonDetailsModal } from "@/features/pokedex/pokemon-details-modal";
 import { getSpeciesExtras } from "@/data/species-extras";
 import { isSoloSpecies } from "@/data/pokemon";
-import { EvolutionChain, hasEvolutions } from "@/features/pokedex/evolution-chain";
 import { baseStatTotal } from "@/lib/pokemon-utils";
-import { biomeLabel } from "@/data/biomes";
 import type { SpawnAggregate } from "@/data/spawns";
 import type { Pokemon, Rarity } from "@/types";
-
-/**
- * Compute the two-tier (×4, ×2) weakness preview for the hero. Returns
- * an ordered list — quads first, then doubles — capped to keep the
- * row compact. Anything past the cap surfaces as a "+N" hint.
- */
-function topWeaknesses(types: PokemonTypeId[], cap = 4) {
-  const quads: PokemonTypeId[] = [];
-  const doubles: PokemonTypeId[] = [];
-  for (const t of ALL_TYPES) {
-    const m = calculateTypeEffectiveness(t, types);
-    if (m === 4) quads.push(t);
-    else if (m === 2) doubles.push(t);
-  }
-  const ordered = [
-    ...quads.map((t) => ({ type: t, mult: 4 as const })),
-    ...doubles.map((t) => ({ type: t, mult: 2 as const })),
-  ];
-  return {
-    shown: ordered.slice(0, cap),
-    overflow: Math.max(0, ordered.length - cap),
-    totalQuads: quads.length,
-  };
-}
 
 const CATEGORY_LABEL: Record<string, { label: string; tone: string }> = {
   legendary:   { label: "Légendaire",   tone: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40" },
@@ -56,19 +27,6 @@ const RARITY_TONE: Record<Rarity, string> = {
   uncommon:     "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 ring-emerald-500/30",
   rare:         "bg-blue-500/15 text-blue-700 dark:text-blue-300 ring-blue-500/30",
   "ultra-rare": "bg-amber-500/15 text-amber-700 dark:text-amber-300 ring-amber-500/30",
-};
-
-const TIME_LABEL: Record<string, string> = {
-  any: "Toute heure", day: "Jour", night: "Nuit", dusk: "Crépuscule", dawn: "Aube",
-};
-
-const WEATHER_LABEL: Record<string, string> = {
-  any: "Toute météo", clear: "Beau temps", rain: "Pluie",
-};
-
-const CONTEXT_LABEL: Record<string, string> = {
-  grounded: "Sol", submerged: "Sous l'eau", surface: "Surface",
-  seafloor: "Fond marin", fishing: "Pêche",
 };
 
 const STAT_LABEL: Record<keyof Pokemon["baseStats"], string> = {
@@ -143,10 +101,12 @@ export function PokemonHero({ pokemon, spawn }: Props) {
           </div>
         </div>
 
-        {/* ─── Body: artwork + 2 columns ─────────────────────────────
-            On mobile everything stacks; from `md` up we lay it out as
-            a 3-column grid: artwork | details | stats. */}
-        <div className="grid gap-5 md:grid-cols-[auto_1fr_1fr] md:items-start">
+        {/* ─── Body: artwork + stacked details/stats column ───────────
+            On mobile everything stacks; from `md` up the layout is a
+            2-column grid (artwork | info), with the info column
+            internally stacking Détails on top and Stats de base
+            underneath so each section gets the full available width. */}
+        <div className="grid gap-5 md:grid-cols-[auto_1fr] md:items-start">
           {/* Artwork */}
           <div className="relative mx-auto size-40 md:size-44">
             <div
@@ -158,29 +118,17 @@ export function PokemonHero({ pokemon, spawn }: Props) {
             </div>
           </div>
 
-          {/* Details column */}
-          <Column title="Détails">
-            <DetailRows pokemon={pokemon} spawn={spawn} extras={extras} />
-          </Column>
-
-          {/* Stats column */}
-          <Column title="Stats de base">
-            <StatsColumn pokemon={pokemon} bst={bst} />
-          </Column>
+          {/* Info column — Détails on top, Stats de base underneath. */}
+          <div className="flex flex-col gap-5">
+            <Column title="Détails">
+              <DetailRows pokemon={pokemon} spawn={spawn} />
+            </Column>
+            <Column title="Stats de base">
+              <StatsColumn pokemon={pokemon} bst={bst} />
+            </Column>
+          </div>
         </div>
 
-        {/* ─── Evolutionary chain — full-width row at the bottom ─────
-            Shown only when there's a chain to show; the "Pas
-            d'évolution" hint already lives in the Details column for
-            solo species, so we don't double up. */}
-        {hasEvolutions(pokemon) && (
-          <div className="flex flex-col gap-2 border-t pt-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Évolutions
-            </h3>
-            <EvolutionChain pokemon={pokemon} />
-          </div>
-        )}
       </CardContent>
     </Card>
   );
@@ -208,49 +156,17 @@ function Column({
 function DetailRows({
   pokemon,
   spawn,
-  extras,
 }: {
   pokemon: Pokemon;
   spawn?: SpawnAggregate;
-  extras: ReturnType<typeof getSpeciesExtras>;
 }) {
+  // The hero only carries identity-level data: who is this mon. The
+  // weakness preview moved to the Faiblesses & résistances card,
+  // spawn meta (niveau, biome, contexte, heure, météo, objet-clé,
+  // catch-rate) moved to "Où le trouver", so the header isn't a wall
+  // of rows anymore. Talents stay because they're the one piece of
+  // identity that doesn't have its own section.
   const rows: { label: string; value: React.ReactNode }[] = [];
-
-  const weak = topWeaknesses(pokemon.types);
-  if (weak.shown.length > 0) {
-    rows.push({
-      label: "Faiblesses",
-      value: (
-        <div className="flex flex-wrap items-center gap-1.5">
-          {weak.shown.map(({ type, mult }) => {
-            const meta = TYPES_META[type];
-            return (
-              <span
-                key={type}
-                title={`${meta.label} ×${mult}`}
-                className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide shadow-sm"
-                style={{ backgroundColor: meta.color, color: meta.fg }}
-              >
-                {meta.label}
-                <span
-                  className={`rounded-sm px-1 font-mono text-[9px] ${
-                    mult === 4 ? "bg-red-600 text-white" : "bg-black/30 text-white"
-                  }`}
-                >
-                  ×{mult}
-                </span>
-              </span>
-            );
-          })}
-          {weak.overflow > 0 && (
-            <span className="text-[11px] text-muted-foreground">
-              +{weak.overflow}
-            </span>
-          )}
-        </div>
-      ),
-    });
-  }
 
   rows.push({
     label: "Talents",
@@ -274,52 +190,10 @@ function DetailRows({
     ),
   });
 
-  if (spawn) {
-    if (spawn.levelRange)
-      rows.push({
-        label: "Niveau",
-        value: <span className="font-mono">{spawn.levelRange[0]}–{spawn.levelRange[1]}</span>,
-      });
-
-    const firstBiome = spawn.biomes.find(
-      (b) => /(^|\/)is_/.test(b) && !b.includes(":"),
-    );
-    if (firstBiome) rows.push({ label: "Biome", value: biomeLabel(firstBiome) });
-    if (spawn.contexts.length > 0)
-      rows.push({
-        label: "Contexte",
-        value: spawn.contexts.map((c) => CONTEXT_LABEL[c] ?? c).join(" · "),
-      });
-    if (spawn.times.length > 0)
-      rows.push({
-        label: "Heure",
-        value: spawn.times.map((t) => TIME_LABEL[t] ?? t).join(" · "),
-      });
-    if (spawn.weathers.length > 0)
-      rows.push({
-        label: "Météo",
-        value: spawn.weathers.map((w) => WEATHER_LABEL[w] ?? w).join(" · "),
-      });
-    if (spawn.keyItems.length > 0)
-      rows.push({
-        label: "Objet-clé",
-        value: (
-          <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 font-mono text-[11px] text-amber-700 dark:text-amber-300">
-            {spawn.keyItems[0]}
-          </span>
-        ),
-      });
-  } else {
+  if (!spawn) {
     rows.push({
       label: "Spawn",
       value: <span className="italic text-muted-foreground">Pas de spawn naturel</span>,
-    });
-  }
-
-  if (extras?.catchRate != null) {
-    rows.push({
-      label: "Capture",
-      value: <span className="font-mono">{extras.catchRate} / 255</span>,
     });
   }
 
