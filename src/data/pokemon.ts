@@ -26,3 +26,80 @@ export const POKEMON: Pokemon[] = (generated as Pokemon[])
 export const POKEMON_BY_ID: Record<string, Pokemon> = Object.fromEntries(
   POKEMON.map((p) => [p.id, p]),
 );
+
+/**
+ * Reverse evolution index — `child id → parent id`. Lets the UI walk
+ * backwards from any stage to the base form and render the full chain,
+ * not just the forward branches.
+ */
+export const EVOLVES_FROM: Record<string, string> = (() => {
+  const idx: Record<string, string> = {};
+  for (const p of POKEMON) {
+    for (const e of p.evolutions) {
+      // First parent wins — there are a couple of branched evolutions
+      // (e.g. tyrogue → hitmonlee/chan/top) where the reverse mapping
+      // is ambiguous but always has a single canonical parent.
+      if (!idx[e.to]) idx[e.to] = p.id;
+    }
+  }
+  return idx;
+})();
+
+/** Walk from any Pokémon up the chain to its base form. */
+export function rootOf(id: string): string {
+  let cur = id;
+  const seen = new Set<string>();
+  while (EVOLVES_FROM[cur] && !seen.has(cur)) {
+    seen.add(cur);
+    cur = EVOLVES_FROM[cur];
+  }
+  return cur;
+}
+
+/**
+ * Full forward evolution chain from a root id, flattening branches into
+ * one row per linear path. Returns a list of stages — each stage is the
+ * set of Pokémon reachable at that depth with the method that brought
+ * them there.
+ */
+export interface ChainStage {
+  id: string;
+  /** Evolution method that brought us to this Pokémon (null = base). */
+  method: string | null;
+}
+
+export function evolutionChain(rootId: string): ChainStage[][] {
+  const root = POKEMON_BY_ID[rootId];
+  if (!root) return [];
+  const stages: ChainStage[][] = [[{ id: rootId, method: null }]];
+  const visited = new Set<string>([rootId]);
+  let frontier: ChainStage[] = [{ id: rootId, method: null }];
+  while (frontier.length > 0) {
+    const next: ChainStage[] = [];
+    for (const f of frontier) {
+      const p = POKEMON_BY_ID[f.id];
+      if (!p) continue;
+      for (const e of p.evolutions) {
+        if (visited.has(e.to)) continue;
+        visited.add(e.to);
+        next.push({ id: e.to, method: e.method });
+      }
+    }
+    if (next.length === 0) break;
+    stages.push(next);
+    frontier = next;
+  }
+  return stages;
+}
+
+/**
+ * True for Pokémon that don't evolve and aren't an evolved form of
+ * anything — a single-stage species. Used by the hero card to call it
+ * out explicitly so the player doesn't go hunting for an evolution
+ * that doesn't exist.
+ */
+export function isSoloSpecies(id: string): boolean {
+  const root = rootOf(id);
+  const stages = evolutionChain(root);
+  return stages.length <= 1 && (stages[0]?.length ?? 0) <= 1;
+}

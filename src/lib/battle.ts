@@ -1,4 +1,4 @@
-import { MOVE_BY_ID } from "@/data/moves";
+import { lookupMove } from "@/data/moves";
 import { POKEMON } from "@/data/pokemon";
 import type { Move, Pokemon, PokemonTypeId } from "@/types";
 import { ALL_TYPES, calculateTypeEffectiveness } from "@/lib/type-chart";
@@ -40,8 +40,8 @@ export function getBestTeamMemberAgainst(
 
       // Pick best known move against target if movepool data is available.
       const moves = p.notableMoves
-        .map((id) => MOVE_BY_ID[id])
-        .filter(Boolean) as Move[];
+        .map((id) => lookupMove(id))
+        .filter((m): m is Move => m !== null);
       const bestMove = moves
         .filter((m) => m.category !== "status" && m.power)
         .sort((a, b) => {
@@ -92,7 +92,7 @@ export function buildBattleRecommendation(
   // Collect the types of the target's notable moves to surface coverage threats.
   const moveTypes = new Set<PokemonTypeId>();
   for (const id of target.notableMoves) {
-    const m = MOVE_BY_ID[id];
+    const m = lookupMove(id);
     if (m && m.category !== "status") moveTypes.add(m.type);
   }
   for (const t of target.types) moveTypes.add(t);

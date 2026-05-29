@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { TypeBadge, TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
-import { MOVES, MOVE_BY_ID } from "@/data/moves";
+import { MOVES, lookupMove } from "@/data/moves";
 import { calculateDamage } from "@/lib/damage";
 
 function PokemonSelect({
@@ -55,10 +55,34 @@ function PokemonSelect({
   );
 }
 
-export function DamageCalc() {
-  const [attackerId, setAttackerId] = useState(POKEMON[0]?.id ?? "");
-  const [defenderId, setDefenderId] = useState(POKEMON[1]?.id ?? POKEMON[0]?.id ?? "");
-  const [moveId, setMoveId] = useState<string>("");
+interface DamageCalcProps {
+  /** Pre-select the attacker (Pokémon id). Defaults to the first roster entry. */
+  initialAttacker?: string;
+  /** Pre-select the defender. Defaults to the second roster entry. */
+  initialDefender?: string;
+  /** Pre-select the move (id or English Smogon name). */
+  initialMove?: string;
+}
+
+export function DamageCalc({
+  initialAttacker,
+  initialDefender,
+  initialMove,
+}: DamageCalcProps = {}) {
+  // Validate the suggestions against the live roster — a stale URL
+  // param shouldn't crash the page.
+  const attackerSeed =
+    (initialAttacker && POKEMON_BY_ID[initialAttacker]?.id) ?? POKEMON[0]?.id ?? "";
+  const defenderSeed =
+    (initialDefender && POKEMON_BY_ID[initialDefender]?.id) ??
+    POKEMON[1]?.id ??
+    POKEMON[0]?.id ??
+    "";
+  const moveSeed = initialMove ? lookupMove(initialMove)?.id ?? "" : "";
+
+  const [attackerId, setAttackerId] = useState(attackerSeed);
+  const [defenderId, setDefenderId] = useState(defenderSeed);
+  const [moveId, setMoveId] = useState<string>(moveSeed);
   const [level, setLevel] = useState(50);
 
   const attacker = POKEMON_BY_ID[attackerId];
@@ -68,13 +92,13 @@ export function DamageCalc() {
   const availableMoves = useMemo(() => {
     if (!attacker) return MOVES;
     const learned = attacker.notableMoves
-      .map((id) => MOVE_BY_ID[id])
-      .filter(Boolean);
+      .map((id) => lookupMove(id))
+      .filter((m): m is NonNullable<typeof m> => m !== null);
     return learned.length > 0 ? learned : MOVES;
   }, [attacker]);
 
   // Reset move when attacker's pool changes and current move not in list.
-  const selectedMove = MOVE_BY_ID[moveId] ?? availableMoves[0];
+  const selectedMove = lookupMove(moveId) ?? availableMoves[0];
   const safeMoveId = selectedMove?.id ?? "";
 
   const result = useMemo(() => {

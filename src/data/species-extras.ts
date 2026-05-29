@@ -30,6 +30,20 @@ export interface EvYield {
   speed:            number;
 }
 
+export interface LevelMove {
+  level: number;
+  move: string;
+}
+
+export interface MovesByMethod {
+  level:   LevelMove[];
+  egg:     string[];
+  tm:      string[];
+  tutor:   string[];
+  legacy:  string[];
+  special: string[];
+}
+
 export interface SpeciesExtras {
   drops?:               DropTable;
   evYield?:             EvYield;
@@ -46,6 +60,8 @@ export interface SpeciesExtras {
   labels?:              string[];
   /** i18n keys for the dex entry text. */
   pokedex?:             string[];
+  /** Move learnsets split by learning method. */
+  movesByMethod?:       MovesByMethod;
 }
 
 export const SPECIES_EXTRAS_BY_ID: Record<string, SpeciesExtras> =

@@ -9,14 +9,19 @@ import {
   BookOpen,
   Heart,
   Package,
+  Zap,
+  Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { NotesPanel } from "@/features/notes/notes-panel";
 
 export const NAV = [
   { href: "/",             label: "Dashboard", icon: LayoutDashboard, badge: "none" as const },
   { href: "/pokedex",      label: "Pokédex",   icon: BookOpen,        badge: "none" as const },
+  { href: "/moves",        label: "Attaques",  icon: Zap,             badge: "none" as const },
+  { href: "/abilities",    label: "Talents",   icon: Wand2,           badge: "none" as const },
   { href: "/team-builder", label: "Builder",   icon: Users,           badge: "teams" as const },
   { href: "/battle",       label: "Combat",    icon: Swords,          badge: "none" as const },
   { href: "/items",        label: "Objets",    icon: Package,         badge: "none" as const },
@@ -35,8 +40,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden border-r bg-sidebar text-sidebar-foreground md:flex md:w-60 md:flex-col">
-      <Link href="/" className="flex items-center gap-3 px-5 py-5">
+    // `sticky` so the sidebar stays anchored to the viewport while the
+    // main content scrolls. `h-screen` reserves the full viewport
+    // height; inner `min-h-0` + `overflow-y-auto` on the <nav> keep
+    // long nav lists scrollable independently of the main page.
+    <aside className="sticky top-0 hidden h-screen shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:w-60 md:flex-col">
+      <Link href="/" className="flex shrink-0 items-center gap-3 px-5 py-5">
         <div className="grid size-9 place-items-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
           <Swords className="size-5" />
         </div>
@@ -50,7 +59,7 @@ export function Sidebar() {
         </div>
       </Link>
 
-      <nav className="flex flex-1 flex-col gap-1 px-2 py-2">
+      <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 py-2">
         {NAV.map(({ href, label, icon: Icon, badge }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -84,6 +93,12 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Pinned to the bottom — the Notes panel is a global utility
+          that doesn't belong with the page-level nav. */}
+      <div className="shrink-0 border-t p-2">
+        <NotesPanel variant="sidebar" />
+      </div>
     </aside>
   );
 }

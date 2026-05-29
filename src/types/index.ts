@@ -66,13 +66,27 @@ export interface BaseStats {
 
 export interface Move {
   id: string;
+  /** Primary display name in French. */
   name: string;
+  /** English name from PokeAPI — carried alongside so the UI can show
+   *  a bilingual "Tonnerre · Thunderbolt" without re-querying. Optional
+   *  because the curated catalogue doesn't always carry it. */
+  nameEn?: string;
   type: PokemonTypeId;
   category: MoveCategory;
   power: number | null;
   accuracy: number | null;
   pp: number;
+  /** Hand-tuned short effect kept on a few curated moves. Prefer
+   *  {@link shortEffect} (PokéAPI-sourced, FR, 932 / 937 covered) for
+   *  generic UI; this exists for backwards compatibility. */
   effect?: string;
+  /** Concise mechanical description in French ("A une chance de
+   *  paralyser la cible."). Sourced from PokéAPI `effect_entries`. */
+  shortEffect?: string;
+  /** In-game flavor text in French — the move-dex line the player
+   *  sees when reading a move. Sourced from PokéAPI `flavor_text_entries`. */
+  description?: string;
   priority?: number;
 }
 

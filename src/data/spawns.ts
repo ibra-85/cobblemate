@@ -54,6 +54,19 @@ export const SPAWNS_BY_ID: Record<string, SpawnAggregate> = Object.fromEntries(
 
 export const SPAWNS: SpawnAggregate[] = Object.values(SPAWNS_BY_ID);
 
+/**
+ * Reverse index — every Pokémon that spawns in a given biome key.
+ * Used by the catching-guide UI to surface "also attracted" competitors
+ * sharing the same biome.
+ */
+export const SPAWNS_BY_BIOME: Record<string, SpawnAggregate[]> = (() => {
+  const idx: Record<string, SpawnAggregate[]> = {};
+  for (const s of SPAWNS) {
+    for (const b of s.biomes) (idx[b] ??= []).push(s);
+  }
+  return idx;
+})();
+
 // ─── Aggregate accessors used by the filter UI ───────────────────────
 
 export const ALL_BIOMES: string[] = Array.from(

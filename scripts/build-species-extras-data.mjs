@@ -103,6 +103,39 @@ const FIELDS = [
   "height", "weight", "baseScale", "labels", "pokedex",
 ];
 
+/**
+ * Cobblemon's `moves` field is a flat string array. Each entry is
+ * `"<source>:<moveId>"`:
+ *   - "<level>:<moveId>"   — learnt at <level> (e.g. "3:vinewhip")
+ *   - "egg:<moveId>"       — egg move
+ *   - "tm:<moveId>"        — taught by TM
+ *   - "tutor:<moveId>"     — move tutor
+ *   - "legacy:<moveId>"    — generation-specific past-only
+ *   - "special:<moveId>"   — event-only
+ *
+ * We split into one bucket per learning method so the UI can render
+ * a clean table.
+ */
+function parseMoves(raw) {
+  const byMethod = { level: [], egg: [], tm: [], tutor: [], legacy: [], special: [] };
+  for (const entry of raw ?? []) {
+    const idx = entry.indexOf(":");
+    if (idx < 0) continue;
+    const source = entry.slice(0, idx);
+    const moveId = entry.slice(idx + 1);
+    if (/^\d+$/.test(source)) {
+      byMethod.level.push({ level: Number(source), move: moveId });
+    } else if (byMethod[source]) {
+      byMethod[source].push(moveId);
+    }
+  }
+  byMethod.level.sort((a, b) => a.level - b.level || a.move.localeCompare(b.move));
+  for (const k of ["egg", "tm", "tutor", "legacy", "special"]) {
+    byMethod[k].sort();
+  }
+  return byMethod;
+}
+
 async function main() {
   await ensureCobblemonData();
   const root = await findSpeciesRoot();
@@ -128,6 +161,9 @@ async function main() {
     const extras = {};
     for (const field of FIELDS) {
       if (doc[field] !== undefined) extras[field] = doc[field];
+    }
+    if (Array.isArray(doc.moves)) {
+      extras.movesByMethod = parseMoves(doc.moves);
     }
     out[id] = extras;
   }

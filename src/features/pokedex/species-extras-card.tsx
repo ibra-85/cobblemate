@@ -1,11 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { getSpeciesExtras } from "@/data/species-extras";
 
 interface Props {
@@ -53,12 +47,6 @@ export function SpeciesExtrasCard({ pokemonId }: Props) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Informations Cobblemon</CardTitle>
-        <CardDescription>
-          Drops, EVs, élevage, taux de capture — données officielles du mod.
-        </CardDescription>
-      </CardHeader>
       <CardContent className="grid gap-4 text-sm md:grid-cols-2">
         {specialLabels.length > 0 && (
           <div className="md:col-span-2 flex flex-wrap gap-2">

@@ -40,6 +40,8 @@ const STATS: { key: keyof Pokemon["baseStats"]; label: string }[] = [
 
 interface Props {
   pokemon: Pokemon;
+  /** Render trigger as an icon-only button (for tight identity rows). */
+  iconOnly?: boolean;
 }
 
 /**
@@ -47,7 +49,7 @@ interface Props {
  * Pokémon, then renders stat bars + matchup verdict inline. Replaces the
  * old /compare page.
  */
-export function CompareDialog({ pokemon }: Props) {
+export function CompareDialog({ pokemon, iconOnly = false }: Props) {
   const [open, setOpen] = useState(false);
   const [otherId, setOtherId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -111,10 +113,16 @@ export function CompareDialog({ pokemon }: Props) {
     >
       <DialogTrigger
         render={
-          <Button variant="outline">
-            <ArrowLeftRight data-icon="inline-start" />
-            Comparer
-          </Button>
+          iconOnly ? (
+            <Button variant="outline" size="icon" title="Comparer">
+              <ArrowLeftRight />
+            </Button>
+          ) : (
+            <Button variant="outline">
+              <ArrowLeftRight data-icon="inline-start" />
+              Comparer
+            </Button>
+          )
         }
       />
       <DialogContent className="sm:max-w-2xl">
