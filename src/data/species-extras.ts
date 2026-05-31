@@ -87,3 +87,11 @@ export function isParadox(id: string): boolean {
 export function isUltraBeast(id: string): boolean {
   return SPECIES_EXTRAS_BY_ID[id]?.labels?.includes("ultra_beast") === true;
 }
+
+/** True when the species has at least one drop entry — server-safe so
+ *  the pokédex detail page can gate the "Drops & loot" section without
+ *  touching the client-only DropsCard module. */
+export function hasDrops(id: string): boolean {
+  const x = SPECIES_EXTRAS_BY_ID[id];
+  return Boolean(x?.drops && x.drops.entries.length > 0);
+}

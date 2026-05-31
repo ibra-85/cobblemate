@@ -10,6 +10,7 @@ import {
   Clock,
   GripVertical,
 } from "lucide-react";
+import { formatRelativeTime } from "@/lib/format-time";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -240,7 +241,7 @@ export function NotesPanel({ variant = "default" }: Props) {
                             "Note vide — clique pour écrire."}
                         </span>
                         <span className="font-mono text-[10px] text-muted-foreground/70">
-                          {formatRelative(n.updatedAt)}
+                          {formatRelativeTime(n.updatedAt)}
                         </span>
                       </button>
                     </div>
@@ -302,7 +303,7 @@ export function NotesPanel({ variant = "default" }: Props) {
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="size-3" />
-                      Modifiée {formatRelative(active.updatedAt)}
+                      Modifiée {formatRelativeTime(active.updatedAt)}
                     </span>
                   </div>
                 </div>
@@ -362,23 +363,3 @@ function EmptyEditor({
   );
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────
-
-/** Friendly "il y a X minutes / aujourd'hui / 27 mai" relative label. */
-function formatRelative(ts: number): string {
-  const now = Date.now();
-  const diff = Math.max(0, now - ts);
-  const min = Math.round(diff / 60_000);
-  if (min < 1) return "à l'instant";
-  if (min < 60) return `il y a ${min} min`;
-  const h = Math.round(min / 60);
-  if (h < 24) return `il y a ${h} h`;
-  const d = new Date(ts);
-  const today = new Date();
-  const sameYear = d.getFullYear() === today.getFullYear();
-  return d.toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "short",
-    year: sameYear ? undefined : "numeric",
-  });
-}

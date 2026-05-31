@@ -110,12 +110,10 @@ async function main() {
 
   // 2. Seasoning colors (visual).
   const seasoningDir = join(root, "seasonings");
-  let seasoningCount = 0;
   for await (const file of walkJson(seasoningDir)) {
     const doc = JSON.parse(await readFile(file, "utf8"));
     const id = doc.ingredient;
     if (!id) continue;
-    seasoningCount++;
     if (!items[id]) items[id] = { effects: [] };
     if (doc.colour) items[id].color = doc.colour;
   }

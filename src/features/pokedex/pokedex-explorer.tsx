@@ -118,10 +118,23 @@ export function PokedexExplorer() {
   }, [deferredQuery, filters, sortKey, sortDesc]);
 
   // Reset the visible window whenever the result set changes — otherwise
-  // a search that narrows to 12 results would still try to render 60.
-  useEffect(() => {
+  // scrolling deep into a long roster, then narrowing filters, would
+  // leave the page stuck at a stale offset. The signature is a stable
+  // fingerprint of every input the `filtered` memo depends on (plus
+  // `view`, which changes the rendered slice's shape).
+  //
+  // React 19 explicitly recommends the "compare a stored prev value
+  // and call setState during render" pattern for this — and unlike
+  // resetting from inside `useEffect`, it doesn't trigger the
+  // `react-hooks/set-state-in-effect` cascade-render rule.
+  // `JSON.stringify(filters)` already encodes both length and content;
+  // no need to prepend the length separately.
+  const filterSignature = `${deferredQuery}|${JSON.stringify(filters)}|${sortKey}|${sortDesc}|${view}`;
+  const [prevFilterSignature, setPrevFilterSignature] = useState(filterSignature);
+  if (prevFilterSignature !== filterSignature) {
+    setPrevFilterSignature(filterSignature);
     setVisibleCount(PAGE_SIZE);
-  }, [deferredQuery, filters, sortKey, sortDesc, view]);
+  }
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {

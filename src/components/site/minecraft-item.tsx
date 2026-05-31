@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { findItemById } from "@/data/competitive-items";
 import { cn } from "@/lib/utils";
 
 /**
@@ -46,6 +48,87 @@ interface ItemMeta {
 
 const WIKI_IMAGES = "https://wiki.cobblemon.com/images";
 const WIKI_FILEPATH = "https://wiki.cobblemon.com/index.php/Special:FilePath";
+
+// Bundled item sprites — most competitive held items live in
+// `public/images/items/cobblemon/{id}.png`, harvested once at build
+// time so the picker doesn't burn wiki round-trips on every open.
+// A second bundle under `bulbapedia/` covers later additions
+// (Booster Energy, plates, orbs, masks) PokeAPI hasn't indexed yet.
+const LOCAL_ITEMS = "/images/items/cobblemon";
+const BULBAPEDIA_ITEMS = "/images/items/bulbapedia";
+
+/**
+ * Snapshot of which competitive items actually have a sprite under
+ * `public/images/items/cobblemon/`. Generated once from `ls` at
+ * authoring time — the path resolver below routes registry items
+ * outside this set to PokeAPI's GitHub sprites fallback so users
+ * don't see the SVG cartoon for berries / Cuillère Tordue / Os Épais
+ * / Poireau etc.
+ */
+const LOCAL_ITEM_IDS = new Set<string>([
+  "ability_shield", "absorb_bulb", "aguav_berry", "air_balloon",
+  "assault_vest", "big_root", "black_belt", "black_glasses",
+  "black_sludge", "blunder_policy", "cell_battery", "charcoal",
+  "chesto_berry", "choice_band", "choice_scarf", "choice_specs",
+  "chople_berry", "clear_amulet", "colbur_berry", "covert_cloak",
+  "custap_berry", "damp_rock", "dragon_fang", "eject_button",
+  "eject_pack", "electric_seed", "eviolite", "expert_belt",
+  "fairy_feather", "flame_orb", "focus_band", "focus_sash",
+  "grassy_seed", "grip_claw", "hard_stone", "heat_rock",
+  "heavy_duty_boots", "iapapa_berry", "icy_rock", "iron_ball",
+  "kee_berry", "kings_rock", "lagging_tail", "leftovers",
+  "leppa_berry", "liechi_berry", "life_orb", "light_ball",
+  "light_clay", "loaded_dice", "lum_berry", "magnet",
+  "maranga_berry", "mental_herb", "metal_coat", "metronome",
+  "miracle_seed", "mirror_herb", "muscle_band", "mystic_water",
+  "never_melt_ice", "normal_gem", "oran_berry", "payapa_berry",
+  "petaya_berry", "power_herb", "protective_pads", "psychic_seed",
+  "punching_glove", "quick_claw", "razor_claw", "red_card",
+  "rindo_berry", "ring_target", "rocky_helmet", "roseli_berry",
+  "safety_goggles", "salac_berry", "scope_lens", "sharp_beak",
+  "shell_bell", "shuca_berry", "silk_scarf", "silver_powder",
+  "sitrus_berry", "smooth_rock", "soft_sand", "spell_tag",
+  "starf_berry", "sticky_barb", "terrain_extender", "throat_spray",
+  "toxic_orb", "utility_umbrella", "weakness_policy", "white_herb",
+  "wide_lens", "wiki_berry", "wise_glasses", "zoom_lens",
+]);
+
+/**
+ * Items shipped from a Bulbapedia rip — covers the Gen-9 additions
+ * (Booster Energy, Cornerstone/Wellspring/Hearthflame Masks, Adamant
+ * Crystal, Lustrous Globe, Griseous Core, Rusted Sword/Shield, …)
+ * and the plate / orb family. PokeAPI hadn't picked these up at
+ * authoring time so we fell through to the SVG fallback otherwise.
+ */
+const BULBAPEDIA_ITEM_IDS = new Set<string>([
+  "adamant_crystal", "adamant_orb", "adrenaline_orb", "booster_energy",
+  "cornerstone_mask", "draco_plate", "dread_plate", "earth_plate",
+  "fist_plate", "flame_plate", "griseous_core", "hearthflame_mask",
+  "icicle_plate", "insect_plate", "iron_plate", "lustrous_globe",
+  "lustrous_orb", "meadow_plate", "mind_plate", "pixie_plate",
+  "rusted_shield", "rusted_sword", "sky_plate", "soul_dew",
+  "splash_plate", "spooky_plate", "stone_plate", "toxic_plate",
+  "wellspring_mask", "zap_plate",
+]);
+
+// PokeAPI hosts its sprites on GitHub raw, alongside the Pokémon
+// sprites the app already proxies for the Pokédex. Naming convention
+// is kebab-case (`heavy-duty-boots.png`); the helper below maps a
+// snake_case Cobblemon id to that shape, with an alias table for the
+// handful of items where the names diverge.
+const POKEAPI_ITEMS =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items";
+
+const POKEAPI_ID_ALIAS: Record<string, string> = {
+  // Cobblemon "leek" → PokeAPI legacy "stick" (Farfetch'd's signature
+  // item kept its older name on the sprite repo).
+  leek: "stick",
+};
+
+function pokeapiItemUrl(id: string): string {
+  const slug = POKEAPI_ID_ALIAS[id] ?? id.replace(/_/g, "-");
+  return `${POKEAPI_ITEMS}/${slug}.png`;
+}
 
 const ITEMS: Record<string, ItemMeta> = {
   // ─── Base cooking-pot ingredients (direct paths, no redirect) ────
@@ -112,6 +195,23 @@ export function itemImageUrl(itemId: string): string | null {
   if (meta?.image === "") return null;       // explicit opt-out
   if (meta?.image) return meta.image;        // registry-pinned URL
   if (itemId.startsWith("#")) return null;   // unknown tag → no image
+  // Competitive registry items: prefer the bundled local sprites
+  // when we know we shipped them. We try the Cobblemon-flavoured
+  // bundle first, then the Bulbapedia bundle (Gen-9 items, plates,
+  // orbs), then PokeAPI's mainline-series sprite set as a last
+  // network fallback. When dropping new files into
+  // `public/images/items/...`, add their ids to the matching set so
+  // they take precedence over the network paths.
+  const competitive = findItemById(itemId);
+  if (competitive) {
+    if (LOCAL_ITEM_IDS.has(competitive.id)) {
+      return `${LOCAL_ITEMS}/${competitive.id}.png`;
+    }
+    if (BULBAPEDIA_ITEM_IDS.has(competitive.id)) {
+      return `${BULBAPEDIA_ITEMS}/${competitive.id}.png`;
+    }
+    return pokeapiItemUrl(competitive.id);
+  }
   return fallbackImageUrl(itemId);            // best-effort via redirect
 }
 
@@ -414,23 +514,74 @@ export function MinecraftSlot({
 }
 
 /**
- * Renders the artwork inside a slot — wiki image when available, with
- * the hand-drawn SVG sprite as a silent fallback. We stack them: the
- * SVG sits underneath at the same position; the img layers on top and
- * paints over it once it loads. If the img 404s the SVG shows through.
+ * Bare item icon — just the wiki image (or SVG fallback), no
+ * Minecraft inventory bevel around it. Use when you want the item
+ * picture inline next to text (slot config dialog, slot card label,
+ * item tooltips) without the "this is a slot" framing that
+ * `MinecraftSlot` adds.
  */
-function ItemArtwork({ item, meta }: { item: string; meta: ItemMeta }) {
-  const url = itemImageUrl(item);
+export function ItemIcon({
+  item,
+  size = "size-5",
+  className,
+}: {
+  item: string;
+  /** Tailwind size token (`size-4`, `size-5`, …). Defaults to `size-5`. */
+  size?: string;
+  className?: string;
+}) {
+  const meta = itemMeta(item);
   return (
-    <div className="relative size-[80%]">
-      <div className="absolute inset-0">
-        <Sprite
-          shape={meta.shape}
-          primary={meta.color}
-          accent={meta.accent ?? meta.color}
-        />
-      </div>
-      {url && (
+    <span
+      className={cn(
+        "relative inline-block shrink-0 align-middle",
+        size,
+        className,
+      )}
+    >
+      <ItemArtwork item={item} meta={meta} bare />
+    </span>
+  );
+}
+
+/**
+ * Renders the artwork inside a slot — wiki image when available, with
+ * the hand-drawn SVG sprite as a fallback. The earlier version stacked
+ * both at the same position so a 404 silently revealed the SVG, but
+ * most Cobblemon/Minecraft wiki PNGs are transparent around the item:
+ * the SVG bled through the corners and made every loaded image look
+ * blurry. Now we render the SVG only when the img has actually failed
+ * (`onError`) — clean image on success, hand-drawn fallback on miss.
+ *
+ * `bare` removes the inner 80 % size box that `MinecraftSlot` uses to
+ * pad the artwork inside the inventory bevel — when the parent is
+ * already correctly sized (see `ItemIcon`), padding twice makes the
+ * sprite read as tiny.
+ */
+function ItemArtwork({
+  item,
+  meta,
+  bare,
+}: {
+  item: string;
+  meta: ItemMeta;
+  bare?: boolean;
+}) {
+  const url = itemImageUrl(item);
+  const [imgFailed, setImgFailed] = useState(false);
+
+  return (
+    <div className={cn("relative", bare ? "size-full" : "size-[80%]")}>
+      {(!url || imgFailed) && (
+        <div className="absolute inset-0">
+          <Sprite
+            shape={meta.shape}
+            primary={meta.color}
+            accent={meta.accent ?? meta.color}
+          />
+        </div>
+      )}
+      {url && !imgFailed && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={url}
@@ -439,6 +590,7 @@ function ItemArtwork({ item, meta }: { item: string; meta: ItemMeta }) {
           // hover label, otherwise browsers render a redundant native
           // tooltip with a delay on top of the Radix one.
           loading="lazy"
+          onError={() => setImgFailed(true)}
           className="absolute inset-0 size-full object-contain"
           style={{ imageRendering: "pixelated" }}
         />

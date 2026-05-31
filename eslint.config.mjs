@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Scratch directory used by build-*.mjs scripts: contains
+    // extracted Cobblemon mod sources (Kotlin/JS) that aren't
+    // ours to lint.
+    "tmp/**",
   ]),
 ]);
 

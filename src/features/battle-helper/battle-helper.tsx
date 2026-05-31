@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Crown, AlertTriangle, Zap, ShieldCheck, Skull, X } from "lucide-react";
+import { Crown, AlertTriangle, Zap, ShieldCheck, Skull, Swords, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -19,11 +19,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { TypeBadge, TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
-import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
+import { POKEMON_BY_ID } from "@/data/pokemon";
 import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
+import { PokemonPickerTrigger } from "@/features/team-builder/pokemon-picker-trigger";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
 import { buildBattleRecommendation, getBestCounters } from "@/lib/battle";
 import { resolveTeam } from "@/lib/team-analysis";
@@ -170,20 +172,22 @@ export function BattleHelper() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Select value={opponentId ?? ""} onValueChange={(v) => setOpponentId(v)}>
-            <SelectTrigger className="max-w-sm">
-              <SelectValue placeholder="Choisis l'adversaire…" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {POKEMON.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    #{p.dexNumber} · {p.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          {/* Searchable picker dialog instead of a 1186-row Select —
+              same shortcut to filter by type and search by name as in
+              the team builder. */}
+          <PokemonPicker
+            onPick={(id) => setOpponentId(id)}
+            trigger={
+              opponent ? (
+                <PokemonPickerTrigger pokemon={opponent} className="max-w-sm" />
+              ) : (
+                <Button variant="outline" className="max-w-sm">
+                  <Swords data-icon="inline-start" />
+                  Choisir l&apos;adversaire…
+                </Button>
+              )
+            }
+          />
         </CardContent>
       </Card>
 

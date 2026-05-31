@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, MapPin, Clock, CloudSun, Layers, Key, Target } from "lucide-react";
+import { ChevronDown, MapPin, Clock, CloudSun, Layers, Key, Target, CircleDot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -167,7 +167,9 @@ function SpawnMetaStrip({
         </MetaChip>
       )}
       {catchRate != null && (
-        <MetaChip icon={<Target className="size-3.5" />} label="Capture">
+        // Distinct icon from "Niveau" — both used `Target` before, which
+        // made the level/catch chips read as duplicates at a glance.
+        <MetaChip icon={<CircleDot className="size-3.5" />} label="Capture">
           <span className="font-mono">{catchRate} / 255</span>
         </MetaChip>
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Lightbulb, ArrowRight } from "lucide-react";
+import { ArrowRight, Lightbulb } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -36,10 +36,10 @@ export function SmartTips() {
   const topWeakness = (
     Object.entries(analysis.sharedWeaknesses) as [PokemonTypeId, number][]
   ).sort(([, a], [, b]) => b - a)[0];
-  const suggestion = analysis.suggestions[0];
+  const topReplacement = analysis.replacements[0];
 
   // Nothing actionable? Skip.
-  if (!topWeakness && !suggestion) return null;
+  if (!topWeakness && !topReplacement) return null;
 
   return (
     <Card>
@@ -70,22 +70,34 @@ export function SmartTips() {
           </div>
         )}
 
-        {suggestion && (
+        {topReplacement && (
           <Link
-            href={`/pokedex/${suggestion.id}`}
+            href={`/pokedex/${topReplacement.candidate.id}`}
             className="flex items-center justify-between gap-3 rounded-md border p-3 hover:bg-accent"
           >
             <div className="flex items-center gap-3">
-              <PokemonSprite pokemon={suggestion} size="size-10" />
+              <PokemonSprite pokemon={topReplacement.candidate} size="size-10" />
               <div className="flex flex-col gap-0.5">
                 <span className="text-[10px] uppercase text-muted-foreground">
-                  Recommandé à ajouter
+                  {topReplacement.current
+                    ? `Remplacer ${topReplacement.current.name}`
+                    : "Recommandé à ajouter"}
                 </span>
-                <span className="font-medium">{suggestion.name}</span>
-                <TypeBadges types={suggestion.types} size="sm" />
+                <span className="font-medium">
+                  {topReplacement.candidate.name}
+                </span>
+                <TypeBadges
+                  types={topReplacement.candidate.types}
+                  size="sm"
+                />
               </div>
             </div>
-            <ArrowRight className="size-4 text-muted-foreground" />
+            <div className="flex items-center gap-2">
+              <Badge variant="default" className="font-mono">
+                +{topReplacement.gain}
+              </Badge>
+              <ArrowRight className="size-4 text-muted-foreground" />
+            </div>
           </Link>
         )}
 

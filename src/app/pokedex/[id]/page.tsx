@@ -10,6 +10,8 @@ import { hasEvolutions } from "@/features/pokedex/evolution-chain";
 import { WeaknessCompact } from "@/features/pokedex/weakness-compact";
 import { PokeSnackCooking } from "@/features/pokedex/poke-snack-cooking";
 import { CatchingGuide } from "@/features/pokedex/catching-guide";
+import { DropsCard } from "@/features/pokedex/drops-card";
+import { hasDrops } from "@/data/species-extras";
 import { MovesExplorer } from "@/features/pokedex/moves-explorer";
 import { StrategySection, TeammatesSection, hasTeammates } from "@/features/pokedex/strategy-section";
 
@@ -88,6 +90,18 @@ export default async function PokemonDetailPage({
       >
         <CatchingGuide pokemon={pokemon} spawn={spawn} />
       </SectionCard>
+
+      {/* Drops & loot — Cobblemon-specific farming data. Hidden when
+          the species has no drop table so the page stays tight for
+          unobtainable forms. */}
+      {hasDrops(pokemon.id) && (
+        <SectionCard
+          title="Drops & loot"
+          description="Objets qui peuvent tomber après un K.O. — utile pour planifier les farms."
+        >
+          <DropsCard pokemonId={pokemon.id} />
+        </SectionCard>
+      )}
 
       {/* Attaques — at the bottom of the page; full explorer inline */}
       <SectionCard

@@ -110,14 +110,19 @@ function VerticalChain({
   currentId: string;
   fillHeight: boolean;
 }) {
+  // Only distribute slack between stages when there are at least
+  // three rows to absorb it. With a 2-stage chain (Riolu → Lucario),
+  // `justify-between` shoves them to the column extremities and the
+  // middle reads as a "missing stage" gap. Stacking from the top with
+  // a fixed gap keeps the chain compact and lets the surrounding card
+  // absorb any leftover height naturally.
+  const spread = fillHeight && stages.length >= 3;
   return (
     <div
       className={cn(
         "flex flex-col items-stretch gap-3",
-        // When the parent column is taller than the chain's natural
-        // height, distribute the empty space evenly between stages
-        // instead of leaving a gap at the bottom.
-        fillHeight && "h-full justify-between",
+        fillHeight && "h-full",
+        spread && "justify-between",
       )}
     >
       {stages.map((stage, stageIdx) => (

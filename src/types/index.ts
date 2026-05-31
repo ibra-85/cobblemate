@@ -209,10 +209,46 @@ export interface Pokemon {
   isLegendary?: boolean;
 }
 
+/**
+ * Per-Pokémon EV spread (0–252 per stat, total capped at 508 in
+ * canonical Pokémon rules — the UI enforces the cap, not the type).
+ * All fields optional so partial spreads load cleanly.
+ */
+export interface EvSpread {
+  hp?: number;
+  atk?: number;
+  def?: number;
+  spa?: number;
+  spd?: number;
+  spe?: number;
+}
+
+/**
+ * A team slot. Beyond the Pokémon id, the slot carries the **set
+ * configuration**: the talent, item and moves the user is actually
+ * running. This is the V3 source of truth the analysis layer reads
+ * from — when fields are absent the engine falls back to "any
+ * available", which is explicitly weaker and lower-confidence
+ * scoring (the user complaint: "ne jamais créditer automatiquement
+ * le meilleur talent").
+ *
+ * `nature` and `evs` are reserved for V4: not consumed yet, but the
+ * field shapes are committed now so saved teams written today don't
+ * need a migration when the EV UI ships.
+ */
 export interface TeamSlot {
   pokemonId: string | null;
   nickname?: string;
+  /** Active talent — exactly the one the mon is running. */
+  selectedAbility?: string;
+  /** Held item id (Cobblemon-style "minecraft:apple" or wiki slug). */
+  selectedItem?: string;
+  /** 1–4 declared moves. Length ≤ 4. */
   selectedMoves?: string[];
+  /** Nature label ("Adamant", "Modeste", …). Reserved for V4. */
+  nature?: string;
+  /** EV distribution. Reserved for V4. */
+  evs?: EvSpread;
 }
 
 export interface SavedTeam {
