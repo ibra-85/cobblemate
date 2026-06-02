@@ -279,25 +279,38 @@ function AddFilterButton({
                   {meta.label}
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="max-h-[--available-height] min-w-44 overflow-y-auto">
-                    {options.map((o) => (
-                      <DropdownMenuCheckboxItem
-                        key={o.value}
-                        checked={isValueSelected(kind, o.value)}
-                        onCheckedChange={() =>
-                          onPickCategorical(kind, o.value)
-                        }
-                        closeOnClick={false}
-                      >
-                        {o.color && (
-                          <span
-                            className="size-2.5 rounded-full"
-                            style={{ backgroundColor: o.color }}
-                          />
-                        )}
-                        {o.label}
-                      </DropdownMenuCheckboxItem>
-                    ))}
+                  <DropdownMenuSubContent className="min-w-44">
+                    {/* Long categorical lists (biome has 76 entries) get
+                        a searchable popover instead of a scrolling
+                        dropdown — too many items to scan visually. */}
+                    {options.length > 15 ? (
+                      <SearchableValueList
+                        options={options}
+                        isValueSelected={(v) => isValueSelected(kind, v)}
+                        onPick={(v) => onPickCategorical(kind, v)}
+                      />
+                    ) : (
+                      <div className="max-h-[var(--radix-dropdown-menu-content-available-height)] overflow-y-auto">
+                        {options.map((o) => (
+                          <DropdownMenuCheckboxItem
+                            key={o.value}
+                            checked={isValueSelected(kind, o.value)}
+                            onCheckedChange={() =>
+                              onPickCategorical(kind, o.value)
+                            }
+                            closeOnClick={false}
+                          >
+                            {o.color && (
+                              <span
+                                className="size-2.5 rounded-full"
+                                style={{ backgroundColor: o.color }}
+                              />
+                            )}
+                            {o.label}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </div>
+                    )}
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -306,6 +319,57 @@ function AddFilterButton({
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+// ─── Searchable picker for long lists ───────────────────────────────────
+
+function SearchableValueList({
+  options,
+  isValueSelected,
+  onPick,
+}: {
+  options: ReturnType<typeof getOptions>;
+  isValueSelected: (value: string) => boolean;
+  onPick: (value: string) => void;
+}) {
+  return (
+    <Command className="w-56">
+      <CommandInput placeholder="Filtrer…" />
+      <CommandList className="max-h-[260px]">
+        <CommandEmpty>Aucun résultat.</CommandEmpty>
+        <CommandGroup>
+          {options.map((o) => {
+            const checked = isValueSelected(o.value);
+            return (
+              <CommandItem
+                key={o.value}
+                value={o.label}
+                onSelect={() => onPick(o.value)}
+              >
+                <span
+                  className={cn(
+                    "grid size-4 place-items-center rounded-sm border",
+                    checked
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-input",
+                  )}
+                >
+                  {checked && <Check className="size-3" />}
+                </span>
+                {o.color && (
+                  <span
+                    className="size-2.5 rounded-full"
+                    style={{ backgroundColor: o.color }}
+                  />
+                )}
+                <span className="truncate">{o.label}</span>
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      </CommandList>
+    </Command>
   );
 }
 

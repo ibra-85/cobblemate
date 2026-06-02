@@ -11,7 +11,7 @@ export interface TypeMeta {
 
 export const TYPES_META: Record<PokemonTypeId, TypeMeta> = {
   normal:   { id: "normal",   label: "Normal",   color: "#A8A77A", fg: "#1a1a1a" },
-  fire:     { id: "fire",     label: "Feu",      color: "#EE8130", fg: "#ffffff" },
+  fire:     { id: "fire",     label: "Feu",      color: "#EE8130", fg: "#1a1a1a" },
   water:    { id: "water",    label: "Eau",      color: "#6390F0", fg: "#ffffff" },
   electric: { id: "electric", label: "Électrik", color: "#F7D02C", fg: "#1a1a1a" },
   grass:    { id: "grass",    label: "Plante",   color: "#7AC74C", fg: "#1a1a1a" },
@@ -20,7 +20,7 @@ export const TYPES_META: Record<PokemonTypeId, TypeMeta> = {
   poison:   { id: "poison",   label: "Poison",   color: "#A33EA1", fg: "#ffffff" },
   ground:   { id: "ground",   label: "Sol",      color: "#E2BF65", fg: "#1a1a1a" },
   flying:   { id: "flying",   label: "Vol",      color: "#A98FF3", fg: "#1a1a1a" },
-  psychic:  { id: "psychic",  label: "Psy",      color: "#F95587", fg: "#ffffff" },
+  psychic:  { id: "psychic",  label: "Psy",      color: "#F95587", fg: "#1a1a1a" },
   bug:      { id: "bug",      label: "Insecte",  color: "#A6B91A", fg: "#1a1a1a" },
   rock:     { id: "rock",     label: "Roche",    color: "#B6A136", fg: "#1a1a1a" },
   ghost:    { id: "ghost",    label: "Spectre",  color: "#735797", fg: "#ffffff" },

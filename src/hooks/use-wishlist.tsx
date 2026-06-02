@@ -4,28 +4,15 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
+import { createLocalStorageStore, useIsHydrated } from "@/lib/local-storage-store";
 
-const STORAGE_KEY = "cobblemate.wishlist.v1";
-
-function read(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function write(ids: string[]) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-}
+const wishlistStore = createLocalStorageStore<string[]>(
+  "cobblemate.wishlist.v1",
+  [],
+);
 
 interface WishlistApi {
   ids: string[];
@@ -33,6 +20,9 @@ interface WishlistApi {
   has: (id: string) => boolean;
   toggle: (id: string) => void;
   clear: () => void;
+  /** False on the server / first hydration paint, true afterwards.
+   *  Gate any UI that would flash if it briefly rendered with the
+   *  empty fallback. */
   hydrated: boolean;
 }
 
@@ -41,25 +31,14 @@ const WishlistContext = createContext<WishlistApi | null>(null);
 /**
  * One shared instance of the wishlist state across the whole app.
  *
- * Before: `useWishlist()` had its own state + localStorage subscription,
- * so a Pokédex with 1000 cards meant 1000 effects and 1000 storage
- * listeners — typing in the search box triggered a re-render storm.
- * Now there's a single source of truth at the layout level; cards just
- * read from context.
+ * Subscribes the layout to the localStorage-backed store via
+ * `useSyncExternalStore` (inside `wishlistStore.use()`), so a Pokédex
+ * with 1000 cards still mounts a single subscription instead of one
+ * per card.
  */
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [ids, setIds] = useState<string[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setIds(read());
-    setHydrated(true);
-    function onStorage(e: StorageEvent) {
-      if (e.key === STORAGE_KEY) setIds(read());
-    }
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  const ids = wishlistStore.use();
+  const hydrated = useIsHydrated();
 
   // Set-backed membership lookup so `has()` stays O(1) even when the
   // wishlist grows past hundreds of entries.
@@ -68,18 +47,13 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const has = useCallback((id: string) => idSet.has(id), [idSet]);
 
   const toggle = useCallback((id: string) => {
-    setIds((prev) => {
-      const next = prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id];
-      write(next);
-      return next;
-    });
+    wishlistStore.write((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
   }, []);
 
   const clear = useCallback(() => {
-    setIds([]);
-    write([]);
+    wishlistStore.write([]);
   }, []);
 
   const value = useMemo<WishlistApi>(

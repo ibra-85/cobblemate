@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { TypeBadge } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON_BY_ID } from "@/data/pokemon";
-import { MOVE_BY_ID } from "@/data/moves";
+import { lookupMove } from "@/data/moves";
 import type {
   Pokemon,
   PokemonUsage,
@@ -77,7 +77,7 @@ function UsageBlock<T extends string = string>({
 }
 
 function MoveLabel({ id }: { id: string }) {
-  const m = MOVE_BY_ID[id];
+  const m = lookupMove(id);
   if (!m) return <span>{id}</span>;
   return (
     <>
@@ -174,7 +174,7 @@ function SetCard({ set }: { set: StrategySet }) {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs uppercase text-muted-foreground">Capacités</span>
           {set.moves.map((slot, i) => {
-            const main = MOVE_BY_ID[slot.primary];
+            const main = lookupMove(slot.primary);
             return (
               <div key={i} className="flex flex-wrap items-center gap-2">
                 {main ? (
@@ -189,7 +189,7 @@ function SetCard({ set }: { set: StrategySet }) {
                   <>
                     <span className="text-xs text-muted-foreground">/</span>
                     {slot.alternatives.map((altId) => {
-                      const alt = MOVE_BY_ID[altId];
+                      const alt = lookupMove(altId);
                       return alt ? (
                         <span
                           key={altId}

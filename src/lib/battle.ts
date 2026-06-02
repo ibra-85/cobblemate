@@ -1,4 +1,4 @@
-import { MOVE_BY_ID } from "@/data/moves";
+import { lookupMove } from "@/data/moves";
 import { POKEMON } from "@/data/pokemon";
 import type { Move, Pokemon, PokemonTypeId } from "@/types";
 import { ALL_TYPES, calculateTypeEffectiveness } from "@/lib/type-chart";
@@ -23,10 +23,18 @@ export interface CounterScore {
  *
  * The /600 BST term acts as a tie-breaker: when offense/defense are
  * equal, more powerful Pokémon edge ahead.
+ *
+ * @param movesOverride
+ *   Optional `pokemonId → moveIds[]` map. When a Pokémon has an entry,
+ *   the move scoring uses *those* moves instead of the species'
+ *   default `notableMoves` — that's how the battle assistant respects
+ *   the actual set the user configured in the team builder. Falls back
+ *   to `notableMoves` for any Pokémon without an entry.
  */
 export function getBestTeamMemberAgainst(
   team: Pokemon[],
   target: Pokemon,
+  movesOverride?: Map<string, string[]>,
 ): CounterScore[] {
   return team
     .map<CounterScore>((p) => {
@@ -38,10 +46,14 @@ export function getBestTeamMemberAgainst(
         ...target.types.map((t) => calculateTypeEffectiveness(t, p.types)),
       );
 
-      // Pick best known move against target if movepool data is available.
-      const moves = p.notableMoves
-        .map((id) => MOVE_BY_ID[id])
-        .filter(Boolean) as Move[];
+      // Prefer the user-declared moves when available — gives a much
+      // more accurate "best move against target" for Pokémon whose
+      // notableMoves list is broad (Dragonite has 30+ notable moves,
+      // but the user's actual set has only 4).
+      const movePool = movesOverride?.get(p.id) ?? p.notableMoves;
+      const moves = movePool
+        .map((id) => lookupMove(id))
+        .filter((m): m is Move => m !== null);
       const bestMove = moves
         .filter((m) => m.category !== "status" && m.power)
         .sort((a, b) => {
@@ -83,8 +95,9 @@ export interface BattleRecommendation {
 export function buildBattleRecommendation(
   team: Pokemon[],
   target: Pokemon,
+  movesOverride?: Map<string, string[]>,
 ): BattleRecommendation {
-  const ranked = getBestTeamMemberAgainst(team, target);
+  const ranked = getBestTeamMemberAgainst(team, target, movesOverride);
   const avoid = ranked
     .filter((r) => r.worstIncoming >= 2 || r.bestOffense < 1)
     .slice(-3);
@@ -92,7 +105,7 @@ export function buildBattleRecommendation(
   // Collect the types of the target's notable moves to surface coverage threats.
   const moveTypes = new Set<PokemonTypeId>();
   for (const id of target.notableMoves) {
-    const m = MOVE_BY_ID[id];
+    const m = lookupMove(id);
     if (m && m.category !== "status") moveTypes.add(m.type);
   }
   for (const t of target.types) moveTypes.add(t);

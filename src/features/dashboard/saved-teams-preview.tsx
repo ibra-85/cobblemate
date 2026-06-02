@@ -66,7 +66,7 @@ export function SavedTeamsPreview() {
         return (
           <Link
             key={t.id}
-            href="/team-builder"
+            href={`/team-builder?team=${encodeURIComponent(t.id)}`}
             className="group flex items-center gap-4 rounded-md border px-3 py-2.5 transition-colors hover:border-foreground/20 hover:bg-accent/40"
           >
             <div className="flex -space-x-2">

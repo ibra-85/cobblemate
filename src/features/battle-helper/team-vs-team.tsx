@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { X } from "lucide-react";
+import { Swords, X } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,17 +10,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { TYPES_META } from "@/data/types";
-import type { Pokemon, TeamSlot } from "@/types";
+import type { Pokemon, PokemonTypeId, TeamSlot } from "@/types";
 import { calculateTypeEffectiveness } from "@/lib/type-chart";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
 import { resolveTeam } from "@/lib/team-analysis";
@@ -86,6 +81,19 @@ export function TeamVsTeam() {
     setLoadedTeamId(id);
   }
 
+  // Same override pattern as the assistant — when the user loaded a
+  // saved team with declared moves, the matrix's "best counter"
+  // calculation uses *those* moves, not the species' notableMoves.
+  const myMovesOverride = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const s of mySlots) {
+      if (s.pokemonId && s.selectedMoves && s.selectedMoves.length > 0) {
+        m.set(s.pokemonId, s.selectedMoves);
+      }
+    }
+    return m.size > 0 ? m : undefined;
+  }, [mySlots]);
+
   /**
    * Per-enemy best counter from my team. The picked Pokémon is highlighted
    * with a ring in the matrix below.
@@ -94,14 +102,14 @@ export function TeamVsTeam() {
     if (myTeam.length === 0) return new Map<string, string>();
     return new Map(
       enemyTeam.map((e) => {
-        const ranked = getBestTeamMemberAgainst(myTeam, e);
+        const ranked = getBestTeamMemberAgainst(myTeam, e, myMovesOverride);
         const top =
           ranked.find((r) => r.bestOffense >= 2 && r.worstIncoming <= 1) ??
           ranked[0];
         return [e.id, top?.pokemon.id ?? ""];
       }),
     );
-  }, [myTeam, enemyTeam]);
+  }, [myTeam, enemyTeam, myMovesOverride]);
 
   const myIds = mySlots
     .map((s) => s.pokemonId)
@@ -166,15 +174,18 @@ export function TeamVsTeam() {
       </Card>
 
       {myTeam.length === 0 || enemyTeam.length === 0 ? (
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>Composer les deux équipes</EmptyTitle>
-            <EmptyDescription>
-              Dès qu&apos;il y a au moins 1 Pokémon de chaque côté, la matrice
-              de matchups s&apos;affiche.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
+        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed bg-card/30 px-6 py-12 text-center">
+          <div className="grid size-12 place-items-center rounded-full bg-primary/10 text-primary">
+            <Swords className="size-5" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="font-medium">Composer les deux équipes</p>
+            <p className="max-w-sm text-xs text-muted-foreground">
+              Dès qu&apos;il y a au moins 1 Pokémon de chaque côté, la
+              matrice de matchups s&apos;affiche.
+            </p>
+          </div>
+        </div>
       ) : (
         <MatchupMatrix
           myTeam={myTeam}
@@ -198,7 +209,7 @@ function TeamSlots({
   excludeIds: string[];
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
       {slots.map((s, i) => {
         const p = s.pokemonId ? POKEMON_BY_ID[s.pokemonId] : null;
         if (!p) {
@@ -210,32 +221,75 @@ function TeamSlots({
               trigger={
                 <button
                   type="button"
-                  className="grid h-20 w-full place-items-center rounded-md border-2 border-dashed text-xs text-muted-foreground hover:border-primary hover:text-primary"
+                  className="group/empty flex h-full min-h-[8.5rem] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card/30 text-muted-foreground transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/60 hover:bg-accent/30 hover:text-primary"
                 >
-                  + Slot {i + 1}
+                  <span className="grid size-9 place-items-center rounded-full border border-dashed border-current transition-transform duration-200 ease-out group-hover/empty:scale-110">
+                    <Swords className="size-4" />
+                  </span>
+                  <span className="text-[11px] font-medium">Ajouter</span>
                 </button>
               }
             />
           );
         }
-        return (
-          <div
-            key={i}
-            className="relative flex h-20 flex-col items-center justify-center gap-1 rounded-md border bg-card px-2 text-center text-xs"
-          >
-            <button
-              type="button"
-              onClick={() => onClear(i)}
-              className="absolute right-1 top-1 grid size-5 place-items-center rounded-full text-muted-foreground hover:text-destructive"
-              aria-label="Retirer"
-            >
-              <X className="size-3" />
-            </button>
-            <PokemonSprite pokemon={p} size="size-10" />
-            <span className="truncate">{p.name}</span>
-          </div>
-        );
+        return <FilledMatchupSlot key={i} pokemon={p} onClear={() => onClear(i)} />;
       })}
+    </div>
+  );
+}
+
+/**
+ * Premium-styled slot for the team-vs-team matrix inputs. Mirrors the
+ * compact slot used by the battle assistant — same halo, same hover
+ * lift — so the two pages feel like one feature.
+ */
+function FilledMatchupSlot({
+  pokemon,
+  onClear,
+}: {
+  pokemon: Pokemon;
+  onClear: () => void;
+}) {
+  const t1 = pokemon.types[0] as PokemonTypeId;
+  const t2 = (pokemon.types[1] ?? pokemon.types[0]) as PokemonTypeId;
+  const c1 = TYPES_META[t1]?.color ?? "#888";
+  const c2 = TYPES_META[t2]?.color ?? "#888";
+  return (
+    <div
+      className="group/slot relative h-full"
+      style={
+        {
+          "--type-accent": `${c1}66`,
+          "--type-glow": `${c1}33`,
+        } as React.CSSProperties
+      }
+    >
+      <div className="relative flex h-full flex-col items-center gap-1.5 overflow-hidden rounded-xl border bg-card px-2 py-3 text-center transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[var(--type-accent)] hover:shadow-lg hover:shadow-[var(--type-glow)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-20 blur-2xl"
+          style={{
+            background: `radial-gradient(55% 60% at 35% 45%, ${c1}28, transparent 70%), radial-gradient(50% 55% at 70% 60%, ${c2}1f, transparent 70%)`,
+          }}
+        />
+        <div className="relative z-10 transition-transform duration-200 ease-out group-hover/slot:scale-[1.06]">
+          <PokemonSprite pokemon={pokemon} size="size-14 md:size-16" />
+        </div>
+        <span className="relative z-10 truncate text-xs font-semibold leading-tight">
+          {pokemon.name}
+        </span>
+        <div className="relative z-10">
+          <TypeBadges types={pokemon.types} size="sm" />
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onClear}
+        className="absolute right-1.5 top-1.5 z-20 grid size-5 cursor-pointer place-items-center rounded-full bg-background/80 text-muted-foreground opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:text-destructive group-hover/slot:opacity-100 focus-visible:opacity-100"
+        aria-label={`Retirer ${pokemon.name}`}
+      >
+        <X className="size-3" />
+      </button>
     </div>
   );
 }

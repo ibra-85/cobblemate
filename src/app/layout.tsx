@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className="min-h-full bg-background font-sans text-foreground">
         <ThemeProvider>
           <WishlistProvider>
-            <TooltipProvider delay={200}>
+            <TooltipProvider delay={0}>
               <div className="flex min-h-screen">
                 <Sidebar />
                 <div className="flex min-w-0 flex-1 flex-col">

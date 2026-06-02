@@ -19,62 +19,123 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { TypeBadge, TypeBadges } from "@/components/site/type-badge";
-import { PokemonSprite } from "@/components/site/pokemon-sprite";
+import { TypeBadge } from "@/components/site/type-badge";
 import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
-import { MOVES, MOVE_BY_ID } from "@/data/moves";
+import { MOVES, lookupMove } from "@/data/moves";
+import { getSpeciesExtras } from "@/data/species-extras";
 import { calculateDamage } from "@/lib/damage";
+import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
+import { PokemonPickerTrigger } from "@/features/team-builder/pokemon-picker-trigger";
+import type { Move, Pokemon } from "@/types";
 
+/**
+ * Resolve a list of move ids into the typed `Move` records, deduping
+ * by id and dropping unknowns. Centralised so the multi-tier
+ * `availableMoves` pipeline doesn't repeat the same map/filter dance
+ * for each tier.
+ */
+function collectMoves(ids: string[]): Move[] {
+  const out = new Map<string, Move>();
+  for (const id of ids) {
+    if (out.has(id)) continue;
+    const m = lookupMove(id);
+    if (m) out.set(id, m);
+  }
+  return [...out.values()];
+}
+
+/**
+ * Searchable Pokémon picker for the calc form — replaces a 1186-row
+ * native `<Select>` that nuked scrolling perf on slow devices.
+ * Delegates the trigger button to the shared `PokemonPickerTrigger`
+ * so the calc, battle helper and team builder all read the same way.
+ */
 function PokemonSelect({
-  value,
+  pokemon,
   onChange,
   label,
 }: {
-  value: string;
+  pokemon: Pokemon;
   onChange: (v: string) => void;
   label: string;
 }) {
   return (
     <div className="flex flex-col gap-2">
       <Label>{label}</Label>
-      <Select value={value} onValueChange={(v) => v && onChange(v)}>
-        <SelectTrigger>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {POKEMON.map((p) => (
-              <SelectItem key={p.id} value={p.id}>
-                #{p.dexNumber} · {p.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <PokemonPicker
+        onPick={onChange}
+        trigger={<PokemonPickerTrigger pokemon={pokemon} />}
+      />
     </div>
   );
 }
 
-export function DamageCalc() {
-  const [attackerId, setAttackerId] = useState(POKEMON[0]?.id ?? "");
-  const [defenderId, setDefenderId] = useState(POKEMON[1]?.id ?? POKEMON[0]?.id ?? "");
-  const [moveId, setMoveId] = useState<string>("");
+interface DamageCalcProps {
+  /** Pre-select the attacker (Pokémon id). Defaults to the first roster entry. */
+  initialAttacker?: string;
+  /** Pre-select the defender. Defaults to the second roster entry. */
+  initialDefender?: string;
+  /** Pre-select the move (id or English Smogon name). */
+  initialMove?: string;
+}
+
+export function DamageCalc({
+  initialAttacker,
+  initialDefender,
+  initialMove,
+}: DamageCalcProps = {}) {
+  // Validate the suggestions against the live roster — a stale URL
+  // param shouldn't crash the page.
+  const attackerSeed =
+    (initialAttacker && POKEMON_BY_ID[initialAttacker]?.id) ?? POKEMON[0]?.id ?? "";
+  const defenderSeed =
+    (initialDefender && POKEMON_BY_ID[initialDefender]?.id) ??
+    POKEMON[1]?.id ??
+    POKEMON[0]?.id ??
+    "";
+  const moveSeed = initialMove ? lookupMove(initialMove)?.id ?? "" : "";
+
+  const [attackerId, setAttackerId] = useState(attackerSeed);
+  const [defenderId, setDefenderId] = useState(defenderSeed);
+  const [moveId, setMoveId] = useState<string>(moveSeed);
   const [level, setLevel] = useState(50);
 
   const attacker = POKEMON_BY_ID[attackerId];
   const defender = POKEMON_BY_ID[defenderId];
 
-  // Restrict the move list to the attacker's notable moves if any, else show all.
+  // Move list, in this order of preference:
+  //  1. `notableMoves` from the strategy dataset — small, curated list
+  //     (the moves competitive players actually run).
+  //  2. The full Cobblemon learnset from species-extras — bounded by
+  //     species (~60–100 entries), still scannable.
+  //  3. All 909 moves — pathological fallback for unlisted species,
+  //     kept only so the picker never appears empty.
+  //
+  // The earlier code skipped step 2 and jumped straight from a curated
+  // list to all 909 moves, which crushed the dropdown on Ditto, Unown,
+  // Smeargle, Cosmog and the Necrozma forms (the seven mons that ship
+  // with no notableMoves entry).
   const availableMoves = useMemo(() => {
     if (!attacker) return MOVES;
-    const learned = attacker.notableMoves
-      .map((id) => MOVE_BY_ID[id])
-      .filter(Boolean);
-    return learned.length > 0 ? learned : MOVES;
+    const fromNotable = collectMoves(attacker.notableMoves);
+    if (fromNotable.length > 0) return fromNotable;
+    const learnset = getSpeciesExtras(attacker.id)?.movesByMethod;
+    if (learnset) {
+      const fromLearnset = collectMoves([
+        ...learnset.level.map((l) => l.move),
+        ...learnset.tm,
+        ...learnset.egg,
+        ...learnset.tutor,
+      ]);
+      if (fromLearnset.length > 0) {
+        return fromLearnset.sort((a, b) => a.name.localeCompare(b.name));
+      }
+    }
+    return MOVES;
   }, [attacker]);
 
   // Reset move when attacker's pool changes and current move not in list.
-  const selectedMove = MOVE_BY_ID[moveId] ?? availableMoves[0];
+  const selectedMove = lookupMove(moveId) ?? availableMoves[0];
   const safeMoveId = selectedMove?.id ?? "";
 
   const result = useMemo(() => {
@@ -94,20 +155,16 @@ export function DamageCalc() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <PokemonSelect
-              value={attackerId}
+              pokemon={attacker}
               onChange={setAttackerId}
               label="Pokémon"
             />
-            <div className="flex items-center gap-3 rounded-md border p-3">
-              <PokemonSprite pokemon={attacker} size="size-12" />
-              <div className="flex flex-1 flex-col gap-1">
-                <span className="text-sm font-semibold">{attacker.name}</span>
-                <TypeBadges types={attacker.types} size="sm" />
-              </div>
-              <div className="text-right text-[10px] text-muted-foreground">
-                <p>Atk {attacker.baseStats.attack}</p>
-                <p>Atk.Spé {attacker.baseStats.spAtk}</p>
-              </div>
+            {/* Stats summary — kept below the picker so the chosen
+                attacker's offensive numbers stay one glance away from
+                the move picker. */}
+            <div className="flex items-center justify-end gap-3 rounded-md border p-3 text-[10px] text-muted-foreground">
+              <p>Atk {attacker.baseStats.attack}</p>
+              <p>Atk.Spé {attacker.baseStats.spAtk}</p>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -164,21 +221,14 @@ export function DamageCalc() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <PokemonSelect
-              value={defenderId}
+              pokemon={defender}
               onChange={setDefenderId}
               label="Pokémon"
             />
-            <div className="flex items-center gap-3 rounded-md border p-3">
-              <PokemonSprite pokemon={defender} size="size-12" />
-              <div className="flex flex-1 flex-col gap-1">
-                <span className="text-sm font-semibold">{defender.name}</span>
-                <TypeBadges types={defender.types} size="sm" />
-              </div>
-              <div className="text-right text-[10px] text-muted-foreground">
-                <p>Déf {defender.baseStats.defense}</p>
-                <p>Déf.Spé {defender.baseStats.spDef}</p>
-                <p>PV {defender.baseStats.hp}</p>
-              </div>
+            <div className="flex items-center justify-end gap-3 rounded-md border p-3 text-[10px] text-muted-foreground">
+              <p>Déf {defender.baseStats.defense}</p>
+              <p>Déf.Spé {defender.baseStats.spDef}</p>
+              <p>PV {defender.baseStats.hp}</p>
             </div>
           </CardContent>
         </Card>

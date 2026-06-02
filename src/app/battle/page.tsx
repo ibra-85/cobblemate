@@ -11,7 +11,27 @@ import { DamageCalc } from "@/features/calc/damage-calc";
 
 export const metadata = { title: "Combat · CobbleMate" };
 
-export default function BattlePage() {
+/**
+ * Accepted query string:
+ *   ?tab=calc          — land on the damage calculator
+ *   ?attacker=<id>     — pre-fill the attacker
+ *   ?defender=<id>     — pre-fill the defender
+ *   ?move=<id or name> — pre-fill the move (lookupMove resolves both)
+ *
+ * The Strategy panel on a Pokémon page uses this to spin up a quick
+ * "Tester ce set" flow with attacker + first move already wired.
+ */
+export default async function BattlePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const pick = (k: string) => (Array.isArray(sp[k]) ? sp[k][0] : sp[k]);
+  const tab = pick("tab");
+  const initialTab =
+    tab === "calc" || tab === "vs-team" || tab === "assistant" ? tab : "assistant";
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
       <header className="flex flex-col gap-1">
@@ -24,7 +44,13 @@ export default function BattlePage() {
         </p>
       </header>
 
-      <Tabs defaultValue="assistant">
+      {/* `key={initialTab}` so a same-route navigation that flips
+          `?tab=…` (e.g. the "Tester dans le calc" CTA from the
+          assistant) actually remounts the Tabs with the new default.
+          Without it, the URL would update but the tab state would
+          stay on its previous value because `defaultValue` is only
+          consumed at mount time. */}
+      <Tabs key={initialTab} defaultValue={initialTab}>
         <TabsList>
           <TabsTrigger value="assistant">
             <Swords data-icon="inline-start" />
@@ -47,7 +73,11 @@ export default function BattlePage() {
           <TeamVsTeam />
         </TabsContent>
         <TabsContent value="calc" className="mt-4">
-          <DamageCalc />
+          <DamageCalc
+            initialAttacker={pick("attacker")}
+            initialDefender={pick("defender")}
+            initialMove={pick("move")}
+          />
         </TabsContent>
       </Tabs>
     </div>

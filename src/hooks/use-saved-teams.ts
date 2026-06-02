@@ -1,45 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { createLocalStorageStore, useIsHydrated } from "@/lib/local-storage-store";
 import type { SavedTeam, TeamSlot } from "@/types";
 
-const STORAGE_KEY = "cobblemate.savedTeams.v1";
+const teamsStore = createLocalStorageStore<SavedTeam[]>(
+  "cobblemate.savedTeams.v1",
+  [],
+);
 
 const EMPTY_SLOTS = (): TeamSlot[] =>
   Array.from({ length: 6 }, () => ({ pokemonId: null }));
 
-function read(): SavedTeam[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as SavedTeam[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function write(teams: SavedTeam[]) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(teams));
-}
-
 /**
  * Persist teams to localStorage. Backed by a single key so importing /
  * exporting an entire roster later is just a JSON dump.
+ *
+ * Subscribed via `useSyncExternalStore` so mounting the hook doesn't
+ * trigger the React-19 "setState inside useEffect" anti-pattern, and
+ * other-tab edits propagate via the storage event for free.
  */
 export function useSavedTeams() {
-  const [teams, setTeams] = useState<SavedTeam[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setTeams(read());
-    setHydrated(true);
-  }, []);
-
-  const persist = useCallback((next: SavedTeam[]) => {
-    setTeams(next);
-    write(next);
-  }, []);
+  const teams = teamsStore.use();
+  const hydrated = useIsHydrated();
 
   const create = useCallback(
     (name: string, slots: TeamSlot[] = EMPTY_SLOTS()) => {
@@ -51,26 +34,26 @@ export function useSavedTeams() {
         createdAt: now,
         updatedAt: now,
       };
-      persist([...teams, team]);
+      teamsStore.write((prev) => [...prev, team]);
       return team;
     },
-    [persist, teams],
+    [],
   );
 
   const update = useCallback(
     (id: string, patch: Partial<Omit<SavedTeam, "id" | "createdAt">>) => {
-      persist(
-        teams.map((t) =>
+      teamsStore.write((prev) =>
+        prev.map((t) =>
           t.id === id ? { ...t, ...patch, updatedAt: Date.now() } : t,
         ),
       );
     },
-    [persist, teams],
+    [],
   );
 
   const remove = useCallback(
-    (id: string) => persist(teams.filter((t) => t.id !== id)),
-    [persist, teams],
+    (id: string) => teamsStore.write((prev) => prev.filter((t) => t.id !== id)),
+    [],
   );
 
   return { teams, hydrated, create, update, remove, emptySlots: EMPTY_SLOTS };

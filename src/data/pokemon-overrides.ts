@@ -141,8 +141,11 @@ export const POKEMON_OVERRIDES: Record<string, Override> = {
       "Immunisé Sol grâce à Lévitation : pivot sur les attaques Sol prévues.",
   },
   garchomp: {
+    // Hidden was previously "Voile Sable" (a malformed duplicate of
+    // the regular ability label) — fixed to the actual Rough Skin
+    // so the optimiser can resolve the Smogon "Rough Skin" set pick.
     abilities: ["Sable Volant"],
-    hiddenAbility: "Voile Sable",
+    hiddenAbility: "Peau Dure",
     notableMoves: ["earthquake", "dragon-claw", "stealth-rock"],
     roles: ["physical-sweeper", "hazard-setter"],
     goodPartners: ["rotom_wash", "ferrothorn"],

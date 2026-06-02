@@ -66,13 +66,27 @@ export interface BaseStats {
 
 export interface Move {
   id: string;
+  /** Primary display name in French. */
   name: string;
+  /** English name from PokeAPI — carried alongside so the UI can show
+   *  a bilingual "Tonnerre · Thunderbolt" without re-querying. Optional
+   *  because the curated catalogue doesn't always carry it. */
+  nameEn?: string;
   type: PokemonTypeId;
   category: MoveCategory;
   power: number | null;
   accuracy: number | null;
   pp: number;
+  /** Hand-tuned short effect kept on a few curated moves. Prefer
+   *  {@link shortEffect} (PokéAPI-sourced, FR, 932 / 937 covered) for
+   *  generic UI; this exists for backwards compatibility. */
   effect?: string;
+  /** Concise mechanical description in French ("A une chance de
+   *  paralyser la cible."). Sourced from PokéAPI `effect_entries`. */
+  shortEffect?: string;
+  /** In-game flavor text in French — the move-dex line the player
+   *  sees when reading a move. Sourced from PokéAPI `flavor_text_entries`. */
+  description?: string;
   priority?: number;
 }
 
@@ -195,10 +209,51 @@ export interface Pokemon {
   isLegendary?: boolean;
 }
 
+/**
+ * Per-Pokémon EV spread (0–252 per stat, total capped at 508 in
+ * canonical Pokémon rules — the UI enforces the cap, not the type).
+ * All fields optional so partial spreads load cleanly.
+ */
+export interface EvSpread {
+  hp?: number;
+  atk?: number;
+  def?: number;
+  spa?: number;
+  spd?: number;
+  spe?: number;
+}
+
+/**
+ * A team slot. Beyond the Pokémon id, the slot carries the **set
+ * configuration**: the talent, item and moves the user is actually
+ * running. This is the V3 source of truth the analysis layer reads
+ * from — when fields are absent the engine falls back to "any
+ * available", which is explicitly weaker and lower-confidence
+ * scoring (the user complaint: "ne jamais créditer automatiquement
+ * le meilleur talent").
+ *
+ * `nature` and `evs` are reserved for V4: not consumed yet, but the
+ * field shapes are committed now so saved teams written today don't
+ * need a migration when the EV UI ships.
+ */
 export interface TeamSlot {
   pokemonId: string | null;
   nickname?: string;
+  /** Active talent — exactly the one the mon is running. */
+  selectedAbility?: string;
+  /** Held item id (Cobblemon-style "minecraft:apple" or wiki slug). */
+  selectedItem?: string;
+  /** 1–4 declared moves. Length ≤ 4. */
   selectedMoves?: string[];
+  /** Nature label ("Adamant", "Modeste", …). */
+  nature?: string;
+  /** EV distribution. Each value 0-252, total ≤ 510. */
+  evs?: EvSpread;
+  /** IV distribution. Each value 0-31. Missing → assume max (31).
+   *  Rarely edited beyond the default — Smogon sets occasionally
+   *  ship `0 Atk` for special attackers (minimises Confusion damage)
+   *  or `0 Spe` for Trick Room. */
+  ivs?: EvSpread;
 }
 
 export interface SavedTeam {

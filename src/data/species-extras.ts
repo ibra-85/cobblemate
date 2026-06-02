@@ -30,6 +30,20 @@ export interface EvYield {
   speed:            number;
 }
 
+export interface LevelMove {
+  level: number;
+  move: string;
+}
+
+export interface MovesByMethod {
+  level:   LevelMove[];
+  egg:     string[];
+  tm:      string[];
+  tutor:   string[];
+  legacy:  string[];
+  special: string[];
+}
+
 export interface SpeciesExtras {
   drops?:               DropTable;
   evYield?:             EvYield;
@@ -46,6 +60,8 @@ export interface SpeciesExtras {
   labels?:              string[];
   /** i18n keys for the dex entry text. */
   pokedex?:             string[];
+  /** Move learnsets split by learning method. */
+  movesByMethod?:       MovesByMethod;
 }
 
 export const SPECIES_EXTRAS_BY_ID: Record<string, SpeciesExtras> =
@@ -70,4 +86,12 @@ export function isParadox(id: string): boolean {
 
 export function isUltraBeast(id: string): boolean {
   return SPECIES_EXTRAS_BY_ID[id]?.labels?.includes("ultra_beast") === true;
+}
+
+/** True when the species has at least one drop entry — server-safe so
+ *  the pokédex detail page can gate the "Drops & loot" section without
+ *  touching the client-only DropsCard module. */
+export function hasDrops(id: string): boolean {
+  const x = SPECIES_EXTRAS_BY_ID[id];
+  return Boolean(x?.drops && x.drops.entries.length > 0);
 }

@@ -30,7 +30,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const OUTPUT = resolve(ROOT, "src/data/biomes-generated.json");
 const CACHE_DIR = resolve(ROOT, "tmp/cobblemon-build-cache");
-const ARCHIVE = join(CACHE_DIR, "cobblemon-mod.tar.gz");
 const EXTRACT_HINT = "cobblemon-main";
 
 const TAGS_URL =
