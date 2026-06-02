@@ -1,5 +1,6 @@
 import { lookupMove } from "@/data/moves";
 import { POKEMON } from "@/data/pokemon";
+import { getSmogonStats, smogonMoveToId } from "@/data/smogon";
 import type { Move, Pokemon, PokemonTypeId } from "@/types";
 import { ALL_TYPES, calculateTypeEffectiveness } from "@/lib/type-chart";
 import { baseStatTotal, getPokemonWeaknesses } from "@/lib/pokemon-utils";
@@ -30,12 +31,38 @@ export interface CounterScore {
  *   default `notableMoves` — that's how the battle assistant respects
  *   the actual set the user configured in the team builder. Falls back
  *   to `notableMoves` for any Pokémon without an entry.
+ * @param targetMoves
+ *   Optional list of moves the *target* is running. When provided,
+ *   `worstIncoming` is computed against the declared moves' types
+ *   (Fire Blast on a Garchomp threatens Steel even though Ground/
+ *   Dragon don't) instead of the target's STAB types only. The TvT
+ *   matrix uses this so a user-declared enemy moveset actually
+ *   matters for the defensive read.
  */
 export function getBestTeamMemberAgainst(
   team: Pokemon[],
   target: Pokemon,
   movesOverride?: Map<string, string[]>,
+  targetMoves?: string[],
 ): CounterScore[] {
+  // Threat types the target can hit with. Walks the declared moves
+  // first (when available) and falls back to the type-chart STAB read
+  // when nothing is declared — keeps backward compat with callers
+  // that pass no `targetMoves`.
+  const targetThreatTypes = (() => {
+    if (!targetMoves || targetMoves.length === 0) return target.types;
+    const types = new Set<PokemonTypeId>();
+    for (const id of targetMoves) {
+      const m = lookupMove(id);
+      if (m && m.category !== "status") types.add(m.type);
+    }
+    // Always include STAB even if the user declared only coverage
+    // moves — losing a STAB on the threat profile would
+    // under-estimate damage.
+    for (const t of target.types) types.add(t);
+    return Array.from(types);
+  })();
+
   return team
     .map<CounterScore>((p) => {
       const offenseTypes = p.types;
@@ -43,7 +70,9 @@ export function getBestTeamMemberAgainst(
         ...offenseTypes.map((t) => calculateTypeEffectiveness(t, target.types)),
       );
       const worstIncoming = Math.max(
-        ...target.types.map((t) => calculateTypeEffectiveness(t, p.types)),
+        ...targetThreatTypes.map((t) =>
+          calculateTypeEffectiveness(t, p.types),
+        ),
       );
 
       // Prefer the user-declared moves when available — gives a much

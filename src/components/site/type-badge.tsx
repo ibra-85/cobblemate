@@ -17,6 +17,23 @@ export function TypeBadge({ type, size = "md", className }: TypeBadgeProps) {
         ? "text-sm px-3 py-1"
         : "text-xs px-2 py-0.5";
 
+  // Unknown types (e.g. Gen 9 "Stellar" tera type coming from Smogon data
+  // — we don't ship a color for it) render as a neutral pill instead of
+  // crashing on `meta.color`.
+  if (!meta) {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center rounded-full border bg-muted font-semibold uppercase tracking-wide text-muted-foreground",
+          sizeClass,
+          className,
+        )}
+      >
+        {type}
+      </span>
+    );
+  }
+
   return (
     <span
       className={cn(
