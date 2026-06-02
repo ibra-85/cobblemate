@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Card,
   CardContent,
@@ -15,7 +16,7 @@ import { getTeamStats } from "@/lib/team-analysis";
  * Snapshot KPI card: average BST, HP pool, speed range and offensive
  * balance. Reveals at-a-glance "all-physical" / "all-slow" pitfalls.
  */
-export function TeamStatsCard({ team }: { team: Pokemon[] }) {
+export const TeamStatsCard = memo(function TeamStatsCard({ team }: { team: Pokemon[] }) {
   if (team.length === 0) return null;
   const s = getTeamStats(team);
 
@@ -52,7 +53,7 @@ export function TeamStatsCard({ team }: { team: Pokemon[] }) {
       </CardContent>
     </Card>
   );
-}
+});
 
 function Kpi({
   label,

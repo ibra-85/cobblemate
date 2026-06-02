@@ -245,10 +245,15 @@ export interface TeamSlot {
   selectedItem?: string;
   /** 1–4 declared moves. Length ≤ 4. */
   selectedMoves?: string[];
-  /** Nature label ("Adamant", "Modeste", …). Reserved for V4. */
+  /** Nature label ("Adamant", "Modeste", …). */
   nature?: string;
-  /** EV distribution. Reserved for V4. */
+  /** EV distribution. Each value 0-252, total ≤ 510. */
   evs?: EvSpread;
+  /** IV distribution. Each value 0-31. Missing → assume max (31).
+   *  Rarely edited beyond the default — Smogon sets occasionally
+   *  ship `0 Atk` for special attackers (minimises Confusion damage)
+   *  or `0 Spe` for Trick Room. */
+  ivs?: EvSpread;
 }
 
 export interface SavedTeam {

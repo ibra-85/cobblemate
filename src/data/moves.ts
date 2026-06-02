@@ -86,6 +86,14 @@ interface GeneratedMove {
 
 const MOVES_DB = movesGenerated as Record<string, GeneratedMove>;
 
+/**
+ * Every move id present in the generated PokeAPI dump — the broader
+ * universe the strategic curated registry is a subset of. Exposed so
+ * other modules (the move picker, learnset filters) can iterate the
+ * full set without coupling to `movesGenerated`'s import path.
+ */
+export const ALL_MOVE_IDS: string[] = Object.keys(MOVES_DB);
+
 /** Normalise a Smogon/Cobblemon move name or id to the generated DB key. */
 function toMoveKey(nameOrId: string): string {
   return nameOrId.toLowerCase().replace(/[^a-z0-9]/g, "");

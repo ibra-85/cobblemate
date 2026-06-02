@@ -6,8 +6,12 @@ import { ItemIcon } from "@/components/site/minecraft-item";
 import { TypeBadges } from "@/components/site/type-badge";
 import { TYPES_META } from "@/data/types";
 import { itemDisplayName } from "@/data/competitive-items";
-import { findMoveById, moveDisplayName } from "@/data/competitive-moves";
-import type { Pokemon, PokemonRole, PokemonTypeId } from "@/types";
+import { moveDisplayName } from "@/data/competitive-moves";
+import { lookupMove } from "@/data/moves";
+import { abilityDisplayFr } from "@/lib/ability-utils";
+import { natureLabelFr } from "@/lib/natures";
+import { matchSlotToSmogonSet } from "@/lib/smogon-set-mapping";
+import type { EvSpread, Move, Pokemon, PokemonRole, PokemonTypeId } from "@/types";
 import { cn } from "@/lib/utils";
 
 const ROLE_LABEL: Record<PokemonRole, string> = {
@@ -66,6 +70,12 @@ interface Props {
    *  (static tags) as the displayed role list — the **single source
    *  of truth** with the scoring engine. */
   activeRoles?: PokemonRole[];
+  /** Roles confirmed by the slot's declared moves (e.g. "pivot" is
+   *  confirmed when Demi-Tour / Change Éclair is in the set). Roles
+   *  in `activeRoles` that are not in `confirmedRoles` are rendered
+   *  with a dashed/dimmed chip so the user sees at a glance which
+   *  ones the scorer credits in full vs. only as potential. */
+  confirmedRoles?: PokemonRole[];
   /** Ability the slot is running (or auto-resolved single talent).
    *  Surfaced on the card so the user sees what their bonus comes
    *  from. */
@@ -75,6 +85,12 @@ interface Props {
   /** 1–4 declared moves. Surfaced under the talent/item line so the
    *  user sees the actual set the engine reads. */
   selectedMoves?: string[];
+  /** Nature label ("Adamant", "Modeste"…). Shown as a tiny footer
+   *  badge so the EV spread reads in context. */
+  nature?: string;
+  /** EV distribution. Surfaced as a compact "252/252/4" line so the
+   *  user can verify a set without opening the config dialog. */
+  evs?: EvSpread;
 }
 
 type ButtonProps = Omit<React.ComponentPropsWithoutRef<"button">, keyof Props>;
@@ -106,9 +122,12 @@ export const PokemonPickerTrigger = forwardRef<
     hint = "Changer",
     variant = "row",
     activeRoles,
+    confirmedRoles,
     selectedAbility,
     selectedItem,
     selectedMoves,
+    nature,
+    evs,
     className,
     ...rest
   },
@@ -120,9 +139,12 @@ export const PokemonPickerTrigger = forwardRef<
         ref={ref}
         pokemon={pokemon}
         activeRoles={activeRoles}
+        confirmedRoles={confirmedRoles}
         selectedAbility={selectedAbility}
         selectedItem={selectedItem}
         selectedMoves={selectedMoves}
+        nature={nature}
+        evs={evs}
         className={className}
         {...rest}
       />
@@ -169,49 +191,77 @@ const CardTrigger = forwardRef<
   {
     pokemon: Pokemon;
     activeRoles?: PokemonRole[];
+    confirmedRoles?: PokemonRole[];
     selectedAbility?: string;
     selectedItem?: string;
     selectedMoves?: string[];
+    nature?: string;
+    evs?: EvSpread;
     className?: string;
   } & Omit<React.ComponentPropsWithoutRef<"button">, "children">
 >(function CardTrigger(
   {
     pokemon,
     activeRoles,
+    confirmedRoles,
     selectedAbility,
     selectedItem,
     selectedMoves,
+    nature,
+    evs,
     className,
     ...rest
   },
   ref,
 ) {
   const rolesToShow = activeRoles ?? pokemon.roles;
+  const confirmedSet = new Set(confirmedRoles ?? []);
   const visibleMoves = (selectedMoves ?? []).slice(0, 4);
+  const evSummary = formatEvSummary(evs);
+  // Match the slot's declared moves against the Pokémon's curated
+  // Smogon sets to surface a "Set: Bulky DD" line — explains why
+  // Gromago suddenly reads as a wall, or Scalpereur as a sweeper,
+  // by naming the archetype.
+  const smogonSetName = matchSlotToSmogonSet(selectedMoves, pokemon.id);
 
   return (
     <button
       ref={ref}
       type="button"
       className={cn(
-        // Hover state: subtle lift + accent border + brighter surface
-        // so the card reads as "pick me up". `group/card` lets the
-        // sprite zone scale up a hair on hover for a premium feel
-        // without animating layout.
-        "group/card relative block h-full w-full cursor-pointer overflow-hidden rounded-xl border bg-card text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg hover:shadow-primary/5",
+        // Hover state: subtle lift + accent border + a glow shadow
+        // tinted by the Pokémon's primary type (CSS var injected
+        // below). `group/card` lets the sprite zone scale up a hair on
+        // hover for a "the card is alive" feel without animating
+        // layout. The type-glow stays subtle — the user said
+        // "vivant, pas RGB gamer".
+        "group/card relative block h-full w-full cursor-pointer overflow-hidden rounded-xl border bg-card text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[var(--type-accent)] hover:shadow-lg hover:shadow-[var(--type-glow)]",
         className,
       )}
+      style={
+        {
+          // Type1 accent at low opacity for the hover glow + border.
+          // Two CSS variables so the hover state can use both without
+          // recomputing colours in the className.
+          "--type-accent": `${TYPES_META[pokemon.types[0] as PokemonTypeId]?.color ?? "#888"}66`,
+          "--type-glow": `${TYPES_META[pokemon.types[0] as PokemonTypeId]?.color ?? "#888"}33`,
+        } as React.CSSProperties
+      }
       {...rest}
     >
       <SpriteZone pokemon={pokemon} />
 
-      <div className="flex flex-col gap-2.5 px-3 pb-3 pt-1 md:px-4 md:pb-4">
+      <div className="flex flex-col gap-2 px-3 pb-3 pt-0.5 md:px-4 md:pb-3.5">
         <Identity pokemon={pokemon} />
 
         {rolesToShow.length > 0 && (
           <div className="flex flex-wrap justify-center gap-1">
             {rolesToShow.slice(0, 3).map((r) => (
-              <RoleChip key={r} role={r} />
+              <RoleChip
+                key={r}
+                role={r}
+                confirmed={confirmedSet.has(r)}
+              />
             ))}
           </div>
         )}
@@ -220,7 +270,7 @@ const CardTrigger = forwardRef<
           <div className="grid grid-cols-2 gap-1.5">
             <MetaCard
               label="Talent"
-              value={selectedAbility}
+              value={selectedAbility ? abilityDisplayFr(selectedAbility) : undefined}
               icon={<span aria-hidden>✦</span>}
             />
             <MetaCard
@@ -238,16 +288,57 @@ const CardTrigger = forwardRef<
         )}
 
         {visibleMoves.length > 0 && (
-          <div className="flex flex-wrap gap-1 border-t pt-2">
-            {visibleMoves.map((id, i) => (
-              <MoveChip key={`${id}-${i}`} id={id} />
-            ))}
+          <MovesGrid moves={visibleMoves} />
+        )}
+
+        {smogonSetName && (
+          <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
+            <span className="opacity-70">Set Smogon ·</span>
+            <span className="font-medium text-foreground/80">
+              {smogonSetName}
+            </span>
+          </div>
+        )}
+
+        {(nature || evSummary) && (
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 border-t pt-1.5 text-[10px] text-muted-foreground">
+            {nature && (
+              <span className="font-medium uppercase tracking-wider">
+                {natureLabelFr(nature)}
+              </span>
+            )}
+            {evSummary && (
+              <span className="font-mono">
+                {evSummary}
+              </span>
+            )}
           </div>
         )}
       </div>
     </button>
   );
 });
+
+/**
+ * Compact EV spread for the card footer: "252 Atk / 252 Spe / 4 HP".
+ * Returns `null` when no EVs are set so the caller can skip rendering
+ * the whole row.
+ */
+function formatEvSummary(evs: EvSpread | undefined): string | null {
+  if (!evs) return null;
+  const keys: { key: keyof EvSpread; label: string }[] = [
+    { key: "hp", label: "HP" },
+    { key: "atk", label: "Atk" },
+    { key: "def", label: "Déf" },
+    { key: "spa", label: "AtS" },
+    { key: "spd", label: "DéS" },
+    { key: "spe", label: "Vit" },
+  ];
+  const parts = keys
+    .map(({ key, label }) => (evs[key] ? `${evs[key]} ${label}` : null))
+    .filter(Boolean);
+  return parts.length > 0 ? parts.join(" / ") : null;
+}
 
 /**
  * Sprite + type-tinted halo. The halo is a soft radial gradient using
@@ -301,15 +392,49 @@ function Identity({ pokemon }: { pokemon: Pokemon }) {
   );
 }
 
-function RoleChip({ role }: { role: PokemonRole }) {
+/**
+ * Role chip with two visual states:
+ *  - **confirmed** (declared moves match the role's key signals)
+ *    → solid tint matching the strategic-family palette.
+ *  - **potential** (role inferred from learnset/stats only)
+ *    → dashed border, reduced opacity, no fill — communicates "the
+ *    mon could do this but isn't committed to it". Native title
+ *    attribute carries the longer explanation.
+ *
+ * Visual rules mirror the team scorer's confirmed-vs-potential
+ * weighting (~5× weaker bonus for potential), so what the user sees
+ * on the card lines up with what the score axes credit.
+ */
+function RoleChip({
+  role,
+  confirmed,
+}: {
+  role: PokemonRole;
+  confirmed: boolean;
+}) {
+  const label = ROLE_LABEL[role] ?? role;
+  if (confirmed) {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium leading-none",
+          ROLE_CHIP[role],
+        )}
+        title={`${label} confirmé par les attaques sélectionnées`}
+      >
+        {label}
+      </span>
+    );
+  }
   return (
+    // Dashed border + dimmed text alone is enough signal for
+    // "potential" — the previous `○` prefix read as noise / a
+    // bullet point. The full reason is still available via tooltip.
     <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium leading-none",
-        ROLE_CHIP[role],
-      )}
+      className="inline-flex items-center rounded-full border border-dashed border-muted-foreground/40 px-2 py-0.5 text-[10px] font-medium leading-none text-muted-foreground/60"
+      title="Rôle potentiel — le Pokémon peut apprendre les attaques associées, mais elles ne sont pas sélectionnées. Sélectionne un set pour confirmer le rôle."
     >
-      {ROLE_LABEL[role] ?? role}
+      {label}
     </span>
   );
 }
@@ -348,25 +473,99 @@ function MetaCard({
 }
 
 /**
- * One declared move, tinted by its type. The coloured dot is a quieter
- * signal than a fully tinted background — at 4 moves stacked, full
- * tints would compete with the sprite halo and the role chips. Falls
- * back to a neutral chip for moves not in the strategic registry (the
- * data layer still resolves a display name via `moveDisplayName`).
+ * Always-2×2 grid of move cells. We pad to 4 cells with `null` so the
+ * layout stays solid even when a set has 1–3 moves declared — half-full
+ * cards still feel like proper sets rather than ragged lists. The
+ * border-t separator above the grid keeps the visual stratum below
+ * talent/item clear.
+ *
+ * Each cell mirrors the in-game move slot affordance: type-tinted
+ * surface + name + a tiny meta line (type · category · power). On
+ * hover the native `title` surfaces accuracy/priority — full custom
+ * tooltips would have required a portal and we keep the card a single
+ * pressable button.
  */
-function MoveChip({ id }: { id: string }) {
-  const match = findMoveById(id);
-  const color = match ? TYPES_META[match.type].color : null;
+function MovesGrid({ moves }: { moves: string[] }) {
+  const cells: (string | null)[] = [0, 1, 2, 3].map((i) => moves[i] ?? null);
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-1.5 py-0.5 text-[11px] font-medium">
-      {color && (
-        <span
-          aria-hidden
-          className="size-2 shrink-0 rounded-full"
-          style={{ backgroundColor: color }}
-        />
+    <div className="grid grid-cols-2 gap-1 border-t pt-1.5">
+      {cells.map((id, i) => (
+        <MoveCell key={i} id={id} />
+      ))}
+    </div>
+  );
+}
+
+const CATEGORY_LABEL: Record<"physical" | "special" | "status", string> = {
+  physical: "Phys",
+  special: "Spé",
+  status: "Stat",
+};
+
+/**
+ * One declared move, "battle UI" style. Three quiet visual cues do all
+ * the work:
+ *  - **left border** in the move's type colour (the only chromatic
+ *    accent — keeps the card calm when 4 moves stack).
+ *  - **background tint** at 8% opacity of the type colour for a
+ *    feels-coloured-but-isn't read.
+ *  - **meta line** (`TYPE · CAT · PWR`) in uppercase tiny mono so the
+ *    set reads like a Showdown export at a glance.
+ *
+ * Empty cells render a dashed placeholder so the user sees at a glance
+ * how many moves are still to declare. Unknown moves (not in either
+ * registry) fall back to the display name only.
+ */
+function MoveCell({ id }: { id: string | null }) {
+  if (!id) {
+    return (
+      <div
+        aria-hidden
+        className="grid min-h-[2.5rem] place-items-center rounded-md border border-dashed border-border/60 text-[10px] text-muted-foreground/50"
+      >
+        —
+      </div>
+    );
+  }
+
+  const move: Move | null = lookupMove(id);
+  const meta = TYPES_META[move?.type as PokemonTypeId];
+  const color = meta?.color ?? "#888";
+  const label = move?.name ?? moveDisplayName(id);
+  const typeLabel = meta?.label ?? "";
+  const catLabel = move ? CATEGORY_LABEL[move.category] : "";
+  const power = move?.power ?? null;
+
+  // Native title carries the richer detail (accuracy + priority +
+  // short effect) so users get the data without a portal-based tooltip.
+  const tooltipLines = [
+    label,
+    typeLabel && catLabel ? `${typeLabel} · ${catLabel === "Stat" ? "Statut" : catLabel === "Phys" ? "Physique" : "Spéciale"}` : "",
+    power != null ? `Puissance : ${power}` : "",
+    move?.accuracy != null ? `Précision : ${move.accuracy}` : "",
+    move?.priority ? `Priorité : ${move.priority > 0 ? "+" : ""}${move.priority}` : "",
+    move?.shortEffect ?? move?.effect ?? "",
+  ].filter(Boolean);
+
+  return (
+    <div
+      title={tooltipLines.join("\n")}
+      className="flex min-h-[2.5rem] flex-col justify-center gap-0.5 rounded-md border border-l-[3px] bg-[color:var(--cell-bg)] px-1.5 py-1 leading-tight"
+      style={
+        {
+          borderLeftColor: color,
+          "--cell-bg": `${color}14`,
+        } as React.CSSProperties
+      }
+    >
+      <span className="truncate text-[11px] font-semibold">{label}</span>
+      {move && (
+        <span className="truncate text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
+          {typeLabel}
+          {catLabel && <> · {catLabel}</>}
+          {power != null && <> · {power}</>}
+        </span>
       )}
-      <span className="truncate">{moveDisplayName(id)}</span>
-    </span>
+    </div>
   );
 }

@@ -44,7 +44,13 @@ export default async function BattlePage({
         </p>
       </header>
 
-      <Tabs defaultValue={initialTab}>
+      {/* `key={initialTab}` so a same-route navigation that flips
+          `?tab=…` (e.g. the "Tester dans le calc" CTA from the
+          assistant) actually remounts the Tabs with the new default.
+          Without it, the URL would update but the tab state would
+          stay on its previous value because `defaultValue` is only
+          consumed at mount time. */}
+      <Tabs key={initialTab} defaultValue={initialTab}>
         <TabsList>
           <TabsTrigger value="assistant">
             <Swords data-icon="inline-start" />

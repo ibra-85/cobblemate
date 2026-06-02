@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Plus } from "lucide-react";
 import {
   Card,
@@ -51,7 +51,7 @@ const AXIS_LABEL: Record<keyof TeamAnalysis["breakdown"], string> = {
  * headline score is the weighted blend (see BREAKDOWN_WEIGHTS in
  * team-analysis.ts).
  */
-export function TeamAnalysisHeader({ analysis }: { analysis: TeamAnalysis }) {
+export const TeamAnalysisHeader = memo(function TeamAnalysisHeader({ analysis }: { analysis: TeamAnalysis }) {
   const weakEntries = orderedEntries(analysis.sharedWeaknesses).filter(([, n]) => n >= 2);
 
   return (
@@ -146,14 +146,14 @@ export function TeamAnalysisHeader({ analysis }: { analysis: TeamAnalysis }) {
       </Card>
     </div>
   );
-}
+});
 
 /**
  * Defensive + offensive coverage block. Lives below the slot grid in
  * the main column — it's the "what's covered, what isn't" surface,
  * dense but glanceable.
  */
-export function TeamAnalysisCoverage({ analysis }: { analysis: TeamAnalysis }) {
+export const TeamAnalysisCoverage = memo(function TeamAnalysisCoverage({ analysis }: { analysis: TeamAnalysis }) {
   const resistEntries = orderedEntries(analysis.resistanceCoverage);
   const immuneEntries = orderedEntries(analysis.immunityCoverage);
 
@@ -205,7 +205,7 @@ export function TeamAnalysisCoverage({ analysis }: { analysis: TeamAnalysis }) {
       </Card>
     </div>
   );
-}
+});
 
 /**
  * Concrete "do this to improve" card.
@@ -224,16 +224,24 @@ export function TeamAnalysisCoverage({ analysis }: { analysis: TeamAnalysis }) {
  * candidates to final evolutions, so there's no risk of accidentally
  * picking up a base form.
  */
-export function TeamAnalysisSuggestions({
+export const TeamAnalysisSuggestions = memo(function TeamAnalysisSuggestions({
   analysis,
   onApply,
 }: {
   analysis: TeamAnalysis;
   onApply: (replacement: TeamReplacement) => void;
 }) {
-  if (analysis.replacements.length === 0) return null;
   const swaps = analysis.replacements.filter((r) => r.current !== null);
   const adds = analysis.replacements.filter((r) => r.current === null);
+
+  // The replacement search now filters out swaps below a quality
+  // threshold (or with too much critical loss) — when the team is
+  // already well-tuned the list comes back empty and we surface a
+  // "nothing meaningful to suggest" state instead of staying silent.
+  // The team-builder pipeline only mounts this component when the
+  // team has ≥1 Pokémon, so we don't need to special-case the empty
+  // team case here.
+  if (analysis.members.length === 0) return null;
 
   return (
     <Card>
@@ -245,6 +253,13 @@ export function TeamAnalysisSuggestions({
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 text-sm">
+        {analysis.replacements.length === 0 && (
+          <p className="rounded-md border border-dashed bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+            Aucune amélioration évidente trouvée — l&apos;équipe est
+            cohérente. Les suggestions qui sacrifient un rôle critique
+            (pivot, hazards, spinblocker…) sont filtrées par défaut.
+          </p>
+        )}
         {swaps.length > 0 && (
           <Section title="Remplacer">
             {swaps.map((r, i) => (
@@ -270,7 +285,7 @@ export function TeamAnalysisSuggestions({
       </CardContent>
     </Card>
   );
-}
+});
 
 function Section({
   title,
@@ -373,21 +388,47 @@ function AxisBar({
  */
 function ThreatRow({ note }: { note: ThreatNote }) {
   const isWarn = note.level === "warn";
+  // Severity drives the border intensity for warn-level notes so the
+  // user can scan severity ahead of reading the label — high = full
+  // destructive border, medium = softer, low = barely visible. Good
+  // notes always render at full emerald regardless.
+  const severity = note.severity ?? "medium";
+  const warnBorder = isWarn
+    ? severity === "high"
+      ? "border-destructive/60 bg-destructive/10"
+      : severity === "medium"
+        ? "border-destructive/30 bg-destructive/5"
+        : "border-destructive/15 bg-destructive/5"
+    : "border-emerald-500/30 bg-emerald-500/5";
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded-md border px-2 py-1.5 text-xs",
-        isWarn
-          ? "border-destructive/30 bg-destructive/5"
-          : "border-emerald-500/30 bg-emerald-500/5",
+        "flex flex-col gap-1 rounded-md border px-2 py-1.5 text-xs",
+        warnBorder,
       )}
     >
-      {isWarn ? (
-        <AlertTriangle className="size-3.5 shrink-0 text-destructive" />
-      ) : (
-        <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+      <div className="flex items-center gap-2">
+        {isWarn ? (
+          <AlertTriangle className="size-3.5 shrink-0 text-destructive" />
+        ) : (
+          <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+        )}
+        <span className="min-w-0 flex-1 font-medium">{note.label}</span>
+        {isWarn && severity === "high" && (
+          <span className="shrink-0 rounded bg-destructive/15 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-destructive">
+            critique
+          </span>
+        )}
+      </div>
+      {note.reasons && note.reasons.length > 0 && (
+        <ul className="flex flex-col gap-0.5 pl-5 text-[11px] text-muted-foreground">
+          {note.reasons.slice(0, 3).map((r, i) => (
+            <li key={i} className="list-disc">
+              {r}
+            </li>
+          ))}
+        </ul>
       )}
-      <span className="min-w-0 flex-1">{note.label}</span>
     </div>
   );
 }
@@ -399,7 +440,7 @@ function ReplacementRow({
   replacement: TeamReplacement;
   onApply: (replacement: TeamReplacement) => void;
 }) {
-  const { current, candidate, gain } = replacement;
+  const { current, candidate, gain, factors } = replacement;
   // Buttons (not Links) — the click applies the swap in-place rather
   // than navigating away. `cursor-pointer` + bordered hover state make
   // the affordance obvious in the narrow right rail.
@@ -407,7 +448,7 @@ function ReplacementRow({
     <button
       type="button"
       onClick={() => onApply(replacement)}
-      className="flex w-full cursor-pointer flex-col gap-1 rounded-md border bg-card px-3 py-2 text-left transition-colors hover:border-primary hover:bg-accent"
+      className="flex w-full cursor-pointer flex-col gap-1.5 rounded-md border bg-card px-3 py-2 text-left transition-colors hover:border-primary hover:bg-accent"
     >
       <div className="flex items-center gap-2 text-muted-foreground">
         {current ? (
@@ -440,6 +481,27 @@ function ReplacementRow({
           +{gain}
         </Badge>
       </div>
+
+      {/* Reasons strip — keeps the suggestion explainable. Tags are
+          coloured by sign so "+ set Smogon viable" reads green and
+          "− rôles déjà couverts" reads muted destructive at a glance. */}
+      {factors && factors.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {factors.map((f, i) => (
+            <span
+              key={i}
+              className={
+                f.sign === "+"
+                  ? "inline-flex items-center gap-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-700 dark:text-emerald-300"
+                  : "inline-flex items-center gap-0.5 rounded border border-destructive/30 bg-destructive/5 px-1.5 py-0.5 text-[10px] text-destructive"
+              }
+            >
+              <span aria-hidden>{f.sign}</span>
+              {f.label}
+            </span>
+          ))}
+        </div>
+      )}
     </button>
   );
 }

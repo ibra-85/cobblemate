@@ -84,7 +84,7 @@ export function RecentTeams() {
           return (
             <Link
               key={t.id}
-              href="/team-builder"
+              href={`/team-builder?team=${encodeURIComponent(t.id)}`}
               className="flex items-center gap-3 rounded-md border bg-card p-3 hover:bg-accent/50"
             >
               <div className="flex -space-x-3">

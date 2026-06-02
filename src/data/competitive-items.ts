@@ -41,6 +41,8 @@ export type ItemCategoryHint =
   | "pinch"
   | "species-specific";
 
+import { lookupItem } from "./items-pokeapi";
+
 export interface CompetitiveItem {
   id: string;
   nameFr: string;
@@ -749,15 +751,24 @@ export function findItemById(id: string | undefined): CompetitiveItem | null {
 }
 
 /**
- * Display name for an arbitrary stored id — known items get their
- * French name, custom ids get a humanised form (snake_case →
- * "Title Case") so the slot card never reads as raw computer
- * gibberish.
+ * Display name for an arbitrary stored id. Lookup order:
+ *  1. Curated registry (`findItemById`) — best hand-tuned French.
+ *  2. PokéAPI dump (`lookupItem` from items-pokeapi, ~2176 entries
+ *     with official Nintendo French names) — covers Smogon meta items
+ *     the curated registry doesn't ship yet (Wellspring Mask, Soul
+ *     Dew, terrain rocks, plate items, etc.).
+ *  3. Humanised id fallback so the card never reads as raw gibberish.
+ *
+ * The PokeAPI fallback closes the gap users hit when "Optimiser sets"
+ * wrote an item id like `wellspring_mask` and the card displayed
+ * "Wellspring Mask" instead of "Masque du Puits".
  */
 export function itemDisplayName(id: string | undefined): string {
   if (!id) return "";
   const match = findItemById(id);
   if (match) return match.nameFr;
+  const pokeapi = lookupItem(id);
+  if (pokeapi) return pokeapi.nameFr;
   return humaniseItemId(id);
 }
 

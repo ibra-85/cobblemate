@@ -1,4 +1,5 @@
-import type { PokemonTypeId } from "@/types";
+import type { Move, PokemonTypeId } from "@/types";
+import { ALL_MOVE_IDS, lookupMove } from "./moves";
 
 /**
  * Curated registry of competitive moves — the *strategic* ones that
@@ -924,4 +925,104 @@ export function searchMoves(
     for (const alias of m.aliases) if (alias.includes(q)) return true;
     return false;
   });
+}
+
+// ─── Pickable move shape (curated ∪ generated) ──────────────────────
+//
+// The move picker in the team builder used to surface only the ~100
+// strategic moves in `COMPETITIVE_MOVES`, which meant species moves
+// like Rafale Écailles / Crocs Feu / Hydroflux were invisible to
+// users picking a set even when the species could learn them. The
+// generated PokeAPI dump (937 moves) carries the data we need for
+// every move that exists — `PickableMove` unifies the two layers so
+// the picker can surface any move while still flagging the
+// strategically tagged ones (setup / hazard / pivot / …).
+
+const STRATEGIC_BY_ID = new Map(COMPETITIVE_MOVES.map((m) => [m.id, m]));
+
+export interface PickableMove {
+  id: string;
+  nameFr: string;
+  nameEn: string;
+  type: PokemonTypeId;
+  category: MoveCategory;
+  power: number | null;
+  accuracy: number | null;
+  /** Strategic tags from the curated registry. Empty for non-curated
+   *  moves — the picker just doesn't render a tag chip then. */
+  tags: MoveTag[];
+  /** Aliases from the curated registry, used to extend search hits
+   *  ("ddance" → Dragon Dance). Empty for non-curated moves. */
+  aliases: string[];
+}
+
+/**
+ * Resolve a move id to a `PickableMove`. Walks the curated registry
+ * first (best data — French names + strategic tags), then falls back
+ * to the generated dump. Returns `null` for ids the app doesn't know
+ * at all so callers can degrade gracefully.
+ */
+export function findPickableMove(id: string): PickableMove | null {
+  const generic: Move | null = lookupMove(id);
+  if (!generic) return null;
+  const strat = STRATEGIC_BY_ID.get(generic.id);
+  return {
+    id: generic.id,
+    nameFr: generic.name,
+    nameEn: generic.nameEn ?? generic.name,
+    type: generic.type,
+    category: generic.category,
+    power: generic.power,
+    accuracy: generic.accuracy,
+    tags: strat?.tags ?? [],
+    aliases: strat?.aliases ?? [],
+  };
+}
+
+/**
+ * Search the full move universe by free-text query, matching the
+ * French name, the English name, the id, and (for strategically
+ * tagged moves) any registered alias.
+ *
+ * `learnsetFilter` walks the learnset when present — typically the
+ * 50-200 moves a species can learn, which is much faster than the
+ * full 937-id sweep. When absent (species missing extras) we fall
+ * back to iterating the whole dump.
+ */
+export function searchPickableMoves(
+  query: string,
+  learnsetFilter?: Set<string>,
+): PickableMove[] {
+  const q = query.trim().toLowerCase();
+  const qId = q.replace(/[-\s]/g, "");
+  const source: Iterable<string> =
+    learnsetFilter && learnsetFilter.size > 0
+      ? learnsetFilter
+      : ALL_MOVE_IDS;
+
+  const results: PickableMove[] = [];
+  for (const id of source) {
+    const m = findPickableMove(id);
+    if (!m) continue;
+    if (!q) {
+      results.push(m);
+      continue;
+    }
+    if (m.id.includes(qId)) {
+      results.push(m);
+      continue;
+    }
+    if (m.nameFr.toLowerCase().includes(q)) {
+      results.push(m);
+      continue;
+    }
+    if (m.nameEn.toLowerCase().includes(q)) {
+      results.push(m);
+      continue;
+    }
+    if (m.aliases.some((a) => a.includes(q))) {
+      results.push(m);
+    }
+  }
+  return results;
 }

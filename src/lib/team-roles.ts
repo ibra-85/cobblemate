@@ -289,6 +289,147 @@ function highImpactAbilityBonus(
   return { bonus: meta.bonus, label: meta.label };
 }
 
+/**
+ * **Highly negative** talents — abilities so handicapping that they
+ * essentially disqualify a Pokémon from competitive consideration.
+ * Surfaced as a flat penalty on every role scorer + consumed by
+ * `team-analysis.ts` as a per-mon team-score penalty so the team
+ * optimiser stops picking Monaflèmit (Truant), Castello (Slow Start)
+ * et al just for their BST.
+ *
+ * Keys are EN-collapsed and EN-spaced — `matchAbilityToPokemon` /
+ * `effectiveAbility` already normalise across formats. Penalty values
+ * mirror the user's spec: Truant -45, Slow Start -35, Defeatist -25.
+ */
+export const NEGATIVE_ABILITIES: Record<
+  string,
+  { penalty: number; label: string }
+> = {
+  Truant: { penalty: 45, label: "Absentéisme" },
+  Slowstart: { penalty: 35, label: "Début Calme" },
+  "Slow Start": { penalty: 35, label: "Début Calme" },
+  Defeatist: { penalty: 25, label: "Défaitiste" },
+  Klutz: { penalty: 15, label: "Maladresse" },
+  Stall: { penalty: 10, label: "Frein" },
+};
+
+/**
+ * Look up the negative-ability penalty for a slot's effective
+ * ability. Returns 0 when the ability is fine (or no ability is
+ * resolved). The matcher tolerates the EN collapsed form Cobblemon
+ * ships ("Slowstart") and the EN spaced form Smogon uses ("Slow
+ * Start").
+ */
+export function negativeAbilityPenalty(
+  p: Pokemon,
+  selectedAbility?: string,
+): { penalty: number; label: string } | null {
+  const ability = effectiveAbility(p, selectedAbility);
+  if (!ability) return null;
+  // Direct lookup first (EN-collapsed or EN-spaced).
+  const direct = NEGATIVE_ABILITIES[ability];
+  if (direct) return direct;
+  // Normalised fallback so e.g. "slow start" / "SlowStart" / FR
+  // overrides like "Début Calme" all land on the same entry.
+  const key = ability.toLowerCase().replace(/[^a-z0-9]/g, "");
+  for (const [k, meta] of Object.entries(NEGATIVE_ABILITIES)) {
+    if (k.toLowerCase().replace(/[^a-z0-9]/g, "") === key) return meta;
+  }
+  return null;
+}
+
+/**
+ * Decide which of a slot's role-profile entries are *confirmed* by
+ * the declared moves on the slot vs. merely *potential* (the species
+ * could learn one of the role's key moves but the user hasn't picked
+ * it). The Pokémon-card UI uses the result to render confirmed roles
+ * solid and potential roles dashed/dimmed, matching the team scorer
+ * which now weights the two very differently.
+ *
+ * Mapping rule, per role:
+ *  - **pivot** → at least one PIVOT_MOVES entry declared
+ *  - **hazard-setter** → at least one HAZARD_SETUP entry declared
+ *  - **support** → at least one of STATUS / RECOVERY / SCREEN moves
+ *  - **lead** → screens or hazards declared
+ *  - **physical-sweeper / special-sweeper** → matching setup move
+ *    declared (Dragon Dance, Calm Mind, …) — these roles can also
+ *    work without setup (cleaners with priority) so we accept any
+ *    declared offensive set as confirmation when a setup move isn't
+ *    available
+ *  - **revenge-killer** → priority move declared
+ *  - **physical-wall / special-wall / mixed-wall** → recovery move
+ *    declared (a wall without recovery is dead in 3 turns)
+ *  - **wallbreaker** → any declared moveset (a wallbreaker is mostly
+ *    a stat profile + STAB; declared moves are enough to commit to
+ *    the role)
+ *
+ * Returns an empty array when `selectedMoves` is empty/missing — the
+ * slot has no declared moves so nothing can be confirmed.
+ */
+export function confirmedRoles(
+  selectedMoves: string[] | undefined,
+): PokemonRole[] {
+  if (!selectedMoves || selectedMoves.length === 0) return [];
+  const pool = new Set(selectedMoves);
+  const out: PokemonRole[] = [];
+  if (knowsAny(pool, PIVOT_MOVES)) out.push("pivot");
+  if (knowsAny(pool, HAZARD_SETUP)) out.push("hazard-setter");
+  if (
+    knowsAny(pool, STATUS_MOVES) ||
+    knowsAny(pool, RECOVERY_MOVES) ||
+    knowsAny(pool, SCREEN_MOVES)
+  ) {
+    out.push("support");
+  }
+  if (knowsAny(pool, SCREEN_MOVES) || knowsAny(pool, HAZARD_SETUP)) {
+    out.push("lead");
+  }
+  if (knowsAny(pool, PHYSICAL_SETUP)) {
+    out.push("physical-sweeper");
+    // Setup is enough to confirm the wallbreaker reading too —
+    // Swords Dance Kingambit, Dragon Dance Dracolosse etc.
+    out.push("wallbreaker");
+  }
+  if (knowsAny(pool, SPECIAL_SETUP)) {
+    out.push("special-sweeper");
+    out.push("wallbreaker");
+  }
+  if (knowsAny(pool, PRIORITY_MOVES)) {
+    out.push("revenge-killer");
+  }
+  if (knowsAny(pool, RECOVERY_MOVES)) {
+    out.push("physical-wall");
+    out.push("special-wall");
+    out.push("mixed-wall");
+  }
+  return Array.from(new Set(out));
+}
+
+/**
+ * Worst-case negative ability assuming the species *might* be forced
+ * onto its only-available talent. Used by the optimiser to avoid
+ * picking Monaflèmit (single-ability Truant) just because its BST is
+ * high. Returns null for Pokémon with at least one safe ability —
+ * the user can still pick the bad one manually but the optimiser
+ * trusts they wouldn't.
+ */
+export function speciesForcedNegativeAbility(
+  p: Pokemon,
+): { penalty: number; label: string } | null {
+  const all = Array.from(
+    new Set([...p.abilities, p.hiddenAbility].filter((a): a is string => !!a)),
+  );
+  if (all.length === 0) return null;
+  // Every accessible ability must be negative for this to bite.
+  let worst: { penalty: number; label: string } | null = null;
+  for (const a of all) {
+    const meta = NEGATIVE_ABILITIES[a];
+    if (!meta) return null;
+    if (!worst || meta.penalty > worst.penalty) worst = meta;
+  }
+  return worst;
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────
 
 function learnsetOf(pokemonId: string): Set<string> {
@@ -787,6 +928,12 @@ export function teamMissingRoles(
   for (let i = 0; i < team.length; i++) {
     const profile = getRoleProfile(team[i]!, slotMoves[i], slotAbilities[i]);
     for (const r of profile.active) covered.add(r);
+    // Union with declarative truth — if the slot has the role's key
+    // moves declared, the role IS filled regardless of where the
+    // probabilistic role-scorer landed (fixes off-by-1 misses like
+    // Motisma 37 vs threshold 38, or Defog/Pain Split that aren't in
+    // the curated STATUS / RECOVERY lists the scorer reads).
+    for (const r of confirmedRoles(slotMoves[i])) covered.add(r);
   }
   const wanted: PokemonRole[] = [
     "physical-sweeper",
