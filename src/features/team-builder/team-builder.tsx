@@ -5,7 +5,6 @@ import {
   Check,
   ChevronDown,
   Copy,
-  Eraser,
   FilePlus2,
   Link as LinkIcon,
   Pencil,
@@ -266,17 +265,6 @@ export function TeamBuilder({
     if (importedFromShare) setImportedFromShare(false);
   }
 
-  /**
-   * Clear all slots in place, keeping the name + editingId.
-   * Different from `newTeam` (which resets the entire workspace) —
-   * useful when the user wants to rebuild the same team from scratch
-   * without losing the team's identity.
-   */
-  function resetSlots() {
-    setSlots(EMPTY());
-    toast.success("Slots vidés.");
-  }
-
   /** Copy the shareable URL for the current team to the clipboard. */
   async function copyShareLink() {
     if (slots.every((s) => !s.pokemonId)) {
@@ -441,18 +429,23 @@ export function TeamBuilder({
     }
 
     setSlots(next);
+    // Concise toast: count in headline, score delta only. The per-mon
+    // set list is already visible on the cards via the "Set Smogon :
+    // …" line — repeating it in the toast was wall-of-text. Detailed
+    // axis deltas only show when something dropped meaningfully.
     const headline = `${applied} set${applied > 1 ? "s" : ""} Smogon appliqué${applied > 1 ? "s" : ""}${
-      skipped > 0 ? ` · ${skipped} sans set` : ""
+      skipped > 0 ? ` · ${skipped} sans` : ""
     }`;
-    const lines = [appliedLabels.join(" · "), deltas.join(" · ")];
-    if (drops.length > 0) {
-      lines.push(
-        `⚠ Baisse marquée sur ${drops.join(", ")} — les sets appliqués ne couvrent plus ces rôles aussi bien.`,
-      );
-    }
+    const description =
+      dScore === 0
+        ? `Score ${before.score} (inchangé)`
+        : `Score ${before.score} → ${after.score} (${signed(dScore)})`;
     toast.success(headline, {
-      description: lines.join("\n"),
-      duration: 7000,
+      description:
+        drops.length > 0
+          ? `${description}\n⚠ Baisse sur ${drops.join(", ")}`
+          : description,
+      duration: 5000,
     });
   }
 
@@ -493,61 +486,34 @@ export function TeamBuilder({
       result.skipped.length > 0 ? ` · ${result.skipped.length} sans set` : ""
     }`;
 
-    // Set names + reasons — show the user *why* the picker chose this
-    // set over the top-1 in the cases where it diverged.
-    const setLines = result.choices.map((c) => {
-      const name = POKEMON_BY_ID[c.pokemonId]?.name ?? c.pokemonId;
-      const why = c.reasons.length > 0 ? ` (${c.reasons.join(", ")})` : "";
-      return `${name} → ${c.setName}${why}`;
-    });
-
-    // Score / axis deltas — same shape as the individual-mode toast
-    // so the two are visually comparable.
-    const deltas: string[] = [];
+    // Concise: score delta + roles restored/missing only. Per-mon
+    // set names are already visible on the cards.
     const dScore = after.score - before.score;
-    deltas.push(`Score ${before.score} → ${after.score} (${signed(dScore)})`);
-    const axes: { key: keyof typeof before.breakdown; label: string }[] = [
-      { key: "hazard", label: "Hazard" },
-      { key: "utility", label: "Utility" },
-      { key: "reliability", label: "Fiabilité" },
-    ];
-    for (const { key, label } of axes) {
-      const dv = after.breakdown[key].value - before.breakdown[key].value;
-      if (Math.abs(dv) >= 10) {
-        deltas.push(
-          `${label} ${before.breakdown[key].value} → ${after.breakdown[key].value} (${signed(dv)})`,
-        );
-      }
-    }
+    const scoreLine =
+      dScore === 0
+        ? `Score ${before.score} (inchangé)`
+        : `Score ${before.score} → ${after.score} (${signed(dScore)})`;
 
-    // Roles restored vs. still missing — pulled from the team-set
-    // optimizer's before/after capability snapshot.
     const restored = formatCapList(
       new Set(
         Array.from(result.rolesAfter).filter((c) => !result.rolesBefore.has(c)),
       ),
     );
-    const allCaps: string[] = [
-      "hazard-setter",
-      "removal",
-      "pivot",
-      "support",
-      "win",
-    ];
-    const stillMissing = allCaps.filter((c) => !result.rolesAfter.has(c));
+    const stillMissing = formatCapList(
+      new Set(
+        ["hazard-setter", "removal", "pivot", "support", "win"].filter(
+          (c) => !result.rolesAfter.has(c),
+        ),
+      ),
+    );
 
-    const lines: string[] = [setLines.join("\n"), deltas.join(" · ")];
-    if (restored.length > 0) {
-      lines.push(`✅ Rôles restaurés : ${restored.join(", ")}`);
-    }
-    if (stillMissing.length > 0) {
-      lines.push(
-        `⚠ Toujours manquant : ${formatCapList(new Set(stillMissing)).join(", ")}`,
-      );
-    }
+    const lines: string[] = [scoreLine];
+    if (restored.length > 0) lines.push(`✅ Restauré : ${restored.join(", ")}`);
+    if (stillMissing.length > 0) lines.push(`⚠ Manque : ${stillMissing.join(", ")}`);
+
     toast.success(headline, {
       description: lines.join("\n"),
-      duration: 9000,
+      duration: 6000,
     });
   }
 
@@ -595,7 +561,6 @@ export function TeamBuilder({
             onGenerateOptimal={generateOptimalTeam}
             onOptimizeSetsIndividual={optimizeAllSets}
             onOptimizeSetsForTeam={optimizeSetsForTeam}
-            onResetSlots={resetSlots}
           />
           <TeamShareDialog
             slots={slots}
@@ -1059,7 +1024,6 @@ function TeamActionsMenu({
   onGenerateOptimal,
   onOptimizeSetsIndividual,
   onOptimizeSetsForTeam,
-  onResetSlots,
 }: {
   hasSlots: boolean;
   onNewTeam: () => void;
@@ -1068,7 +1032,6 @@ function TeamActionsMenu({
   onGenerateOptimal: () => void;
   onOptimizeSetsIndividual: () => void;
   onOptimizeSetsForTeam: () => void;
-  onResetSlots: () => void;
 }) {
   return (
     <DropdownMenu>
@@ -1115,11 +1078,6 @@ function TeamActionsMenu({
         >
           <Wand2 className="size-4" />
           Optimiser pour l&apos;équipe
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onResetSlots} disabled={!hasSlots}>
-          <Eraser className="size-4" />
-          Réinitialiser les slots
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

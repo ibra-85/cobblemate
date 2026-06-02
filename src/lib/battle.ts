@@ -1,5 +1,6 @@
 import { lookupMove } from "@/data/moves";
 import { POKEMON } from "@/data/pokemon";
+import { getSmogonStats, smogonMoveToId } from "@/data/smogon";
 import type { Move, Pokemon, PokemonTypeId } from "@/types";
 import { ALL_TYPES, calculateTypeEffectiveness } from "@/lib/type-chart";
 import { baseStatTotal, getPokemonWeaknesses } from "@/lib/pokemon-utils";
@@ -30,12 +31,38 @@ export interface CounterScore {
  *   default `notableMoves` — that's how the battle assistant respects
  *   the actual set the user configured in the team builder. Falls back
  *   to `notableMoves` for any Pokémon without an entry.
+ * @param targetMoves
+ *   Optional list of moves the *target* is running. When provided,
+ *   `worstIncoming` is computed against the declared moves' types
+ *   (Fire Blast on a Garchomp threatens Steel even though Ground/
+ *   Dragon don't) instead of the target's STAB types only. The TvT
+ *   matrix uses this so a user-declared enemy moveset actually
+ *   matters for the defensive read.
  */
 export function getBestTeamMemberAgainst(
   team: Pokemon[],
   target: Pokemon,
   movesOverride?: Map<string, string[]>,
+  targetMoves?: string[],
 ): CounterScore[] {
+  // Threat types the target can hit with. Walks the declared moves
+  // first (when available) and falls back to the type-chart STAB read
+  // when nothing is declared — keeps backward compat with callers
+  // that pass no `targetMoves`.
+  const targetThreatTypes = (() => {
+    if (!targetMoves || targetMoves.length === 0) return target.types;
+    const types = new Set<PokemonTypeId>();
+    for (const id of targetMoves) {
+      const m = lookupMove(id);
+      if (m && m.category !== "status") types.add(m.type);
+    }
+    // Always include STAB even if the user declared only coverage
+    // moves — losing a STAB on the threat profile would
+    // under-estimate damage.
+    for (const t of target.types) types.add(t);
+    return Array.from(types);
+  })();
+
   return team
     .map<CounterScore>((p) => {
       const offenseTypes = p.types;
@@ -43,7 +70,9 @@ export function getBestTeamMemberAgainst(
         ...offenseTypes.map((t) => calculateTypeEffectiveness(t, target.types)),
       );
       const worstIncoming = Math.max(
-        ...target.types.map((t) => calculateTypeEffectiveness(t, p.types)),
+        ...targetThreatTypes.map((t) =>
+          calculateTypeEffectiveness(t, p.types),
+        ),
       );
 
       // Prefer the user-declared moves when available — gives a much
@@ -70,12 +99,42 @@ export function getBestTeamMemberAgainst(
 }
 
 /**
+ * Cached `pokemonId → top Smogon set moves` lookup. Built lazily on
+ * first call; the dex is static so it's safe to keep for the
+ * session. Lets `getBestCounters` score each roster candidate with
+ * its actual meta set rather than the species' broad notableMoves
+ * (which can include obsolete or off-meta picks).
+ */
+let TOP_SET_MOVES_CACHE: Map<string, string[]> | null = null;
+function getTopSetMovesMap(): Map<string, string[]> {
+  if (TOP_SET_MOVES_CACHE) return TOP_SET_MOVES_CACHE;
+  const m = new Map<string, string[]>();
+  for (const p of POKEMON) {
+    const set = getSmogonStats(p.id)?.sets[0];
+    if (set && set.moves.length > 0) {
+      m.set(
+        p.id,
+        set.moves.map((mv) => smogonMoveToId(mv)),
+      );
+    }
+  }
+  TOP_SET_MOVES_CACHE = m;
+  return m;
+}
+
+/**
  * Find the best counters to a target from the whole roster.
  * Same scoring as `getBestTeamMemberAgainst` but limited to candidates
  * that hit ≥2× *and* resist the target's STAB (worstIncoming ≤ 1).
+ *
+ * Now uses each candidate's top Smogon set as the move pool when
+ * available, so a counter like Heatran is evaluated with its Choice
+ * Specs / Stealth Rock set rather than its (very broad) notableMoves
+ * list. Roster mons without a curated Smogon set fall back to
+ * `notableMoves` automatically.
  */
 export function getBestCounters(target: Pokemon, pool: Pokemon[] = POKEMON): CounterScore[] {
-  return getBestTeamMemberAgainst(pool, target).filter(
+  return getBestTeamMemberAgainst(pool, target, getTopSetMovesMap()).filter(
     (c) => c.bestOffense >= 2 && c.worstIncoming <= 1 && c.pokemon.id !== target.id,
   );
 }
