@@ -99,12 +99,42 @@ export function getBestTeamMemberAgainst(
 }
 
 /**
+ * Cached `pokemonId → top Smogon set moves` lookup. Built lazily on
+ * first call; the dex is static so it's safe to keep for the
+ * session. Lets `getBestCounters` score each roster candidate with
+ * its actual meta set rather than the species' broad notableMoves
+ * (which can include obsolete or off-meta picks).
+ */
+let TOP_SET_MOVES_CACHE: Map<string, string[]> | null = null;
+function getTopSetMovesMap(): Map<string, string[]> {
+  if (TOP_SET_MOVES_CACHE) return TOP_SET_MOVES_CACHE;
+  const m = new Map<string, string[]>();
+  for (const p of POKEMON) {
+    const set = getSmogonStats(p.id)?.sets[0];
+    if (set && set.moves.length > 0) {
+      m.set(
+        p.id,
+        set.moves.map((mv) => smogonMoveToId(mv)),
+      );
+    }
+  }
+  TOP_SET_MOVES_CACHE = m;
+  return m;
+}
+
+/**
  * Find the best counters to a target from the whole roster.
  * Same scoring as `getBestTeamMemberAgainst` but limited to candidates
  * that hit ≥2× *and* resist the target's STAB (worstIncoming ≤ 1).
+ *
+ * Now uses each candidate's top Smogon set as the move pool when
+ * available, so a counter like Heatran is evaluated with its Choice
+ * Specs / Stealth Rock set rather than its (very broad) notableMoves
+ * list. Roster mons without a curated Smogon set fall back to
+ * `notableMoves` automatically.
  */
 export function getBestCounters(target: Pokemon, pool: Pokemon[] = POKEMON): CounterScore[] {
-  return getBestTeamMemberAgainst(pool, target).filter(
+  return getBestTeamMemberAgainst(pool, target, getTopSetMovesMap()).filter(
     (c) => c.bestOffense >= 2 && c.worstIncoming <= 1 && c.pokemon.id !== target.id,
   );
 }

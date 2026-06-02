@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Swords, X } from "lucide-react";
 import {
   Card,
@@ -20,6 +20,11 @@ import { calculateTypeEffectiveness } from "@/lib/type-chart";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
 import { resolveTeam } from "@/lib/team-analysis";
 import { getBestTeamMemberAgainst } from "@/lib/battle";
+import {
+  combatActions,
+  EMPTY_COMBAT_SLOTS,
+  useCombatStore,
+} from "@/lib/combat-store";
 import { cn } from "@/lib/utils";
 
 interface MatchupCell {
@@ -50,35 +55,33 @@ function worstIncoming(defender: Pokemon, attacker: Pokemon) {
   );
 }
 
-const EMPTY_SLOTS = (): TeamSlot[] =>
-  Array.from({ length: 6 }, () => ({ pokemonId: null }));
-
 export function TeamVsTeam() {
   const { teams, hydrated } = useSavedTeams();
-  const [mySlots, setMySlots] = useState<TeamSlot[]>(EMPTY_SLOTS());
-  const [enemySlots, setEnemySlots] = useState<TeamSlot[]>(EMPTY_SLOTS());
-  const [loadedTeamId, setLoadedTeamId] = useState<string | null>(null);
+  const { myTeamId, myAdHocSlots, enemySlots } = useCombatStore();
+
+  // Resolve which slots feed the matrix — when a saved team is loaded,
+  // pull live from the saved-teams store (so a builder edit propagates
+  // here without an extra sync). Otherwise the user is composing an
+  // ad-hoc team and we use their scratch state.
+  const mySlots: TeamSlot[] = myTeamId
+    ? teams.find((t) => t.id === myTeamId)?.slots ?? EMPTY_COMBAT_SLOTS()
+    : myAdHocSlots;
 
   const myTeam = resolveTeam(mySlots);
   const enemyTeam = resolveTeam(enemySlots);
 
   function setMyAt(i: number, id: string | null) {
-    setMySlots((prev) =>
-      prev.map((s, idx) => (idx === i ? { ...s, pokemonId: id } : s)),
+    // If a saved team is loaded, detach by copying its current slots into
+    // ad-hoc before patching — otherwise the action would clear myTeamId
+    // *and* reset every untouched slot, wiping the other 5 Pokémon.
+    const base = myTeamId ? mySlots : myAdHocSlots;
+    const next = base.map((s, idx) =>
+      idx === i ? { ...s, pokemonId: id } : s,
     );
-    setLoadedTeamId(null);
+    combatActions.setMyAdHocSlots(next);
   }
   function setEnemyAt(i: number, id: string | null) {
-    setEnemySlots((prev) =>
-      prev.map((s, idx) => (idx === i ? { ...s, pokemonId: id } : s)),
-    );
-  }
-
-  function loadSavedTeam(id: string) {
-    const t = teams.find((x) => x.id === id);
-    if (!t) return;
-    setMySlots(t.slots);
-    setLoadedTeamId(id);
+    combatActions.setEnemySlot(i, { pokemonId: id });
   }
 
   // Same override pattern as the assistant — when the user loaded a
@@ -96,20 +99,36 @@ export function TeamVsTeam() {
 
   /**
    * Per-enemy best counter from my team. The picked Pokémon is highlighted
-   * with a ring in the matrix below.
+   * with a ring in the matrix below. When the enemy slot has declared
+   * moves, those are passed as the threat-type source so a Garchomp
+   * carrying Fire Blast is correctly seen as a Steel-killer (not just
+   * Ground/Dragon).
    */
   const bestCounters = useMemo(() => {
     if (myTeam.length === 0) return new Map<string, string>();
+    // Index enemy slots by pokemonId so we can pull their declared
+    // moves for the threat read.
+    const enemyMoves = new Map<string, string[]>();
+    for (const s of enemySlots) {
+      if (s.pokemonId && s.selectedMoves && s.selectedMoves.length > 0) {
+        enemyMoves.set(s.pokemonId, s.selectedMoves);
+      }
+    }
     return new Map(
       enemyTeam.map((e) => {
-        const ranked = getBestTeamMemberAgainst(myTeam, e, myMovesOverride);
+        const ranked = getBestTeamMemberAgainst(
+          myTeam,
+          e,
+          myMovesOverride,
+          enemyMoves.get(e.id),
+        );
         const top =
           ranked.find((r) => r.bestOffense >= 2 && r.worstIncoming <= 1) ??
           ranked[0];
         return [e.id, top?.pokemon.id ?? ""];
       }),
     );
-  }, [myTeam, enemyTeam, myMovesOverride]);
+  }, [myTeam, enemyTeam, myMovesOverride, enemySlots]);
 
   const myIds = mySlots
     .map((s) => s.pokemonId)
@@ -134,10 +153,10 @@ export function TeamVsTeam() {
                 <button
                   key={t.id}
                   type="button"
-                  onClick={() => loadSavedTeam(t.id)}
+                  onClick={() => combatActions.loadSavedTeam(t.id)}
                   className={cn(
                     "rounded-full border px-2 py-0.5 text-xs transition-colors",
-                    loadedTeamId === t.id
+                    myTeamId === t.id
                       ? "border-foreground/40 bg-accent text-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground",
                   )}

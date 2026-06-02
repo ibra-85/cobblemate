@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useMemo } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TypeBadge, TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
@@ -28,26 +27,30 @@ import { POKEMON_BY_ID } from "@/data/pokemon";
 import { TYPES_META } from "@/data/types";
 import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
+import {
+  combatActions,
+  EMPTY_COMBAT_SLOTS,
+  useCombatStore,
+} from "@/lib/combat-store";
 import { buildBattleRecommendation, getBestCounters } from "@/lib/battle";
 import { resolveTeam } from "@/lib/team-analysis";
 import { cn } from "@/lib/utils";
-import type { Pokemon, PokemonTypeId, TeamSlot } from "@/types";
-
-const EMPTY_SLOTS = (): TeamSlot[] =>
-  Array.from({ length: 6 }, () => ({ pokemonId: null }));
+import type { Pokemon, PokemonTypeId } from "@/types";
 
 export function BattleHelper() {
   const { teams, hydrated } = useSavedTeams();
-  const [teamId, setTeamId] = useState<string | null>(null);
-  const [adHocSlots, setAdHocSlots] = useState<TeamSlot[]>(EMPTY_SLOTS());
-  const [opponentId, setOpponentId] = useState<string | null>(null);
+  const {
+    myTeamId,
+    myAdHocSlots,
+    selectedEnemyId,
+  } = useCombatStore();
 
-  const slots = teamId
-    ? teams.find((t) => t.id === teamId)?.slots ?? EMPTY_SLOTS()
-    : adHocSlots;
+  const slots = myTeamId
+    ? teams.find((t) => t.id === myTeamId)?.slots ?? EMPTY_COMBAT_SLOTS()
+    : myAdHocSlots;
 
   const team = resolveTeam(slots);
-  const opponent = opponentId ? POKEMON_BY_ID[opponentId] : null;
+  const opponent = selectedEnemyId ? POKEMON_BY_ID[selectedEnemyId] : null;
 
   // Build the per-Pokémon move override from slots so the recommendation
   // uses the moves the user actually chose in the builder (saved teams
@@ -86,9 +89,7 @@ export function BattleHelper() {
     reco?.ranked[0];
 
   function setAdHocSlot(i: number, id: string | null) {
-    setAdHocSlots((prev) =>
-      prev.map((s, idx) => (idx === i ? { ...s, pokemonId: id } : s)),
-    );
+    combatActions.setMyAdHocSlot(i, { pokemonId: id });
   }
 
   const teamIds = slots
@@ -114,8 +115,11 @@ export function BattleHelper() {
           {hydrated && teams.length > 0 && (
             <div className="flex items-center gap-2">
               <Select
-                value={teamId ?? "ad-hoc"}
-                onValueChange={(v) => setTeamId(v === "ad-hoc" ? null : v)}
+                value={myTeamId ?? "ad-hoc"}
+                onValueChange={(v) => {
+                  if (!v || v === "ad-hoc") combatActions.clearSavedTeam();
+                  else combatActions.loadSavedTeam(v);
+                }}
               >
                 <SelectTrigger className="min-w-[14rem] max-w-xs">
                   {/* base-ui's Select.Value renders the raw value by
@@ -153,11 +157,11 @@ export function BattleHelper() {
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {slots.map((s, i) => {
             const p = s.pokemonId ? POKEMON_BY_ID[s.pokemonId] : null;
-            if (teamId && p) {
+            if (myTeamId && p) {
               // Saved-team slot — read-only, click navigates to builder
               return <CompactSlot key={i} pokemon={p} readonly />;
             }
-            if (teamId && !p) {
+            if (myTeamId && !p) {
               return <EmptyCompactSlot key={i} readonly />;
             }
             if (!p) {
@@ -194,7 +198,7 @@ export function BattleHelper() {
             </p>
           </div>
           <PokemonPicker
-            onPick={(id) => setOpponentId(id)}
+            onPick={(id) => combatActions.setSelectedEnemyId(id)}
             trigger={
               opponent ? (
                 <OpponentTrigger pokemon={opponent} />
