@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Swords, X } from "lucide-react";
+import { RotateCcw, Swords, X } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,8 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
+import { EmptyTeamCTA } from "@/features/battle-helper/empty-team-cta";
 import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { TYPES_META } from "@/data/types";
@@ -140,11 +142,24 @@ export function TeamVsTeam() {
   return (
     <div className="flex flex-col gap-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Ton équipe</CardTitle>
-          <CardDescription>
-            Charge une équipe sauvegardée ou compose à la volée.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
+          <div className="flex flex-col gap-1">
+            <CardTitle>Ton équipe</CardTitle>
+            <CardDescription>
+              Charge une équipe sauvegardée ou compose à la volée.
+            </CardDescription>
+          </div>
+          {(myTeamId !== null || myTeam.length > 0) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => combatActions.resetMyAdHoc()}
+              className="gap-1.5 text-xs text-muted-foreground"
+            >
+              <RotateCcw className="size-3.5" />
+              Réinitialiser
+            </Button>
+          )}
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           {hydrated && teams.length > 0 && (
@@ -166,21 +181,42 @@ export function TeamVsTeam() {
               ))}
             </div>
           )}
-          <TeamSlots
-            slots={mySlots}
-            onPick={(i, id) => setMyAt(i, id)}
-            onClear={(i) => setMyAt(i, null)}
-            excludeIds={myIds}
-          />
+          {/* No saved teams AND nothing composed yet → don't display
+              the bare 6-slot grid (reads as "broken empty cards").
+              Push the user toward the Builder for a proper team, but
+              keep the inline picker as a secondary option. */}
+          {hydrated && teams.length === 0 && myTeam.length === 0 ? (
+            <EmptyTeamCTA onCompose={(id) => setMyAt(0, id)} />
+          ) : (
+            <TeamSlots
+              slots={mySlots}
+              onPick={(i, id) => setMyAt(i, id)}
+              onClear={(i) => setMyAt(i, null)}
+              excludeIds={myIds}
+            />
+          )}
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Équipe adverse</CardTitle>
-          <CardDescription>
-            Ajoute jusqu&apos;à 6 Pokémon vus en face.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
+          <div className="flex flex-col gap-1">
+            <CardTitle>Équipe adverse</CardTitle>
+            <CardDescription>
+              Ajoute jusqu&apos;à 6 Pokémon vus en face.
+            </CardDescription>
+          </div>
+          {enemyTeam.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => combatActions.resetEnemySlots()}
+              className="gap-1.5 text-xs text-muted-foreground"
+            >
+              <RotateCcw className="size-3.5" />
+              Réinitialiser
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           <TeamSlots

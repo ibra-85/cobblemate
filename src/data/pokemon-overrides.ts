@@ -64,7 +64,13 @@ export const POKEMON_OVERRIDES: Record<string, Override> = {
   pikachu: {
     abilities: ["Statik"],
     hiddenAbility: "Paratonnerre",
-    evolutions: [{ to: "raichu", method: "Pierre Foudre" }],
+    // NOTE: do not override `evolutions` here — the generated data
+    // file ships two structured rows (Raichu + Raichu Alola) with
+    // typed `details` for item icon / biome chip / consume flag. An
+    // override that hard-codes `{ to: "raichu", method: "Pierre Foudre" }`
+    // wipes the second branch AND strips the `details`, regressing the
+    // chip back to a plain text pill. Same logic applies to any other
+    // species: never override structural fields here.
     notableMoves: ["thunderbolt", "iron-tail", "volt-tackle"],
     roles: ["physical-sweeper"],
     goodPartners: ["snorlax"],

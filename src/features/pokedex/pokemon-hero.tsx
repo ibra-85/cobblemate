@@ -7,6 +7,8 @@ import { CompareDialog } from "@/features/pokedex/compare-dialog";
 import { PokemonDetailsModal } from "@/features/pokedex/pokemon-details-modal";
 import { getSpeciesExtras } from "@/data/species-extras";
 import { isSoloSpecies } from "@/data/pokemon";
+import { lookupAbility } from "@/data/abilities-pokeapi";
+import { abilityDisplayFr } from "@/lib/ability-utils";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import type { SpawnAggregate } from "@/data/spawns";
 import type { Pokemon, Rarity } from "@/types";
@@ -173,18 +175,10 @@ function DetailRows({
     value: (
       <div className="flex flex-wrap gap-2">
         {pokemon.abilities.map((a) => (
-          <Badge key={a} variant="outline" className="text-[11px]">
-            {a}
-          </Badge>
+          <AbilityBadge key={a} stored={a} />
         ))}
         {pokemon.hiddenAbility && (
-          <Badge
-            variant="outline"
-            className="border-primary/40 bg-primary/5 text-[11px] text-primary"
-            title="Talent caché — rare, à débloquer"
-          >
-            {pokemon.hiddenAbility} (caché)
-          </Badge>
+          <AbilityBadge stored={pokemon.hiddenAbility} hidden />
         )}
       </div>
     ),
@@ -279,4 +273,50 @@ function barColor(v: number): string {
   if (v >= 90)  return "#3b82f6";
   if (v >= 60)  return "#eab308";
   return "#dc2626";
+}
+
+/**
+ * Bilingual talent badge. Shows the French label first (what the
+ * player sees in-game / on the Smogon FR side), with the canonical
+ * English ability name in parentheses next to it — power-users
+ * cross-reference Smogon / Bulbapedia / community guides by EN
+ * name. When the FR translation falls back to the EN string
+ * (rare — about a dozen abilities in the dump have no FR), we drop
+ * the parenthetical so the badge doesn't read "Foo (Foo)".
+ *
+ * Hidden talents append "caché" after the parentheses so the
+ * disambiguation reads as "Anticipation (Anticipation) · caché"
+ * rather than wrapping the marker inside.
+ */
+function AbilityBadge({
+  stored,
+  hidden,
+}: {
+  stored: string;
+  hidden?: boolean;
+}) {
+  const fr = abilityDisplayFr(stored);
+  // `lookupAbility` indexes by FR, EN and slug — passing the stored
+  // Cobblemon name (typically EN PascalCase) resolves the PokéAPI
+  // entry that carries both name fields.
+  const en = lookupAbility(stored)?.nameEn ?? stored;
+  const sameFrEn = fr.toLowerCase() === en.toLowerCase();
+  return (
+    <Badge
+      variant="outline"
+      className={
+        hidden
+          ? "border-primary/40 bg-primary/5 text-[11px] text-primary"
+          : "text-[11px]"
+      }
+      title={
+        hidden
+          ? `${en} — Talent caché, rare, à débloquer`
+          : en
+      }
+    >
+      {sameFrEn ? fr : `${fr} (${en})`}
+      {hidden && <span className="ml-1 opacity-70">· caché</span>}
+    </Badge>
+  );
 }

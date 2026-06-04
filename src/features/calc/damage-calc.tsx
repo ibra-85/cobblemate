@@ -579,8 +579,12 @@ function LevelField({
           max={100}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="w-20"
+          className="w-20 font-mono text-sm"
         />
+        {/* Presets match the input's metrics: same `h-8`, same border
+            radius (`rounded-lg`), same `border-input` palette, same
+            font-mono. Reads as one cohesive number row instead of an
+            input with disconnected pills. */}
         <div className="flex gap-1">
           {LEVEL_PRESETS.map((n) => (
             <button
@@ -588,10 +592,10 @@ function LevelField({
               type="button"
               onClick={() => onChange(n)}
               className={cn(
-                "cursor-pointer rounded-full border px-2 py-0.5 text-[10px] font-mono font-medium transition-colors",
+                "h-8 w-12 shrink-0 cursor-pointer rounded-lg border font-mono text-sm font-medium tabular-nums transition-colors",
                 value === n
                   ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                  : "border-input bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground",
               )}
             >
               {n}

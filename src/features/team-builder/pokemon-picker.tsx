@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { Filter, Heart, Plus, RotateCcw, Search } from "lucide-react";
 import {
   Dialog,
@@ -112,12 +112,17 @@ export function PokemonPicker({ onPick, trigger, excludeIds = [] }: Props) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const { ids: wishlistIds, has: isWishlisted } = useWishlist();
 
-  // Re-running the full POKEMON filter on every keystroke is fine
-  // (≤1186 mons, sub-ms), but the memo keeps suggestion logic and
-  // results array referentially stable between identical inputs.
+  // React-19 native debounce: defer the heavy filter input so typing
+  // updates the `<Input>` immediately, while the (potentially 1186-row)
+  // filter recompute and downstream list render run in a lower-priority
+  // pass. When `filters !== deferredFilters` we're "stale" and render
+  // a skeleton row stack so the empty/changing list doesn't flash.
+  const deferredFilters = useDeferredValue(filters);
+  const isStale = deferredFilters !== filters;
+
   const results = useMemo(
-    () => applyFilters(filters, excludeIds, isWishlisted),
-    [filters, excludeIds, isWishlisted],
+    () => applyFilters(deferredFilters, excludeIds, isWishlisted),
+    [deferredFilters, excludeIds, isWishlisted],
   );
 
   function pickAndClose(id: string) {
@@ -226,7 +231,17 @@ export function PokemonPicker({ onPick, trigger, excludeIds = [] }: Props) {
         </p>
 
         <ScrollArea className="h-80">
-          <div className="flex flex-col gap-1 pr-2">
+          {/* While the deferred filter is catching up, dim the list
+              and overlay a skeleton stack. We don't *replace* the
+              previous results because losing the row positions feels
+              twitchier than keeping them under a 40 %-opacity scrim.
+              The skeleton overlay is what reads as "loading". */}
+          <div
+            className={cn(
+              "flex flex-col gap-1 pr-2 transition-opacity",
+              isStale && "opacity-40",
+            )}
+          >
             {results.map((p) => (
               <button
                 key={p.id}
@@ -245,7 +260,7 @@ export function PokemonPicker({ onPick, trigger, excludeIds = [] }: Props) {
                 <TypeBadges types={p.types} size="sm" />
               </button>
             ))}
-            {results.length === 0 && (
+            {results.length === 0 && !isStale && (
               <div className="flex flex-col items-center gap-2 py-10 text-center text-sm text-muted-foreground">
                 <Badge variant="outline">Rien trouvé</Badge>
                 <p>Essaie d&apos;assouplir les filtres.</p>

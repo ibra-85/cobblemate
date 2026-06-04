@@ -130,6 +130,30 @@ function pokeapiItemUrl(id: string): string {
   return `${POKEAPI_ITEMS}/${slug}.png`;
 }
 
+// Minecraft Wiki redirect for vanilla Minecraft items. The
+// `Special:FilePath` MediaWiki path is a stable redirect to the
+// latest version of the named file — Mojang ships new texture
+// variants regularly (`Apple_JE3_BE3.png` → `Apple_JE4_BE5.png`)
+// and the redirect keeps us off the version treadmill. Filenames are
+// TitleCase + underscore-separated (the wiki convention), so
+// `minecraft:golden_apple` → `Golden_Apple.png`.
+//
+// PokéAPI's sprite repo (used by the previous fallback) has zero
+// Minecraft items, which left every snack-recipe slot rendering the
+// generic SVG placeholder. Routing the `minecraft:` prefix here
+// fixes the snack ingredient images (Pomme, Pomme d'or, Carotte
+// dorée, Baies sucrées, …) without needing a local sprite bundle.
+const MINECRAFT_WIKI_FILEPATH =
+  "https://minecraft.wiki/index.php/Special:FilePath";
+
+function minecraftWikiUrl(id: string): string {
+  const name = id
+    .split("_")
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+    .join("_");
+  return `${MINECRAFT_WIKI_FILEPATH}/${encodeURIComponent(name)}.png`;
+}
+
 const ITEMS: Record<string, ItemMeta> = {
   // ─── Base cooking-pot ingredients (direct paths, no redirect) ────
   "#c:drinks/milk":          { color: "#f5f5f5", accent: "#9ca3af", shape: "bucket",  label: "Lait Moomoo",     image: `${WIKI_IMAGES}/f/f3/Moomoo_Milk.png` },
@@ -211,6 +235,28 @@ export function itemImageUrl(itemId: string): string | null {
       return `${BULBAPEDIA_ITEMS}/${competitive.id}.png`;
     }
     return pokeapiItemUrl(competitive.id);
+  }
+  // No competitive-registry entry — split by namespace.
+  //
+  // `minecraft:*` items route to the Minecraft Wiki: PokéAPI's
+  // sprite repo has zero Minecraft items, so falling through there
+  // would 404 every time (the snack-recipe slots — Pomme, Carotte
+  // dorée, Baies sucrées — used to all render the generic SVG).
+  //
+  // `cobblemon:*` items (evolution stones, Pau métal, Improbio, …)
+  // try PokéAPI by kebab-cased name; that covers all mainline-series
+  // items including evolution-only ones that aren't in the
+  // competitive registry.
+  //
+  // `ItemArtwork`'s `onError` falls back to the SVG sprite when
+  // either remote 404s, so Cobblemon-exclusives like `peat_block`
+  // still render a sensible placeholder.
+  if (itemId.startsWith("minecraft:")) {
+    return minecraftWikiUrl(itemId.slice("minecraft:".length));
+  }
+  const stripped = itemId.toLowerCase().replace(/^[a-z]+:/, "");
+  if (stripped && stripped !== itemId.toLowerCase()) {
+    return pokeapiItemUrl(stripped);
   }
   return fallbackImageUrl(itemId);            // best-effort via redirect
 }

@@ -1,8 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { MinecraftSlot, itemMeta } from "@/components/site/minecraft-item";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ItemIcon, itemMeta } from "@/components/site/minecraft-item";
+import { itemDisplayName } from "@/data/competitive-items";
+import { itemSlug, lookupItem } from "@/data/items-pokeapi";
 import { getSpeciesExtras, type DropEntry } from "@/data/species-extras";
 
 interface Props {
@@ -58,12 +66,28 @@ export function DropsCard({ pokemonId }: Props) {
 function DropRow({ drop }: { drop: DropEntry }) {
   const meta = itemMeta(drop.item);
   const tone = dropTone(drop.percentage);
+  // Strip the `cobblemon:` / `minecraft:` prefix to land the
+  // PokéAPI-style slug used by the item detail route. When the slug
+  // resolves we wrap the icon + name in a Link so a click jumps
+  // straight to the item page; tooltip works either way.
+  const bare = drop.item.replace(/^[a-z]+:/, "");
+  const slug = itemSlug(bare);
+  const href = slug ? `/items/${slug}` : null;
+  const fr = itemDisplayName(bare);
+  const pokeapi = lookupItem(bare);
+  const eff = pokeapi?.shortEffect?.trim();
+  const desc = pokeapi?.description?.trim();
+  const showDesc = desc && desc !== eff;
 
-  return (
-    <div className="flex items-center gap-2 rounded-md border bg-card px-2 py-1.5 text-sm">
-      <MinecraftSlot item={drop.item} size="size-9" />
+  const inner = (
+    <div className="flex items-center gap-2 rounded-md border bg-card px-2 py-1.5 text-sm transition-colors hover:bg-accent/40">
+      {/* Plain item image (no inventory-slot chrome). The previous
+          `MinecraftSlot` painted a 3D bevel + dark frame that read as
+          "this is a slot you can interact with" — distracting on a
+          loot list where the items are purely informational. */}
+      <ItemIcon item={drop.item} size="size-7" className="shrink-0" />
       <div className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate font-medium">{meta.label}</span>
+        <span className="truncate font-medium">{fr || meta.label}</span>
         {drop.quantityRange && (
           <span className="font-mono text-[10px] text-muted-foreground">
             ×{drop.quantityRange}
@@ -80,6 +104,42 @@ function DropRow({ drop }: { drop: DropEntry }) {
         </Badge>
       )}
     </div>
+  );
+
+  const triggered = href ? (
+    <Link
+      href={href}
+      className="no-underline"
+      aria-label={`Voir ${fr || meta.label}`}
+    >
+      {inner}
+    </Link>
+  ) : (
+    <div className="cursor-help">{inner}</div>
+  );
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<span className="block">{triggered}</span>} />
+      <TooltipContent>
+        <div className="flex flex-col gap-2 py-0.5 text-left">
+          <div className="flex items-center gap-2.5">
+            <ItemIcon item={drop.item} size="size-9" />
+            <span className="text-sm font-semibold leading-tight text-foreground">
+              {fr || meta.label}
+            </span>
+          </div>
+          {eff && (
+            <p className="text-[11px] leading-snug text-foreground/90">{eff}</p>
+          )}
+          {showDesc && (
+            <p className="text-[10px] italic leading-snug text-muted-foreground">
+              {desc}
+            </p>
+          )}
+        </div>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
