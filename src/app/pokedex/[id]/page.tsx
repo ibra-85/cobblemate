@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
 import { getSpawnsForPokemon } from "@/lib/search";
 import { PokemonHero } from "@/features/pokedex/pokemon-hero";
-import { EvolutionColumn } from "@/features/pokedex/evolution-column";
-import { hasEvolutions } from "@/features/pokedex/evolution-chain";
+import {
+  EvolutionHub,
+  hasEvolutions,
+} from "@/features/pokedex/evolution-chain";
 import { WeaknessCompact } from "@/features/pokedex/weakness-compact";
 import { PokeSnackCooking } from "@/features/pokedex/poke-snack-cooking";
 import { CatchingGuide } from "@/features/pokedex/catching-guide";
@@ -50,13 +52,23 @@ export default async function PokemonDetailPage({
           breathing room and its inner artwork/details/stats grid
           starts wrapping. Solo species collapse the grid to a single
           column regardless. */}
-      {hasEvolutions(pokemon) ? (
-        <div className="grid items-stretch gap-6 xl:grid-cols-[1fr_300px]">
-          <PokemonHero pokemon={pokemon} spawn={spawn} />
-          <EvolutionColumn pokemon={pokemon} />
-        </div>
-      ) : (
-        <PokemonHero pokemon={pokemon} spawn={spawn} />
+      {/* Hero is always full-width. The "Évolutions" section sits
+          below it as its own SectionCard, just like "Où le trouver"
+          and "Drops & loot" — a consistent stack of cards top-to-
+          bottom regardless of how many evolutions the Pokémon has.
+          The earlier sidebar layout caused unavoidable height
+          mismatches (Eevee-tall vs Onix-short next to a fixed-size
+          hero); the section-card approach lets each block size
+          itself naturally. */}
+      <PokemonHero pokemon={pokemon} spawn={spawn} />
+
+      {hasEvolutions(pokemon) && (
+        <SectionCard
+          title="Évolutions"
+          description="Chaînes, branches et conditions d'évolution."
+        >
+          <EvolutionHub pokemon={pokemon} />
+        </SectionCard>
       )}
 
       {/* Stratégie : conseils auto-déduits + notes curatées si dispo */}

@@ -1,0 +1,231 @@
+{
+  "cobblemon:evolution/regional/bergmite_hisuibiome": [
+    "is_hills"
+  ],
+  "cobblemon:evolution/regional/bergmite_kalosbiome": [
+    "is_frozen_ocean"
+  ],
+  "cobblemon:evolution/regional/cubone_alolabiome": [
+    "is_beach",
+    "is_volcanic"
+  ],
+  "cobblemon:evolution/regional/cubone_kantobiome": [
+    "is_arid"
+  ],
+  "cobblemon:evolution/regional/dartrix_alolabiome": [
+    "is_beach",
+    "is_ocean",
+    "is_tropical_island"
+  ],
+  "cobblemon:evolution/regional/dartrix_hisuibiome": [
+    "is_hills",
+    "is_freezing"
+  ],
+  "cobblemon:evolution/regional/dewott_hisuibiome": [
+    "is_coast",
+    "is_cold_ocean"
+  ],
+  "cobblemon:evolution/regional/dewott_unovabiome": [
+    "is_beach",
+    "is_ocean",
+    "is_tropical_island"
+  ],
+  "cobblemon:evolution/regional/exeggcute_alolabiome": [
+    "is_beach",
+    "is_tropical_island"
+  ],
+  "cobblemon:evolution/regional/exeggcute_kantobiome": [
+    "is_jungle",
+    "is_savanna"
+  ],
+  "cobblemon:evolution/regional/goomy_hisuibiome": [
+    "is_dripstone",
+    "is_lush"
+  ],
+  "cobblemon:evolution/regional/goomy_kalosbiome": [
+    "is_swamp"
+  ],
+  "cobblemon:evolution/regional/koffing_galarbiome": [
+    "is_mushroom"
+  ],
+  "cobblemon:evolution/regional/koffing_kantobiome": [
+    "is_toxic"
+  ],
+  "cobblemon:evolution/regional/mimejr_galarbiome": [
+    "is_freezing"
+  ],
+  "cobblemon:evolution/regional/mimejr_sinnohbiome": [
+    "is_temperate"
+  ],
+  "cobblemon:evolution/regional/petilil_hisuibiome": [
+    "is_hills",
+    "is_freezing"
+  ],
+  "cobblemon:evolution/regional/petilil_unovabiome": [
+    "is_floral",
+    "is_forest",
+    "is_tropical_island"
+  ],
+  "cobblemon:evolution/regional/pikachu_alolabiome": [
+    "is_beach",
+    "is_tropical_island"
+  ],
+  "cobblemon:evolution/regional/pikachu_kantobiome": [
+    "is_forest"
+  ],
+  "cobblemon:evolution/regional/quilava_hisuibiome": [
+    "is_taiga",
+    "is_crimson",
+    "is_forest",
+    "is_overgrowth"
+  ],
+  "cobblemon:evolution/regional/quilava_johtobiome": [
+    "is_temperate"
+  ],
+  "cobblemon:evolution/regional/rufflet_hisuibiome": [
+    "is_hills",
+    "is_freezing"
+  ],
+  "cobblemon:evolution/regional/rufflet_unovabiome": [
+    "is_temperate"
+  ],
+  "cobblemon:evolution/vivillon/archipelago": [
+    "is_mushroom"
+  ],
+  "cobblemon:evolution/vivillon/archipelago_anti": [
+    "is_magical",
+    "is_spooky",
+    "is_swamp"
+  ],
+  "cobblemon:evolution/vivillon/continental": [
+    "is_plains"
+  ],
+  "cobblemon:evolution/vivillon/continental_anti": [
+    "is_floral",
+    "is_mushroom",
+    "is_savanna"
+  ],
+  "cobblemon:evolution/vivillon/elegant": [
+    "is_spooky",
+    "is_magical"
+  ],
+  "cobblemon:evolution/vivillon/elegant_anti": [
+    "is_mountain"
+  ],
+  "cobblemon:evolution/vivillon/fancy": [
+    "is_cherry_blossom"
+  ],
+  "cobblemon:evolution/vivillon/forsaken": [
+    "is_deep_dark"
+  ],
+  "cobblemon:evolution/vivillon/garden": [
+    "is_forest"
+  ],
+  "cobblemon:evolution/vivillon/garden_anti": [
+    "is_cherry_blossom",
+    "is_floral",
+    "is_jungle",
+    "is_magical",
+    "is_mountain",
+    "is_mushroom",
+    "is_plains",
+    "is_spooky",
+    "is_swamp"
+  ],
+  "cobblemon:evolution/vivillon/high_plains": [
+    "is_badlands"
+  ],
+  "cobblemon:evolution/vivillon/icy_snow": [
+    "is_taiga"
+  ],
+  "cobblemon:evolution/vivillon/icy_snow_anti": [
+    "is_mountain"
+  ],
+  "cobblemon:evolution/vivillon/inferno": [
+    "is_nether"
+  ],
+  "cobblemon:evolution/vivillon/jungle": [
+    "is_jungle"
+  ],
+  "cobblemon:evolution/vivillon/jungle_anti": [
+    "is_mountain"
+  ],
+  "cobblemon:evolution/vivillon/marine": [
+    "is_ocean"
+  ],
+  "cobblemon:evolution/vivillon/marine_anti": [
+    "is_warm_ocean",
+    "is_frozen_ocean"
+  ],
+  "cobblemon:evolution/vivillon/meadow": [
+    "is_floral"
+  ],
+  "cobblemon:evolution/vivillon/meadow_anti": [
+    "is_cherry_blossom",
+    "is_magical"
+  ],
+  "cobblemon:evolution/vivillon/monsoon": [
+    "is_mountain",
+    "is_peak"
+  ],
+  "cobblemon:evolution/vivillon/monsoon_anti": [
+    "is_badlands",
+    "is_floral",
+    "is_desert",
+    "is_mushroom",
+    "is_tropical_island"
+  ],
+  "cobblemon:evolution/vivillon/ocean": [
+    "is_coast",
+    "is_warm_ocean"
+  ],
+  "cobblemon:evolution/vivillon/ocean_anti": [
+    "is_cold_ocean",
+    "is_frozen_ocean",
+    "is_lukewarm_ocean",
+    "is_temperate_ocean"
+  ],
+  "cobblemon:evolution/vivillon/polar": [
+    "is_frozen_ocean"
+  ],
+  "cobblemon:evolution/vivillon/river": [
+    "is_river",
+    "is_swamp"
+  ],
+  "cobblemon:evolution/vivillon/river_anti": [
+    "is_forest",
+    "is_jungle",
+    "is_magical",
+    "is_spooky"
+  ],
+  "cobblemon:evolution/vivillon/sandstorm": [
+    "is_desert"
+  ],
+  "cobblemon:evolution/vivillon/sandstorm_anti": [
+    "is_badlands"
+  ],
+  "cobblemon:evolution/vivillon/savanna": [
+    "is_savanna"
+  ],
+  "cobblemon:evolution/vivillon/savanna_anti": [
+    "is_badlands",
+    "is_desert",
+    "is_floral",
+    "is_mountain"
+  ],
+  "cobblemon:evolution/vivillon/sun": [
+    "is_sky",
+    "is_volcanic"
+  ],
+  "cobblemon:evolution/vivillon/tundra": [
+    "is_tundra",
+    "is_snowy_forest",
+    "is_glacial"
+  ],
+  "cobblemon:evolution/vivillon/tundra_anti": [
+    "is_mountain"
+  ],
+  "cobblemon:evolution/vivillon/void": [
+    "is_end"
+  ]
+}

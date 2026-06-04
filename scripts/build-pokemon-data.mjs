@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { describeEvolution, mapDetails } from "./lib/evolution.mjs";
 
 const execFileP = promisify(execFile);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -158,17 +159,8 @@ function mapEvolutions(mon) {
     .map((e) => ({
       to: e.result,
       method: describeEvolution(e),
+      details: mapDetails(e),
     }));
-}
-
-function describeEvolution(e) {
-  const variant = e.variant;
-  const lvl = (e.requirements ?? []).find((r) => r.variant === "level");
-  if (variant === "level_up" && lvl?.minLevel) return `Niveau ${lvl.minLevel}`;
-  if (variant === "trade") return "Échange";
-  if (variant === "item_interact") return "Objet";
-  if (variant === "use_item") return "Utiliser objet";
-  return humanize(variant ?? "evolution");
 }
 
 /**

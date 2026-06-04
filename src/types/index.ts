@@ -92,8 +92,68 @@ export interface Move {
 
 export interface Evolution {
   to: string;
+  /** Human-readable French summary ("Niveau 16", "Échange en tenant
+   *  Pau métal"). Always present so legacy renderers stay functional;
+   *  newer UI prefers {@link details} when available. */
   method: string;
+  /** Structured Cobblemon evolution payload — preserved so the UI can
+   *  render typed pills (item icon, partner species sprite, friendship
+   *  hearts, biome chip, …) instead of a flat string. Absent on rows
+   *  imported before the build script learned to capture it. */
+  details?: EvolutionDetails;
 }
+
+/**
+ * Structured copy of the Cobblemon mod's `evolutions[]` entry, minus
+ * fields the UI doesn't need (id, drops). Mirrors the source variants
+ * exactly so future Cobblemon additions degrade to a string fallback
+ * via the catch-all `EvolutionRequirement` shape.
+ */
+export interface EvolutionDetails {
+  /** Top-level trigger: `"level_up"`, `"trade"`, `"item_interact"` or
+   *  `"use_item"`. Cobblemon may add more — renderers should fall back
+   *  to `method` when unknown. */
+  variant: string;
+  /** Raw Cobblemon item/species id required to *start* the evolution.
+   *  For `item_interact`/`use_item` this is the item right-clicked on
+   *  the Pokémon (`cobblemon:thunder_stone`). For `trade` it can be a
+   *  partner species id (`shelmet`). */
+  requiredContext?: string;
+  /** When `true` the held item is destroyed on evolution (Pau métal
+   *  → Steelix, Écaille Prisma → Milotic, …). UI surfaces a warning
+   *  pill so the user knows. */
+  consumeHeldItem?: boolean;
+  /** Conditions the trainer/Pokémon must satisfy in addition to the
+   *  variant. Order is the in-game source order. */
+  requirements?: EvolutionRequirement[];
+  /** Moves the Pokémon learns *with* the evolution. Used in the UI to
+   *  hint "tu débloqueras Lame de Métal en évoluant". */
+  learnableMoves?: string[];
+}
+
+/**
+ * Discriminated union of evolution conditions. Each member matches the
+ * `variant` field of a Cobblemon `requirements[]` entry, with the
+ * variant-specific payload alongside. The trailing index signature is
+ * a catch-all so unknown variants (Cobblemon ships ~25, this list
+ * covers the ones seen in practice) still round-trip through JSON
+ * without losing data.
+ */
+export type EvolutionRequirement =
+  | { variant: "level"; minLevel?: number; maxLevel?: number }
+  | { variant: "friendship"; amount?: number }
+  | { variant: "held_item"; itemCondition?: string }
+  | { variant: "time_range"; range?: string }
+  | { variant: "stat_compare"; highStat?: string; lowStat?: string }
+  | { variant: "biome"; biomeCondition?: string }
+  | { variant: "known_move"; move?: string }
+  | { variant: "known_move_type"; type?: string }
+  | { variant: "world_environment"; environment?: string }
+  | { variant: "weather"; weather?: string }
+  | { variant: "moon_phase"; moonPhase?: string }
+  | { variant: "use_move"; move?: string }
+  | { variant: "party_member"; target?: string }
+  | { variant: string; [extraField: string]: unknown };
 
 /**
  * @deprecated Use `SpawnAggregate` from `@/data/spawns` instead. The

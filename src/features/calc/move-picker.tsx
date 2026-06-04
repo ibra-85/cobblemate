@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useDeferredValue, useMemo, useState } from "react";
 import { ChevronDown, Search, Sparkles } from "lucide-react";
 import {
   Dialog,
@@ -59,11 +59,18 @@ interface Props {
 export function MovePicker({ moves, value, onPick, suggested }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  // React-19 debounce — keep the input snappy by deferring the filter
+  // recompute (over the full move pool, ~900 entries when the
+  // attacker has no notable subset) to a lower-priority pass. When
+  // `query !== deferredQuery` the list is dimmed so the staleness is
+  // visible without flashing "Rien trouvé" between keystrokes.
+  const deferredQuery = useDeferredValue(query);
+  const isStale = deferredQuery !== query;
 
   const selected = value ? moves.find((m) => m.id === value) ?? null : null;
 
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = deferredQuery.trim().toLowerCase();
     if (!q) return moves;
     return moves.filter((m) => {
       const fr = m.name.toLowerCase();
@@ -76,7 +83,7 @@ export function MovePicker({ moves, value, onPick, suggested }: Props) {
         typeLabel.includes(q)
       );
     });
-  }, [moves, query]);
+  }, [moves, deferredQuery]);
 
   function pickAndClose(id: string) {
     onPick(id);
@@ -120,7 +127,12 @@ export function MovePicker({ moves, value, onPick, suggested }: Props) {
         </p>
 
         <ScrollArea className="h-96">
-          <div className="flex flex-col gap-1 pr-2">
+          <div
+            className={cn(
+              "flex flex-col gap-1 pr-2 transition-opacity",
+              isStale && "opacity-40",
+            )}
+          >
             {results.map((m) => (
               <MoveRow
                 key={m.id}
@@ -129,7 +141,7 @@ export function MovePicker({ moves, value, onPick, suggested }: Props) {
                 onClick={() => pickAndClose(m.id)}
               />
             ))}
-            {results.length === 0 && (
+            {results.length === 0 && !isStale && (
               <div className="flex flex-col items-center gap-2 py-10 text-center text-sm text-muted-foreground">
                 <Badge variant="outline">Rien trouvé</Badge>
                 <p>Essaie un autre terme.</p>

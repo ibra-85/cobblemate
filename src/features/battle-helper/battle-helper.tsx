@@ -26,6 +26,7 @@ import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { TYPES_META } from "@/data/types";
 import { PokemonPicker } from "@/features/team-builder/pokemon-picker";
+import { EmptyTeamCTA } from "@/features/battle-helper/empty-team-cta";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
 import {
   combatActions,
@@ -154,41 +155,50 @@ export function BattleHelper() {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-          {slots.map((s, i) => {
-            const p = s.pokemonId ? POKEMON_BY_ID[s.pokemonId] : null;
-            if (myTeamId && p) {
-              // Saved-team slot — read-only, click navigates to builder
-              return <CompactSlot key={i} pokemon={p} readonly />;
-            }
-            if (myTeamId && !p) {
-              return <EmptyCompactSlot key={i} readonly />;
-            }
-            if (!p) {
+        {/* When the user has no saved teams *and* hasn't dropped a
+            single Pokémon, the 6-slot grid reads as "broken empty
+            cards". Replace it with a Builder-first CTA + a quick
+            "compose now" escape hatch. As soon as one Pokémon
+            lands in the ad-hoc team the grid takes over again. */}
+        {hydrated && teams.length === 0 && team.length === 0 ? (
+          <EmptyTeamCTA onCompose={(id) => setAdHocSlot(0, id)} />
+        ) : (
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            {slots.map((s, i) => {
+              const p = s.pokemonId ? POKEMON_BY_ID[s.pokemonId] : null;
+              if (myTeamId && p) {
+                // Saved-team slot — read-only, click navigates to builder
+                return <CompactSlot key={i} pokemon={p} readonly />;
+              }
+              if (myTeamId && !p) {
+                return <EmptyCompactSlot key={i} readonly />;
+              }
+              if (!p) {
+                return (
+                  <PokemonPicker
+                    key={i}
+                    onPick={(id) => setAdHocSlot(i, id)}
+                    excludeIds={teamIds}
+                    trigger={<EmptyCompactSlot />}
+                  />
+                );
+              }
               return (
                 <PokemonPicker
                   key={i}
                   onPick={(id) => setAdHocSlot(i, id)}
-                  excludeIds={teamIds}
-                  trigger={<EmptyCompactSlot />}
+                  excludeIds={teamIds.filter((id) => id !== p.id)}
+                  trigger={
+                    <CompactSlot
+                      pokemon={p}
+                      onClear={() => setAdHocSlot(i, null)}
+                    />
+                  }
                 />
               );
-            }
-            return (
-              <PokemonPicker
-                key={i}
-                onPick={(id) => setAdHocSlot(i, id)}
-                excludeIds={teamIds.filter((id) => id !== p.id)}
-                trigger={
-                  <CompactSlot
-                    pokemon={p}
-                    onClear={() => setAdHocSlot(i, null)}
-                  />
-                }
-              />
-            );
-          })}
-        </div>
+            })}
+          </div>
+        )}
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
           <div>
