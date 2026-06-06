@@ -1,9 +1,25 @@
-import type { Item } from "@/types";
+import type { Item, ItemCategory } from "@/types";
+import generated from "./cobblemon-items-generated.json";
 
 /**
- * Cobblemon items catalog. Recipes verified against the Cobblemon
- * wiki (wiki.cobblemon.com) — quantities and slot positions match
- * the in-game crafting table.
+ * Cobblemon items catalog.
+ *
+ * Two layers feed `ITEMS`:
+ *   1. **Curated entries** (`CURATED_ITEMS` below) — hand-written
+ *      French descriptions, gameplay notes, and recipes for the
+ *      common balls / held items the app has shipped from day one.
+ *   2. **Wiki-scraped catalog** (`cobblemon-items-generated.json`,
+ *      built by `scripts/build-cobblemon-items.mjs`) — every item
+ *      listed under https://wiki.cobblemon.com/index.php/Category:Item
+ *      with its English name, French (when PokéAPI knows it),
+ *      crafting recipe and image URL.
+ *
+ * The merge layer at the bottom picks curated values when both
+ * sources cover the same item (curated wins on `name`,
+ * `description`, `obtain`, `rarity`, and `recipe`), and falls back
+ * to the generated values otherwise. Items that only exist in the
+ * wiki (apricorn ball variants, vitamins, foods, etc.) show up
+ * directly from the generated JSON.
  *
  * Slots use the Cobblemon/Minecraft namespaced id ("cobblemon:foo" or
  * "minecraft:bar"). Empty slots = `null`. `output` is the number of
@@ -44,7 +60,7 @@ function diamondBall(apricorn: string, centre: string): NonNullable<Item["recipe
   };
 }
 
-export const ITEMS: Item[] = [
+const CURATED_ITEMS: Item[] = [
   // ─── Basic (tier 1) Apricorn Balls — diamond + copper ─────────────
   {
     id: "poke-ball",
@@ -540,8 +556,11 @@ export const ITEMS: Item[] = [
     name: "Mouchoir Choix",
     category: "held",
     description: "+50 % de Vitesse mais bloque sur une seule attaque.",
-    obtain: "Crafting avec un Bandeau Vitalité + soie + redstone.",
+    obtain: "Crafting : 4 Laines bleu clair + 3 Diamants + 1 Mouchoir Soie.",
     rarity: "rare",
+    // Recipe omitted — the wiki dump (1.7.0+) supplies the correct
+    // shape and we let the merge layer fill it in. Keeping the
+    // outdated hand-built grid here would override the fresh one.
   },
   {
     id: "choice-band",
@@ -564,8 +583,16 @@ export const ITEMS: Item[] = [
     name: "Lunettes Choix",
     category: "held",
     description: "+50 % d'Attaque Spéciale mais bloque sur une seule attaque.",
-    obtain: "Crafting avec Lunettes Sages + matériaux magiques.",
+    obtain: "Crafting : 2 Bâtons d'Hellfeu + 3 Lingots d'or + 2 Redstone + 1 Lunettes Sages.",
     rarity: "rare",
+    recipe: {
+      grid: [
+        "minecraft:blaze_rod",    "minecraft:blaze_rod", GOLD,
+        "cobblemon:wise_glasses", GOLD,                  "minecraft:redstone",
+        GOLD,                     "minecraft:redstone",  null,
+      ],
+      note: "Lunettes Sages à gauche du centre, Bâtons d'Hellfeu en haut, lingots d'or en diagonale.",
+    },
   },
   {
     id: "assault-vest",
@@ -588,40 +615,80 @@ export const ITEMS: Item[] = [
     name: "Bandeau Vitalité",
     category: "held",
     description: "+10 % de puissance aux attaques physiques.",
-    obtain: "Crafting de base, ingrédient pour le Bandeau Choix.",
+    obtain: "Crafting : 3 Laines jaunes + 2 Lingots d'or + 2 Redstone.",
     rarity: "uncommon",
+    recipe: {
+      grid: [
+        "minecraft:yellow_wool", GOLD,                 "minecraft:yellow_wool",
+        "minecraft:redstone",    GOLD,                 "minecraft:redstone",
+        "minecraft:yellow_wool", null,                 null,
+      ],
+      note: "Lingots d'or au centre, laines jaunes en haut + bas-gauche, redstone sur les côtés.",
+    },
   },
   {
     id: "wise-glasses",
     name: "Lunettes Sages",
     category: "held",
     description: "+10 % de puissance aux attaques spéciales.",
-    obtain: "Crafting de base, ingrédient pour les Lunettes Choix.",
+    obtain: "Crafting : 3 Lingots de fer + 2 Verre.",
     rarity: "uncommon",
+    recipe: {
+      grid: [
+        IRON, IRON,              "minecraft:glass",
+        IRON, "minecraft:glass", null,
+        null, null,              null,
+      ],
+      note: "Coin haut-gauche : 3 fers en L avec 2 verres pour les lentilles.",
+    },
   },
   {
     id: "expert-belt",
     name: "Ceinture Pro",
     category: "held",
     description: "+20 % de dégâts sur les attaques super efficaces.",
-    obtain: "Crafting avec cuir + matériaux types.",
+    obtain: "Crafting : 4 Poudres de Blaze + 4 Laines noires + 1 Ceinture Noire.",
     rarity: "rare",
+    recipe: {
+      grid: [
+        "minecraft:blaze_powder", "minecraft:black_wool", "minecraft:blaze_powder",
+        "minecraft:black_wool",   "cobblemon:black_belt", "minecraft:black_wool",
+        "minecraft:blaze_powder", "minecraft:black_wool", "minecraft:blaze_powder",
+      ],
+      note: "Ceinture Noire au centre, laines noires aux cardinaux, poudres de Blaze aux coins.",
+    },
   },
   {
     id: "rocky-helmet",
     name: "Casque Brut",
     category: "held",
     description: "Inflige 1/6 PV à l'attaquant au contact.",
-    obtain: "Crafting : pierres + lingots de fer.",
+    obtain: "Crafting : 3 Pierres dures + 2 Teintures vert clair + 1 Casque en or + 2 Lingots d'or.",
     rarity: "rare",
+    recipe: {
+      grid: [
+        "cobblemon:hard_stone",      "cobblemon:hard_stone",     "cobblemon:hard_stone",
+        "minecraft:lime_dye",        "minecraft:golden_helmet",  "minecraft:lime_dye",
+        GOLD,                        GOLD,                       null,
+      ],
+      note: "Pierres dures en haut, Casque en or au centre flanqué de teintures, lingots en bas.",
+    },
   },
   {
     id: "focus-sash",
     name: "Ceinture Force",
     category: "held",
     description: "Survit à un coup K.O. avec 1 PV (single-use).",
-    obtain: "Crafting avec corde + matériaux légers.",
+    obtain: "Crafting : 2 Poudres de Blaze + 2 Laines rouges + 1 Lingot de cuivre.",
     rarity: "rare",
+    recipe: {
+      grid: [
+        "minecraft:blaze_powder", "minecraft:red_wool", COPPER,
+        "minecraft:red_wool",     null,                 null,
+        "minecraft:blaze_powder", null,                 null,
+      ],
+      note: "Poudres de Blaze en haut/bas-gauche, laines rouges au centre-gauche, cuivre en haut-droit.",
+    },
   },
   {
     id: "lucky-egg",
@@ -644,8 +711,16 @@ export const ITEMS: Item[] = [
     name: "Multi Exp.",
     category: "held",
     description: "Partage l'XP avec les Pokémon de l'équipe non actifs.",
-    obtain: "Crafting avec lingots d'or + redstone.",
+    obtain: "Crafting : 2 Éclats d'Améthyste + 1 Lingot d'or + 2 Lapis-lazuli + 1 Casque en fer + 2 Lingots de fer.",
     rarity: "uncommon",
+    recipe: {
+      grid: [
+        "minecraft:amethyst_shard", GOLD,                          "minecraft:amethyst_shard",
+        "minecraft:lapis_lazuli",   "minecraft:iron_helmet",       "minecraft:lapis_lazuli",
+        IRON,                       IRON,                          null,
+      ],
+      note: "Casque en fer au centre, éclats d'Améthyste en haut, fer en bas, Lapis-lazuli sur les côtés (recette 1.4.1+).",
+    },
   },
 
   // ─── Evolution items ────────────────────────────────────────────
@@ -745,8 +820,16 @@ export const ITEMS: Item[] = [
     name: "Roche Royale",
     category: "evolution",
     description: "Tenu pendant un échange : évolution royale (Otaria → Lamantine).",
-    obtain: "Drop rare des Pokémon-couronnes.",
+    obtain: "Crafting : 4 Or brut + 1 Grès gravé + 4 Grès. Aussi drop rare des Pokémon-couronnes.",
     rarity: "ultra-rare",
+    recipe: {
+      grid: [
+        "minecraft:chiseled_sandstone", "minecraft:raw_gold",  "minecraft:sandstone",
+        "minecraft:raw_gold",           "minecraft:sandstone", "minecraft:raw_gold",
+        "minecraft:sandstone",          "minecraft:raw_gold",  null,
+      ],
+      note: "Grès gravé en haut-gauche, grès et or brut en alternance autour.",
+    },
   },
   {
     id: "dragon-scale",
@@ -795,7 +878,7 @@ export const ITEMS: Item[] = [
     name: "Rappel",
     category: "healing",
     description: "Ranime un Pokémon avec la moitié de ses PV.",
-    obtain: "Crafting : os + fragment de cristal.",
+    obtain: "Cuisine (Campfire Pot) : Poudre Soin + Pot de miel. Recette informe.",
     rarity: "rare",
   },
   {
@@ -803,7 +886,7 @@ export const ITEMS: Item[] = [
     name: "Rappel Max",
     category: "healing",
     description: "Ranime un Pokémon avec tous ses PV.",
-    obtain: "Crafting : Rappel + cristal vert.",
+    obtain: "Cuisine (Campfire Pot) : 2 Rappels + Vivichoke. Recette informe.",
     rarity: "ultra-rare",
   },
   {
@@ -897,3 +980,110 @@ export const ITEMS: Item[] = [
     rarity: "common",
   },
 ];
+
+// ─── Wiki-generated layer + merge ────────────────────────────────
+
+interface GeneratedItem {
+  id: string;
+  nameEn: string;
+  nameFr: string;
+  category: string;
+  imageUrl: string | null;
+  recipe:
+    | {
+        kind?: "crafting" | "cooking";
+        grid: (string | null)[];
+        output?: number;
+        shapeless?: boolean;
+      }
+    | null;
+}
+
+const GENERATED: Record<string, GeneratedItem> =
+  generated as unknown as Record<string, GeneratedItem>;
+
+/**
+ * Curated ids use hyphens (`poke-ball`); wiki/PokéAPI use
+ * underscores (`poke_ball`). Normalise to a single underscore form
+ * for the merge lookup so neither side is privileged.
+ */
+function toKey(id: string): string {
+  return id.replace(/-/g, "_");
+}
+
+/**
+ * Accept the wiki-generated category strings and narrow them to the
+ * `ItemCategory` union. The build script emits `"natural"` /
+ * `"food"` / `"vitamin"` / `"utility"` directly (extensions of the
+ * curated category list) — anything we don't recognise falls back
+ * to `"held"` which is the safest "general inventory" bucket.
+ */
+const ALLOWED_CATEGORIES = new Set<ItemCategory>([
+  "ball", "held", "evolution", "healing", "berry", "tm", "key",
+  "natural", "food", "vitamin", "utility",
+]);
+function narrowCategory(c: string): ItemCategory {
+  return (ALLOWED_CATEGORIES as Set<string>).has(c)
+    ? (c as ItemCategory)
+    : "held";
+}
+
+const CURATED_BY_KEY = new Map(CURATED_ITEMS.map((i) => [toKey(i.id), i]));
+
+function recipeFromGenerated(gen: GeneratedItem): Item["recipe"] | undefined {
+  if (!gen.recipe) return undefined;
+  return {
+    grid: gen.recipe.grid,
+    output: gen.recipe.output ?? 1,
+    kind: gen.recipe.kind ?? "crafting",
+    shapeless: gen.recipe.shapeless ?? false,
+  };
+}
+
+/**
+ * Merge logic:
+ *   • Every curated entry stays in place (preserves the existing
+ *     section order — apricorn balls, then held, then evolution).
+ *   • For each curated entry, fill in `recipe` from the generated
+ *     dataset if the curated record doesn't have one. The wiki is
+ *     the source of truth for recipes — Cobblemon ships balance
+ *     updates with most patches (1.7.0 rewrote Choice Scarf, moved
+ *     Revive / Max Revive to Campfire Pot only, etc.) and the
+ *     curated entries can lag behind. Prefer the scraped recipe so
+ *     the UI always shows what's currently craftable.
+ *   • Items that exist ONLY in the generated dataset are appended
+ *     after the curated list.
+ */
+const mergedCurated: Item[] = CURATED_ITEMS.map((c) => {
+  const gen = GENERATED[toKey(c.id)];
+  if (!gen) return c;
+  const genRecipe = recipeFromGenerated(gen);
+  // Scraped recipe wins — wiki has the latest balance. Keep the
+  // curated `note` (hand-written context) when we swap recipes.
+  const recipe = genRecipe
+    ? { ...genRecipe, note: c.recipe?.note }
+    : c.recipe;
+  return { ...c, recipe };
+});
+
+const fromGenerated: Item[] = [];
+for (const [key, gen] of Object.entries(GENERATED)) {
+  if (CURATED_BY_KEY.has(key)) continue;
+  const recipe = recipeFromGenerated(gen);
+  const obtainLabel = recipe
+    ? recipe.kind === "cooking"
+      ? "Cuisine (Campfire Pot) — voir recette ci-dessous."
+      : "Crafting — voir recette ci-dessous."
+    : "Voir wiki Cobblemon.";
+  fromGenerated.push({
+    id: key,
+    name: gen.nameFr || gen.nameEn,
+    category: narrowCategory(gen.category),
+    description: `${gen.nameEn} — issu du wiki Cobblemon.`,
+    obtain: obtainLabel,
+    rarity: undefined,
+    recipe,
+  });
+}
+
+export const ITEMS: Item[] = [...mergedCurated, ...fromGenerated];

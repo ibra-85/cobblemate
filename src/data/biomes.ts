@@ -42,7 +42,7 @@ export const BIOME_LABELS_FR: Record<string, string> = {
   is_deep_dark:        "Deep Dark",
   is_deep_ocean:       "Océan profond",
   is_desert:           "Désert",
-  is_dripstone:        "Dripstone",
+  is_dripstone:        "Cavernes de stalactites",
   is_end:              "End",
   is_floral:           "Floral",
   is_forest:           "Forêt",

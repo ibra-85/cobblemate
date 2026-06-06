@@ -1,10 +1,9 @@
 "use client";
 
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  Search, X, MapPin, Plus, Filter as FilterIcon,
-  RotateCcw, Sparkles, Mountain, Users, Star, Crown,
+  Search, X, MapPin, Sparkles, Mountain, Star, Crown,
   Atom, Skull, AlertCircle, CheckCircle2, ChefHat, ArrowRight,
 } from "lucide-react";
 import {
@@ -20,32 +19,11 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Empty,
   EmptyDescription,
@@ -73,6 +51,10 @@ import {
 } from "@/data/biomes";
 import { cn } from "@/lib/utils";
 import type { PokemonTypeId } from "@/types";
+import {
+  PokesnacksFiltersBar,
+  type PokesnackFilter,
+} from "@/features/pokesnacks/filters-bar";
 
 // ─── Constants ──────────────────────────────────────────────────
 
@@ -84,7 +66,6 @@ const TYPE_OPTIONS: PokemonTypeId[] = [
 
 const CATEGORY_OPTIONS: { id: PokesnackEntry["category"]; label: string; icon: typeof Star; tone: string; color: string }[] = [
   { id: "starter",     label: "Starter",         icon: Star,     tone: "text-emerald-600 dark:text-emerald-300", color: "#10b981" },
-  { id: "legendary",   label: "Légendaire",      icon: Crown,    tone: "text-amber-600 dark:text-amber-300",     color: "#f59e0b" },
   { id: "mythical",    label: "Mythique",        icon: Sparkles, tone: "text-purple-600 dark:text-purple-300",   color: "#a855f7" },
   { id: "paradox",     label: "Paradox",         icon: Atom,     tone: "text-cyan-600 dark:text-cyan-300",       color: "#06b6d4" },
   { id: "ultra_beast", label: "Ultra-Chimère",   icon: Skull,    tone: "text-pink-600 dark:text-pink-300",       color: "#ec4899" },
@@ -110,13 +91,20 @@ const RARITY_COLOR: Record<string, string> = {
 };
 
 const CRAFT_OPTIONS = [
-  { id: "all",    label: "Tous les Pokémon" },
-  { id: "spawn",  label: "Avec spawn naturel" },
-  { id: "elite",  label: "Légendaires + Paradox + UB" },
+  { id: "all",    label: "Tous" },
+  { id: "spawn",  label: "Spawn Naturel" },
+  { id: "elite",  label: "Paradox/UB" },
 ] as const;
 type CraftFilter = (typeof CRAFT_OPTIONS)[number]["id"];
 
-const ELITE_CATEGORIES = new Set(["legendary", "mythical", "paradox", "ultra_beast"]);
+const ELITE_CATEGORIES = new Set(["paradox", "ultra_beast"]);
+
+// Page size for the snack-card grid. Each card mounts a Tabs strip,
+// a 3×3 Minecraft slot grid and a result slot — so even a "small"
+// list of 60 cards reconciles ~2k DOM nodes. Cap the initial visible
+// slice at 20 and stream the rest in via an IntersectionObserver
+// (same pattern the Pokédex uses for its 1186-mon grid).
+const PAGE_SIZE = 20;
 
 // ─── Biome label helper (reused from previous version) ─────────
 
@@ -147,6 +135,14 @@ const RECIPE_TABS: { id: keyof PokesnackEntry["recommendedSnacks"]; label: strin
 
 // ─── Page ───────────────────────────────────────────────────────
 
+// Pokesnack dataset, with non-paradox legendaries stripped out — the
+// vanilla legendaries don't surface via PokéSnacks on the Academy
+// server so listing them here was misleading. Paradox mons (which
+// the data also tags as "paradox", not "legendary") are kept.
+const POKESNACK_ENTRIES_FILTERED: PokesnackEntry[] = POKESNACK_ENTRIES.filter(
+  (e) => e.category !== "legendary",
+);
+
 // Pre-built search index. Built once at module load, NOT on every
 // keystroke — with 1303 Pokémon, re-computing the haystack on every
 // keypress was the dominant cost (~30ms × 1303 entries on slower
@@ -156,7 +152,7 @@ interface IndexedEntry {
   entry: PokesnackEntry;
   haystack: string;
 }
-const SEARCH_INDEX: IndexedEntry[] = POKESNACK_ENTRIES.map((e) => ({
+const SEARCH_INDEX: IndexedEntry[] = POKESNACK_ENTRIES_FILTERED.map((e) => ({
   entry: e,
   haystack: `${e.slug} ${e.name.en} ${e.name.fr} ${e.types.join(" ")} ${e.nationalDex ?? ""}`.toLowerCase(),
 }));
@@ -164,65 +160,114 @@ const SEARCH_INDEX: IndexedEntry[] = POKESNACK_ENTRIES.map((e) => ({
 // Pre-build the biome facet list once — it never changes.
 const BIOME_OPTIONS_STATIC = (() => {
   const set = new Set<string>();
-  for (const e of POKESNACK_ENTRIES) for (const b of e.spawn.biomes) set.add(b);
+  for (const e of POKESNACK_ENTRIES_FILTERED)
+    for (const b of e.spawn.biomes) set.add(b);
   return [...set]
-    .map((b) => ({ id: b, label: humanizeBiome(b) }))
+    .map((b) => ({ value: b, label: humanizeBiome(b) }))
     .sort((a, b) => a.label.localeCompare(b.label, "fr"));
 })();
+
+const TYPE_FILTER_OPTIONS = TYPE_OPTIONS.map((t) => ({
+  value: t,
+  label: FR_TYPE_LABEL[t],
+  color: TYPES_META[t]?.color,
+}));
+
+const RARITY_FILTER_OPTIONS = RARITY_OPTIONS.map((r) => ({
+  value: r,
+  label: RARITY_LABEL[r],
+  color: RARITY_COLOR[r],
+}));
+
+const CATEGORY_FILTER_OPTIONS = CATEGORY_OPTIONS.map((c) => ({
+  value: c.id,
+  label: c.label,
+  color: c.color,
+}));
 
 export default function PokeSnacksPage() {
   const [query, setQuery] = useState("");
   const [craft, setCraft] = useState<CraftFilter>("all");
-  const [activeTypes, setActiveTypes] = useState<Set<PokemonTypeId>>(new Set());
-  const [activeRarities, setActiveRarities] = useState<Set<string>>(new Set());
-  const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
-  const [activeBiomes, setActiveBiomes] = useState<Set<string>>(new Set());
+  const [filters, setFilters] = useState<PokesnackFilter[]>([]);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   // React-19 native debounce — the input updates `query` immediately
   // so typing never feels laggy; `deferredQuery` lags by one render
-  // and feeds the (heavier) 1303-entry filter pipeline. While the two
+  // and feeds the (heavier) entry filter pipeline. While the two
   // diverge we fade the list to signal "computing".
   const deferredQuery = useDeferredValue(query);
   const isStale = deferredQuery !== query;
 
-  const biomeOptions = BIOME_OPTIONS_STATIC;
-
-  // Main filter pipeline — runs against the pre-built index using
-  // the deferred query. Single pass, no per-entry work that can't
-  // be hoisted.
+  // Pre-bake the filter input into a single fast-path predicate. Most
+  // sessions never hit category/biome/rarity filters — for those the
+  // filter loop is a single `haystack.includes(q)`; we hoist the
+  // expensive `matchFilter` switch into a per-filter precomputed
+  // value set so the inner loop is two `Set.has` lookups instead of
+  // an N-allocs switch on every entry.
   const filtered = useMemo(() => {
     const q = deferredQuery.trim().toLowerCase();
+    const activeFilters = filters.filter((f) => f.values.length > 0);
+    // Pre-build set lookups once per memo run — the original code
+    // called `values.includes()` inside the per-entry loop which is
+    // O(F·V·N). With Sets it's O(F·N).
+    const filterSets = activeFilters.map((f) => ({
+      kind: f.kind,
+      mode: f.mode,
+      set: new Set(f.values),
+    }));
     const out: PokesnackEntry[] = [];
     for (const { entry: e, haystack } of SEARCH_INDEX) {
       if (q && !haystack.includes(q)) continue;
-      if (activeTypes.size > 0 && !e.types.some((t) => activeTypes.has(t as PokemonTypeId)))
-        continue;
-      if (activeRarities.size > 0 && !activeRarities.has(e.spawn.rarity)) continue;
-      if (activeCategories.size > 0 && !activeCategories.has(e.category)) continue;
-      if (activeBiomes.size > 0 && !e.spawn.biomes.some((b) => activeBiomes.has(b)))
-        continue;
       if (craft === "spawn" && e.spawn.biomes.length === 0) continue;
       if (craft === "elite" && !ELITE_CATEGORIES.has(e.category)) continue;
+      let ok = true;
+      for (const f of filterSets) {
+        const matches = matchFilterSet(e, f.kind, f.set);
+        const keep = f.mode === "exclude" ? !matches : matches;
+        if (!keep) { ok = false; break; }
+      }
+      if (!ok) continue;
       out.push(e);
     }
     return out;
-  }, [deferredQuery, craft, activeTypes, activeRarities, activeCategories, activeBiomes]);
+  }, [deferredQuery, craft, filters]);
 
-  const activeFilterCount =
-    activeTypes.size + activeRarities.size + activeCategories.size + activeBiomes.size;
-
-  function toggle<T>(set: Set<T>, value: T, setter: (next: Set<T>) => void) {
-    const next = new Set(set);
-    if (next.has(value)) next.delete(value);
-    else next.add(value);
-    setter(next);
+  // Reset the visible window whenever the result set changes —
+  // otherwise scrolling deep into a long list then filtering would
+  // leave a stale offset. Same pattern as the Pokédex explorer:
+  // compare a stored signature and reset during render (React 19's
+  // recommended escape hatch for "derive from changing props").
+  const filterSignature = `${deferredQuery}|${JSON.stringify(filters)}|${craft}`;
+  const [prevFilterSignature, setPrevFilterSignature] = useState(filterSignature);
+  if (prevFilterSignature !== filterSignature) {
+    setPrevFilterSignature(filterSignature);
+    setVisibleCount(PAGE_SIZE);
   }
 
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    if (visibleCount >= filtered.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((x) => x.isIntersecting)) {
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [filtered.length, visibleCount]);
+
+  const visible = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount],
+  );
+
   function resetFilters() {
-    setActiveTypes(new Set());
-    setActiveRarities(new Set());
-    setActiveCategories(new Set());
-    setActiveBiomes(new Set());
+    setFilters([]);
     setCraft("all");
     setQuery("");
   }
@@ -234,10 +279,9 @@ export default function PokeSnacksPage() {
           PokéSnacks · Academy
         </h1>
         <p className="text-sm text-muted-foreground">
-          Recommandations de Campfire Pot pour les {POKESNACK_ENTRIES.length} Pokémon
+          Recommandations de Campfire Pot pour les {POKESNACK_ENTRIES_FILTERED.length} Pokémon
           disponibles sur le serveur Cobblemon Academy. Recherche un Pokémon,
-          filtre par type, biome, rareté ou catégorie (légendaire, paradox,
-          ultra-chimère…).
+          filtre par type, biome, rareté ou catégorie (paradox, ultra-chimère, fossile…).
         </p>
         <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <CheckCircle2 className="size-3 text-emerald-500" />
@@ -248,7 +292,7 @@ export default function PokeSnacksPage() {
       </header>
 
       <div className="flex flex-col gap-3">
-        {/* Search + add-filter + reset */}
+        {/* Search + filters + reset */}
         <div className="flex flex-wrap items-center gap-2">
           <InputGroup className="min-w-0 flex-1 sm:max-w-md">
             <InputGroupAddon>
@@ -261,35 +305,16 @@ export default function PokeSnacksPage() {
             />
           </InputGroup>
 
-          <AddFilterButton
-            hasFilters={activeFilterCount > 0}
-            typeOptions={TYPE_OPTIONS.map((t) => ({
-              id: t,
-              label: FR_TYPE_LABEL[t],
-              color: TYPES_META[t]?.color,
-            }))}
-            rarityOptions={RARITY_OPTIONS.map((r) => ({
-              id: r,
-              label: RARITY_LABEL[r],
-              color: RARITY_COLOR[r],
-            }))}
-            categoryOptions={CATEGORY_OPTIONS.map((c) => ({ id: c.id, label: c.label, color: c.color }))}
-            biomeOptions={biomeOptions}
-            onToggleType={(v) => toggle(activeTypes, v as PokemonTypeId, setActiveTypes)}
-            onToggleRarity={(v) => toggle(activeRarities, v, setActiveRarities)}
-            onToggleCategory={(v) => toggle(activeCategories, v, setActiveCategories)}
-            onToggleBiome={(v) => toggle(activeBiomes, v, setActiveBiomes)}
-            isTypeActive={(v) => activeTypes.has(v as PokemonTypeId)}
-            isRarityActive={(v) => activeRarities.has(v)}
-            isCategoryActive={(v) => activeCategories.has(v)}
-            isBiomeActive={(v) => activeBiomes.has(v)}
+          <PokesnacksFiltersBar
+            filters={filters}
+            onChange={setFilters}
+            options={{
+              type: TYPE_FILTER_OPTIONS,
+              rarity: RARITY_FILTER_OPTIONS,
+              category: CATEGORY_FILTER_OPTIONS,
+              biome: BIOME_OPTIONS_STATIC,
+            }}
           />
-
-          {(activeFilterCount > 0 || query || craft !== "all") && (
-            <Button variant="ghost" size="sm" onClick={resetFilters} className="text-muted-foreground">
-              <RotateCcw className="size-3.5" /> Vider
-            </Button>
-          )}
         </div>
 
         {/* Craft availability tabs */}
@@ -303,23 +328,10 @@ export default function PokeSnacksPage() {
           </TabsList>
         </Tabs>
 
-        {activeFilterCount > 0 && (
-          <ActiveChips
-            types={activeTypes}
-            rarities={activeRarities}
-            categories={activeCategories}
-            biomes={activeBiomes}
-            onRemoveType={(v) => toggle(activeTypes, v, setActiveTypes)}
-            onRemoveRarity={(v) => toggle(activeRarities, v, setActiveRarities)}
-            onRemoveCategory={(v) => toggle(activeCategories, v, setActiveCategories)}
-            onRemoveBiome={(v) => toggle(activeBiomes, v, setActiveBiomes)}
-          />
-        )}
-
         <p className="text-xs text-muted-foreground">
           <strong className="text-foreground">{filtered.length}</strong>{" "}
           Pokémon
-          {activeFilterCount > 0 || query || craft !== "all" ? " correspondant" : ""} sur {POKESNACK_ENTRIES.length}.
+          {filters.length > 0 || query || craft !== "all" ? " correspondant" : ""} sur {POKESNACK_ENTRIES_FILTERED.length}.
         </p>
       </div>
 
@@ -331,28 +343,65 @@ export default function PokeSnacksPage() {
               Essaie d&apos;élargir les filtres ou de réinitialiser.
             </EmptyDescription>
           </EmptyHeader>
+          {(filters.length > 0 || query || craft !== "all") && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-3 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <X className="size-3" /> Tout réinitialiser
+            </button>
+          )}
         </Empty>
       ) : (
-        <div
-          className={cn(
-            "grid auto-rows-min items-start gap-4 transition-opacity lg:grid-cols-2",
-            isStale && "opacity-60",
+        <>
+          <div
+            className={cn(
+              // `auto-rows-fr` + `items-stretch` (default) makes every
+              // row's track the same height so cards align even when
+              // notes / biome lists differ. The card itself uses
+              // `h-full` so it fills the track. Without this, mons
+              // with weather notes ended up taller than their row
+              // neighbours and broke the grid rhythm.
+              "grid auto-rows-fr gap-4 transition-opacity lg:grid-cols-2",
+              isStale && "opacity-60",
+            )}
+          >
+            {visible.map((e) => (
+              <PokemonSnackCard key={e.slug} entry={e} />
+            ))}
+          </div>
+          {visibleCount < filtered.length && (
+            <div
+              ref={sentinelRef}
+              className="flex items-center justify-center py-6 text-xs text-muted-foreground"
+            >
+              Chargement de {Math.min(PAGE_SIZE, filtered.length - visibleCount)} Pokémon supplémentaires…
+            </div>
           )}
-        >
-          {filtered.slice(0, 60).map((e) => (
-            <PokemonSnackCard key={e.slug} entry={e} />
-          ))}
-        </div>
-      )}
-
-      {filtered.length > 60 && (
-        <p className="text-center text-xs text-muted-foreground">
-          Seuls les 60 premiers résultats sont affichés. Affine la recherche
-          ou ajoute des filtres pour voir un mon précis.
-        </p>
+        </>
       )}
     </div>
   );
+}
+
+function matchFilterSet(
+  e: PokesnackEntry,
+  kind: PokesnackFilter["kind"],
+  set: Set<string>,
+): boolean {
+  switch (kind) {
+    case "type":
+      for (const t of e.types) if (set.has(t)) return true;
+      return false;
+    case "rarity":
+      return set.has(e.spawn.rarity);
+    case "category":
+      return set.has(e.category);
+    case "biome":
+      for (const b of e.spawn.biomes) if (set.has(b)) return true;
+      return false;
+  }
 }
 
 // ─── Pokémon snack card ─────────────────────────────────────────
@@ -365,7 +414,7 @@ function PokemonSnackCard({ entry }: { entry: PokesnackEntry }) {
   const Icon = categoryMeta?.icon;
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="flex h-full flex-col overflow-hidden">
       <CardHeader>
         <div className="flex items-start gap-3">
           {pokemon && (
@@ -439,7 +488,7 @@ function PokemonSnackCard({ entry }: { entry: PokesnackEntry }) {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-3">
+      <CardContent className="flex flex-1 flex-col gap-3">
         {/* Recipe tabs */}
         <Tabs value={activeRecipe} onValueChange={(v) => v && setActiveRecipe(v as typeof activeRecipe)}>
           <TabsList>
@@ -547,221 +596,5 @@ function RecipeBlock({ recipe }: { recipe: SnackRecipe }) {
         )}
       </div>
     </div>
-  );
-}
-
-// ─── Active filter chips ────────────────────────────────────────
-
-function ActiveChips({
-  types, rarities, categories, biomes,
-  onRemoveType, onRemoveRarity, onRemoveCategory, onRemoveBiome,
-}: {
-  types: Set<PokemonTypeId>;
-  rarities: Set<string>;
-  categories: Set<string>;
-  biomes: Set<string>;
-  onRemoveType: (v: PokemonTypeId) => void;
-  onRemoveRarity: (v: string) => void;
-  onRemoveCategory: (v: string) => void;
-  onRemoveBiome: (v: string) => void;
-}) {
-  return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      {[...types].map((t) => (
-        <Chip key={`t-${t}`} onRemove={() => onRemoveType(t)}>
-          <TypeBadge type={t} size="sm" />
-        </Chip>
-      ))}
-      {[...rarities].map((r) => (
-        <Chip key={`r-${r}`} onRemove={() => onRemoveRarity(r)}>
-          <span
-            className="inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-semibold uppercase leading-none tracking-wide"
-            style={{
-              backgroundColor: `${RARITY_COLOR[r]}26`,
-              borderColor: `${RARITY_COLOR[r]}66`,
-              color: RARITY_COLOR[r],
-            }}
-          >
-            {RARITY_LABEL[r]}
-          </span>
-        </Chip>
-      ))}
-      {[...categories].map((c) => {
-        const meta = CATEGORY_OPTIONS.find((x) => x.id === c);
-        return (
-          <Chip key={`c-${c}`} onRemove={() => onRemoveCategory(c)}>
-            <span className={cn("inline-flex items-center gap-1 text-xs", meta?.tone)}>
-              {meta?.icon && <meta.icon className="size-3" />}
-              {meta?.label ?? c}
-            </span>
-          </Chip>
-        );
-      })}
-      {[...biomes].map((b) => (
-        <Chip key={`b-${b}`} onRemove={() => onRemoveBiome(b)}>
-          <span className="inline-flex items-center gap-1 text-xs">
-            <MapPin className="size-3" /> {humanizeBiome(b)}
-          </span>
-        </Chip>
-      ))}
-    </div>
-  );
-}
-
-function Chip({ children, onRemove }: { children: React.ReactNode; onRemove: () => void }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-md border bg-muted/40 py-0.5 pl-1.5 pr-1 text-xs">
-      {children}
-      <button
-        type="button"
-        onClick={onRemove}
-        className="grid size-4 place-items-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
-        aria-label="Retirer"
-      >
-        <X className="size-3" />
-      </button>
-    </span>
-  );
-}
-
-// ─── Add-filter button (4 kinds + sub-menus with search) ────────
-
-interface FilterMenuOption {
-  id: string;
-  label: string;
-  color?: string;
-}
-
-function AddFilterButton({
-  hasFilters,
-  typeOptions, rarityOptions, categoryOptions, biomeOptions: biomeOpts,
-  onToggleType, onToggleRarity, onToggleCategory, onToggleBiome,
-  isTypeActive, isRarityActive, isCategoryActive, isBiomeActive,
-}: {
-  hasFilters: boolean;
-  typeOptions: FilterMenuOption[];
-  rarityOptions: FilterMenuOption[];
-  categoryOptions: FilterMenuOption[];
-  biomeOptions: FilterMenuOption[];
-  onToggleType: (v: string) => void;
-  onToggleRarity: (v: string) => void;
-  onToggleCategory: (v: string) => void;
-  onToggleBiome: (v: string) => void;
-  isTypeActive: (v: string) => boolean;
-  isRarityActive: (v: string) => boolean;
-  isCategoryActive: (v: string) => boolean;
-  isBiomeActive: (v: string) => boolean;
-}) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant={hasFilters ? "ghost" : "outline"}
-            size="sm"
-            className="border-dashed"
-          >
-            {hasFilters ? <><Plus className="size-3.5" /> Filtre</> : <><FilterIcon className="size-3.5" /> Filtres</>}
-          </Button>
-        }
-      />
-      <DropdownMenuContent className="w-52" align="end">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Catégorie</DropdownMenuLabel>
-          <FilterSubmenu label="Type Pokémon" icon={Sparkles} options={typeOptions} onToggle={onToggleType} isActive={isTypeActive} />
-          <FilterSubmenu label="Rareté" icon={FilterIcon} options={rarityOptions} onToggle={onToggleRarity} isActive={isRarityActive} />
-          <FilterSubmenu label="Statut" icon={Crown} options={categoryOptions} onToggle={onToggleCategory} isActive={isCategoryActive} />
-          {biomeOpts.length > 0 && (
-            <FilterSubmenu label="Biome" icon={Mountain} options={biomeOpts} onToggle={onToggleBiome} isActive={isBiomeActive} />
-          )}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-function FilterSubmenu({
-  label, icon: Icon, options, onToggle, isActive,
-}: {
-  label: string;
-  icon: typeof FilterIcon;
-  options: FilterMenuOption[];
-  onToggle: (id: string) => void;
-  isActive: (id: string) => boolean;
-}) {
-  return (
-    <DropdownMenuSub>
-      <DropdownMenuSubTrigger>
-        <Icon className="text-muted-foreground" />
-        {label}
-      </DropdownMenuSubTrigger>
-      <DropdownMenuPortal>
-        <DropdownMenuSubContent className="min-w-44">
-          {options.length > 15 ? (
-            <SearchableValueList
-              options={options}
-              isActive={isActive}
-              onToggle={onToggle}
-              placeholder={`Filtrer ${label.toLowerCase()}…`}
-            />
-          ) : (
-            <div className="max-h-[60vh] overflow-y-auto">
-              {options.map((o) => (
-                <DropdownMenuCheckboxItem
-                  key={o.id}
-                  checked={isActive(o.id)}
-                  onCheckedChange={() => onToggle(o.id)}
-                  closeOnClick={false}
-                >
-                  {o.color && (
-                    <span className="size-2.5 rounded-full" style={{ backgroundColor: o.color }} />
-                  )}
-                  {o.label}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </div>
-          )}
-        </DropdownMenuSubContent>
-      </DropdownMenuPortal>
-    </DropdownMenuSub>
-  );
-}
-
-function SearchableValueList({
-  options, isActive, onToggle, placeholder,
-}: {
-  options: FilterMenuOption[];
-  isActive: (id: string) => boolean;
-  onToggle: (id: string) => void;
-  placeholder: string;
-}) {
-  return (
-    <Command className="w-56">
-      <CommandInput placeholder={placeholder} />
-      <CommandList className="max-h-[260px]">
-        <CommandEmpty>Aucun résultat.</CommandEmpty>
-        <CommandGroup>
-          {options.map((o) => {
-            const checked = isActive(o.id);
-            return (
-              <CommandItem key={o.id} value={o.label} onSelect={() => onToggle(o.id)}>
-                <span
-                  className={cn(
-                    "grid size-4 place-items-center rounded-sm border",
-                    checked ? "border-primary bg-primary text-primary-foreground" : "border-input",
-                  )}
-                >
-                  {checked && <Sparkles className="size-3" />}
-                </span>
-                {o.color && (
-                  <span className="size-2.5 rounded-full" style={{ backgroundColor: o.color }} />
-                )}
-                <span className="truncate">{o.label}</span>
-              </CommandItem>
-            );
-          })}
-        </CommandGroup>
-      </CommandList>
-    </Command>
   );
 }

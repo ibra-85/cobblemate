@@ -180,7 +180,15 @@ export type ItemCategory =
   | "healing"
   | "berry"
   | "tm"
-  | "key";
+  | "key"
+  // Categories surfaced by the Cobblemon wiki scraper
+  // (`build-cobblemon-items.mjs`) that the original curated catalog
+  // didn't cover — keep the type in sync with the JSON so the items
+  // grid can segment the full ~250-item dataset.
+  | "natural"   // Apricorns, herbs, leeks, tumblestone — plant + ore-style mats
+  | "food"      // Roasted Leek, Lava Cookie, Ponigiri, …
+  | "vitamin"   // HP Up, Protein, Rare Candy, X-items, Mints
+  | "utility";  // Poké Rod, Campfire Pot, generic tooling
 
 export interface Item {
   id: string;
@@ -210,6 +218,16 @@ export interface ItemRecipe {
    *  unspecified. Apricorn ball recipes yield 4 — surfacing the count
    *  on the result slot is important context for the player. */
   output?: number;
+  /** Craft station — `"crafting"` for the vanilla 3×3 table,
+   *  `"cooking"` for the Cobblemon Campfire Pot (3×3 ingredient grid
+   *  with a 3-slot seasoning strip on the right). Defaults to
+   *  `"crafting"` for legacy recipes that predate the field. */
+  kind?: "crafting" | "cooking";
+  /** Shapeless recipes accept the ingredients in any slot
+   *  arrangement (the wiki flags these with the ⭍ marker). When
+   *  set, the UI surfaces a chip so the player knows positions
+   *  don't matter. */
+  shapeless?: boolean;
 }
 
 export interface Pokesnack {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ArrowRight, ArrowDown } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { findItemById } from "@/data/competitive-items";
+import generatedItems from "@/data/cobblemon-items-generated.json";
+import ingredientImages from "@/data/cobblemon-images-generated.json";
 import { cn } from "@/lib/utils";
 
 /**
@@ -205,6 +207,18 @@ const ITEMS: Record<string, ItemMeta> = {
   "cobblemon:black_apricorn":  { color: "#1f2937", accent: "#65a30d", shape: "berry", label: "Apricorn noir",   image: `${WIKI_FILEPATH}/Black_Apricorn.png` },
   "cobblemon:white_apricorn":  { color: "#f3f4f6", accent: "#65a30d", shape: "berry", label: "Apricorn blanc",  image: `${WIKI_FILEPATH}/White_Apricorn.png` },
   "cobblemon:iron_disc":       { color: "#9ca3af", accent: "#475569", shape: "tag",   label: "Disque de fer",   image: `${WIKI_FILEPATH}/Iron_Disc.png` },
+  // Cobblemon evolution / utility items the lookup chain misses
+  // because they only exist on the Cobblemon Wiki (PokéAPI has the
+  // mainline-series sprite, not the in-game Minecraft texture).
+  "cobblemon:kings_rock":      { color: "#facc15", accent: "#a16207", shape: "tag",   label: "Roche Royale",    image: `${WIKI_FILEPATH}/King%27s_Rock.png` },
+  "cobblemon:exp_share":       { color: "#f59e0b", accent: "#7c2d12", shape: "tag",   label: "Multi Exp.",      image: `${WIKI_FILEPATH}/Exp._Share.png` },
+  // ─── Crafting components shared across held-item recipes ─────────
+  "cobblemon:medicinal_leek":  { color: "#84cc16", accent: "#365314", shape: "vegetable", label: "Poireau médicinal" },
+  "cobblemon:medicinal_brew":  { color: "#84cc16", accent: "#22c55e", shape: "bottle", label: "Bouillon médicinal" },
+  "cobblemon:silk_scarf":      { color: "#fef3c7", accent: "#fbbf24", shape: "tag",   label: "Mouchoir Soie" },
+  "cobblemon:black_belt":      { color: "#1f2937", accent: "#000000", shape: "tag",   label: "Ceinture Noire" },
+  "cobblemon:protector":       { color: "#7f1d1d", accent: "#fbbf24", shape: "tag",   label: "Protecteur" },
+  "cobblemon:hard_stone":      { color: "#737373", accent: "#262626", shape: "tag",   label: "Pierre Dure" },
   // ─── Tag aggregates (no wiki page → keep the SVG sprite) ─────────
   "#cobblemon:berries":     { color: "#a855f7", accent: "#525252", shape: "tag",   label: "Toute baie Cobblemon", image: "" },
 };
@@ -244,7 +258,49 @@ function fallbackImageUrl(itemId: string): string {
  * The `onError` handler in `ItemArtwork` swaps to the SVG sprite when
  * the chosen URL 404s, so the chain degrades gracefully.
  */
+/**
+ * Pre-built lookup of wiki-scraped item slugs → exact image URL.
+ * The build script (`build-cobblemon-items.mjs`) records each item's
+ * actual image filename from the wiki, which is necessary because
+ * many wiki filenames use hyphens (`Smoked-Tail_Curry.png`,
+ * `Open-Faced_Sandwich.png`) while our internal slugs use
+ * underscores — the generic `fallbackImageUrl` resolver can't
+ * reconstruct the hyphen-cased filename and would 404 on those
+ * items. Reading the exact URL we scraped sidesteps the issue.
+ */
+const GENERATED_IMAGE_BY_SLUG = new Map<string, string>(
+  Object.entries(
+    generatedItems as Record<string, { imageUrl: string | null }>,
+  )
+    .filter(([, v]) => v.imageUrl)
+    .map(([k, v]) => [k, v.imageUrl as string]),
+);
+
+/**
+ * Broader image dictionary — every `<img alt="X.png">` ever seen
+ * across the Cobblemon wiki's item pages. Built by the scraper from
+ * recipe slots / navboxes / infoboxes. Covers ~1000 entries
+ * including every Minecraft ingredient that shows up in any
+ * Cobblemon recipe (Red Dye, White Dye, Paper, Diamond, Iron Ingot,
+ * Phantom Membrane, etc.) — these are the actual 16×16 in-game
+ * sprites that match what the player sees in their inventory,
+ * which the previous `minecraft.wiki/Special:FilePath` fallback
+ * did NOT match (that wiki ships the full-size beta/JE renders).
+ */
+const INGREDIENT_IMAGE_BY_SLUG = new Map<string, string>(
+  Object.entries(ingredientImages as Record<string, string>),
+);
+
 export function itemImageUrl(itemId: string): string | null {
+  // Wildcard "Any X" recipe slots are encoded as
+  // `group:<tooltip-slug>|<primary-image-id>` by the scraper.
+  // Strip the group prefix and route the image lookup to the
+  // primary variant so the slot still shows a meaningful icon.
+  if (itemId.startsWith("group:")) {
+    const pipe = itemId.indexOf("|");
+    if (pipe !== -1) return itemImageUrl(itemId.slice(pipe + 1));
+    return null;
+  }
   // Same dual-key lookup as itemMeta — the recipe pattern yields tags
   // without their `#` prefix, so we have to probe both shapes.
   const meta =
@@ -260,7 +316,27 @@ export function itemImageUrl(itemId: string): string | null {
   // it (the user explicitly asked for the Cobblemon-flavoured art).
   if (itemId.startsWith("cobblemon:")) {
     const name = itemId.slice("cobblemon:".length);
+    // Prefer the exact URL the scraper captured — it preserves
+    // hyphenated filenames (`Smoked-Tail_Curry.png`) that the
+    // generic Title_Case helper can't reconstruct from a snake_case
+    // slug.
+    const exact = GENERATED_IMAGE_BY_SLUG.get(name);
+    if (exact) return exact;
+    const ingredient = INGREDIENT_IMAGE_BY_SLUG.get(name);
+    if (ingredient) return ingredient;
     return fallbackImageUrl(`cobblemon:${name}`);
+  }
+
+  // `minecraft:*` items — try the Cobblemon wiki's scraped icon
+  // dictionary first (these are the actual 16×16 inventory
+  // sprites the game uses, with the Cobblemon art style applied
+  // to Minecraft items). Only fall through to the Minecraft Wiki
+  // when the ingredient never appeared in any Cobblemon recipe.
+  if (itemId.startsWith("minecraft:")) {
+    const name = itemId.slice("minecraft:".length);
+    const ingredient = INGREDIENT_IMAGE_BY_SLUG.get(name);
+    if (ingredient) return ingredient;
+    return minecraftWikiUrl(name);
   }
 
   // Competitive registry items: bundled local sprites when we shipped
@@ -276,16 +352,12 @@ export function itemImageUrl(itemId: string): string | null {
     return pokeapiItemUrl(competitive.id);
   }
 
-  // `minecraft:*` items route to the Minecraft Wiki — PokéAPI has
-  // zero Minecraft items so it would 404 every time.
-  if (itemId.startsWith("minecraft:")) {
-    return minecraftWikiUrl(itemId.slice("minecraft:".length));
-  }
-
   // Last resort: try PokéAPI by stripped name, then the Cobblemon
   // wiki redirect.
   const stripped = itemId.toLowerCase().replace(/^[a-z]+:/, "");
   if (stripped && stripped !== itemId.toLowerCase()) {
+    const ingredient = INGREDIENT_IMAGE_BY_SLUG.get(stripped);
+    if (ingredient) return ingredient;
     return pokeapiItemUrl(stripped);
   }
   return fallbackImageUrl(itemId);
@@ -296,18 +368,294 @@ const DEFAULT_META: ItemMeta = {
 };
 
 /**
+ * French labels for items the registry doesn't already carry an
+ * explicit `label` for. Keys are slug-form (`red_dye`, `iron_ingot`,
+ * `paper`, …) so the lookup works for both `cobblemon:` and
+ * `minecraft:` namespaced ids. Sourced from:
+ *   • Minecraft fr_fr lang file (vanilla items)
+ *   • Cobblemon wiki / PokéAPI FR table (Pokémon-side items)
+ *
+ * Add new entries here when a recipe ingredient shows up untranslated
+ * — the tooltip falls back to `humanize(id)` otherwise, which gives
+ * the English title-cased name.
+ */
+const FR_INGREDIENT_LABELS: Record<string, string> = {
+  // ─── Minecraft — dyes ────────────────────────────────────────────
+  white_dye:       "Teinture blanche",
+  light_gray_dye:  "Teinture gris clair",
+  gray_dye:        "Teinture grise",
+  black_dye:       "Teinture noire",
+  brown_dye:       "Teinture marron",
+  red_dye:         "Teinture rouge",
+  orange_dye:      "Teinture orange",
+  yellow_dye:      "Teinture jaune",
+  lime_dye:        "Teinture vert clair",
+  green_dye:       "Teinture verte",
+  cyan_dye:        "Teinture cyan",
+  light_blue_dye:  "Teinture bleu clair",
+  blue_dye:        "Teinture bleue",
+  purple_dye:      "Teinture violette",
+  magenta_dye:     "Teinture magenta",
+  pink_dye:        "Teinture rose",
+  // ─── Minecraft — wool ────────────────────────────────────────────
+  white_wool:        "Laine blanche",
+  light_gray_wool:   "Laine gris clair",
+  gray_wool:         "Laine grise",
+  black_wool:        "Laine noire",
+  brown_wool:        "Laine marron",
+  red_wool:          "Laine rouge",
+  orange_wool:       "Laine orange",
+  yellow_wool:       "Laine jaune",
+  lime_wool:         "Laine vert clair",
+  green_wool:        "Laine verte",
+  cyan_wool:         "Laine cyan",
+  light_blue_wool:   "Laine bleu clair",
+  blue_wool:         "Laine bleue",
+  purple_wool:       "Laine violette",
+  magenta_wool:      "Laine magenta",
+  pink_wool:         "Laine rose",
+  // ─── Minecraft — concrete ────────────────────────────────────────
+  red_concrete:        "Béton rouge",
+  orange_concrete:     "Béton orange",
+  yellow_concrete:     "Béton jaune",
+  lime_concrete:       "Béton vert clair",
+  light_blue_concrete: "Béton bleu clair",
+  magenta_concrete:    "Béton magenta",
+  pink_concrete:       "Béton rose",
+  // ─── Minecraft — minerals / ingots ───────────────────────────────
+  diamond:           "Diamant",
+  iron_ingot:        "Lingot de fer",
+  gold_ingot:        "Lingot d'or",
+  copper_ingot:      "Lingot de cuivre",
+  netherite_ingot:   "Lingot de Netherite",
+  raw_iron:          "Fer brut",
+  raw_gold:          "Or brut",
+  raw_copper:        "Cuivre brut",
+  iron_nugget:       "Pépite de fer",
+  gold_nugget:       "Pépite d'or",
+  amethyst_shard:    "Éclat d'améthyste",
+  lapis_lazuli:      "Lapis-lazuli",
+  redstone:          "Redstone",
+  redstone_dust:     "Poudre de redstone",
+  echo_shard:        "Éclat d'écho",
+  nether_quartz:     "Quartz du Nether",
+  nether_star:       "Étoile du Nether",
+  shulker_shell:     "Coquille de Shulker",
+  // ─── Minecraft — mob drops / brewing ─────────────────────────────
+  blaze_powder:        "Poudre de Blaze",
+  blaze_rod:           "Bâton de Blaze",
+  ghast_tear:          "Larme de Ghast",
+  ender_pearl:         "Perle de l'Ender",
+  ender_eye:           "Œil de l'Ender",
+  dragons_breath:      "Souffle du Dragon",
+  fermented_spider_eye:"Œil d'araignée fermenté",
+  spider_eye:          "Œil d'araignée",
+  rabbits_foot:        "Patte de lapin",
+  rabbit_hide:         "Peau de lapin",
+  phantom_membrane:    "Membrane de Phantom",
+  scute:               "Écaille",
+  armadillo_scute:     "Écaille de tatou",
+  honeycomb:           "Rayon de miel",
+  honey_bottle:        "Pot de miel",
+  slimeball:           "Boule de Slime",
+  glowstone_dust:      "Poudre de Glowstone",
+  rotten_flesh:        "Chair putréfiée",
+  feather:             "Plume",
+  bone:                "Os",
+  bone_meal:           "Poudre d'os",
+  ink_sac:             "Poche d'encre",
+  glow_ink_sac:        "Poche d'encre luminescente",
+  string:              "Ficelle",
+  leather:             "Cuir",
+  prismarine_crystals: "Cristaux de prismarine",
+  prismarine_shard:    "Éclat de prismarine",
+  nautilus_shell:      "Coquille de nautile",
+  // ─── Minecraft — blocks / materials ──────────────────────────────
+  glass:             "Verre",
+  glass_bottle:      "Fiole en verre",
+  tinted_glass:      "Verre teinté",
+  red_stained_glass: "Verre teinté rouge",
+  stone:             "Pierre",
+  cobblestone:       "Pierre taillée",
+  sandstone:         "Grès",
+  chiseled_sandstone:"Grès gravé",
+  sand:              "Sable",
+  clay:              "Argile",
+  clay_ball:         "Boule d'argile",
+  dirt:              "Terre",
+  mud:               "Boue",
+  grass_block:       "Bloc d'herbe",
+  obsidian:          "Obsidienne",
+  magma_block:       "Bloc de magma",
+  magma_cream:       "Crème de magma",
+  basalt:            "Basalte",
+  blackstone:        "Pierre noire",
+  deepslate:         "Ardoise des abîmes",
+  dripstone_block:   "Bloc de pierre à concrétions",
+  moss_block:        "Bloc de mousse",
+  sea_lantern:       "Lanterne aquatique",
+  sculk:             "Sculk",
+  paper:             "Papier",
+  book:              "Livre",
+  bowl:              "Bol",
+  bucket:            "Seau",
+  shield:            "Bouclier",
+  target:            "Cible",
+  iron_bars:         "Barreaux de fer",
+  iron_trapdoor:     "Trappe en fer",
+  iron_helmet:       "Casque en fer",
+  golden_helmet:     "Casque en or",
+  leather_chestplate:"Plastron en cuir",
+  minecart:          "Wagonnet",
+  note_block:        "Bloc de note",
+  redstone_lamp:     "Lampe à redstone",
+  block_of_redstone: "Bloc de redstone",
+  pink_petals:       "Pétales roses",
+  charcoal:          "Charbon de bois",
+  snowball:          "Boule de neige",
+  // ─── Minecraft — food ────────────────────────────────────────────
+  apple:                       "Pomme",
+  golden_apple:                "Pomme d'or",
+  enchanted_golden_apple:      "Pomme d'or enchantée",
+  golden_carrot:               "Carotte dorée",
+  carrot:                      "Carotte",
+  baked_potato:                "Pomme de terre cuite",
+  potato:                      "Pomme de terre",
+  bread:                       "Pain",
+  egg:                         "Œuf",
+  dried_kelp:                  "Varech séché",
+  glow_berries:                "Lumibaies",
+  sweet_berries:               "Baies sucrées",
+  glistering_melon_slice:      "Tranche de melon scintillant",
+  // ─── Cobblemon-specific items + PokéAPI-aligned mainline names ──
+  // Sources:
+  //   • Bulbapedia FR (Apricorn → Noigrume since Gen 2)
+  //   • Pokémon LEGENDS Arceus FR (Tumblestone → Pierre Pétante,
+  //     Remedy → Remède, Galarica → Galanoa)
+  //   • PokéAPI's FR table for mainline held items (Mouchoir Soie,
+  //     Pic Venin, Bandeau Muscle, …) — kept in sync with the
+  //     authoritative names so we don't show different labels in
+  //     two places.
+  medicinal_leek:    "Poireau Médicinal",
+  vivichoke:         "Vivichoke",
+  big_root:          "Grosse Racine",
+  energy_root:       "Racinénergie",
+  hearty_grains:     "Grains Nourrissants",
+  galarica_nuts:     "Noix Galanoa",
+  pep_up_flower:     "Fleur Coup d'Boost",
+  revival_herb:      "Herbe Rappel",
+  silk_scarf:        "Mouchoir Soie",
+  black_belt:        "Ceinture Noire",
+  hard_stone:        "Pierre Dure",
+  soft_sand:         "Sable Doux",
+  muscle_band:       "Bandeau Muscle",
+  wise_glasses:      "Lunettes Sages",
+  // Apricorns → Noigrumes (Pokémon Gen 2 official FR name)
+  apricorn:          "Noigrume",
+  red_apricorn:      "Noigrume Rouge",
+  blue_apricorn:     "Noigrume Bleue",
+  green_apricorn:    "Noigrume Verte",
+  yellow_apricorn:   "Noigrume Jaune",
+  black_apricorn:    "Noigrume Noire",
+  white_apricorn:    "Noigrume Blanche",
+  pink_apricorn:     "Noigrume Rose",
+  tumblestone:       "Pierre Pétante",
+  black_tumblestone: "Pierre Pétante Noire",
+  sky_tumblestone:   "Pierre Pétante Céleste",
+  poke_snack:        "PokéSnack",
+  cleanse_tag:       "Rune Purifiante",
+  remedy:            "Remède",
+  fine_remedy:       "Remède Fin",
+  superb_remedy:     "Remède Suprême",
+  oran_berry:        "Baie Oran",
+  liechi_berry:      "Baie Lichii",
+  // ─── Cobblemon — type gems ───────────────────────────────────────
+  normal_gem:   "Gemme Normal",
+  fire_gem:     "Gemme Feu",
+  water_gem:    "Gemme Eau",
+  grass_gem:    "Gemme Plante",
+  electric_gem: "Gemme Électrik",
+  ice_gem:      "Gemme Glace",
+  fighting_gem: "Gemme Combat",
+  poison_gem:   "Gemme Poison",
+  ground_gem:   "Gemme Sol",
+  flying_gem:   "Gemme Vol",
+  psychic_gem:  "Gemme Psy",
+  bug_gem:      "Gemme Insecte",
+  rock_gem:     "Gemme Roche",
+  ghost_gem:    "Gemme Spectre",
+  dragon_gem:   "Gemme Dragon",
+  dark_gem:     "Gemme Ténèbres",
+  steel_gem:    "Gemme Acier",
+  fairy_gem:    "Gemme Fée",
+};
+
+/**
  * Resolve an item id to its registry entry. Minecraft datapack tags
  * can flow through the UI as either `#c:drinks/milk` (datapack form)
  * or `c:drinks/milk` (the bare tag id — what the recipe pattern key
  * yields). Look up both shapes so a single registry key covers both.
+ *
+ * When no registry entry exists we still apply the FR ingredient
+ * dictionary so recipe slots tooltip in French ("Teinture rouge"
+ * instead of "Red Dye") even for items we never hand-mapped.
  */
+/**
+ * FR labels for wildcard "Any X" recipe slots. Multi-option slots
+ * are encoded by the scraper as `group:<slug>|<primary-image>` —
+ * keyed here by the slug part so the tooltip reads naturally in
+ * French ("Toute Dalle en Bois") instead of leaking the slug.
+ */
+const FR_GROUP_LABELS: Record<string, string> = {
+  any_wood_slab:       "Toute Dalle en Bois",
+  any_milk:            "Tout Lait",
+  any_fuel:            "Tout Combustible",
+  any_raw_meat:        "Toute Viande Crue",
+  any_planks:          "Toutes Planches",
+  any_log:             "Toute Bûche",
+  any_wool:            "Toute Laine",
+  any_dye:             "Toute Teinture",
+  any_berry:           "Toute Baie",
+  any_apricorn:        "Tout Noigrume",
+  any_apricorn_sprout: "Toute Pousse de Noigrume",
+  any_seed:            "Toute Graine",
+  any_flower:          "Toute Fleur",
+  any_fish:            "Tout Poisson",
+  any_pottery_sherd:   "Tout Tesson de Poterie",
+  any_pokemon_egg:     "Tout Œuf de Pokémon",
+};
+
 export function itemMeta(id: string): ItemMeta {
-  return (
-    ITEMS[id] ??
-    ITEMS["#" + id] ??
-    ITEMS[id.replace(/^#/, "")] ??
-    { ...DEFAULT_META, label: humanize(id) }
-  );
+  // Wildcard slot — extract the label slug, look up its FR name,
+  // and borrow the primary variant's sprite via recursion. Falls
+  // back to "Tout(e) X" by humanising the slug if no FR override.
+  if (id.startsWith("group:")) {
+    const pipe = id.indexOf("|");
+    const slugPart = pipe === -1
+      ? id.slice("group:".length)
+      : id.slice("group:".length, pipe);
+    const imagePart = pipe === -1 ? "" : id.slice(pipe + 1);
+    const primary = imagePart ? itemMeta(imagePart) : DEFAULT_META;
+    const label = FR_GROUP_LABELS[slugPart] ?? humanize(slugPart);
+    return { ...primary, label };
+  }
+  const pinned =
+    ITEMS[id] ?? ITEMS["#" + id] ?? ITEMS[id.replace(/^#/, "")];
+  if (pinned) return pinned;
+  // Fall back to a default sprite + best-effort FR label. The slug
+  // strip drops the namespace (`minecraft:red_dye` → `red_dye`) and
+  // hyphens, which is the same form the FR table is keyed by.
+  const slug = id
+    .replace(/^#/, "")
+    .split(/[:/]/)
+    .pop()
+    ?.replace(/-/g, "_")
+    ?? id;
+  const labelFr = FR_INGREDIENT_LABELS[slug];
+  return {
+    ...DEFAULT_META,
+    label: labelFr ?? humanize(id),
+  };
 }
 
 function humanize(id: string): string {
@@ -569,7 +917,7 @@ export function MinecraftSlot({
     >
       {meta && item && <ItemArtwork item={item} meta={meta} />}
       {count != null && count > 1 && (
-        <span className="pointer-events-none absolute bottom-[-2px] right-[1px] font-mono text-[10px] font-bold text-white shadow-[1px_1px_0_#000]">
+        <span className="pointer-events-none absolute -bottom-0.5 right-1.5 font-mono text-lg font-bold text-white">
           {count}
         </span>
       )}
@@ -746,14 +1094,15 @@ export function MinecraftCraftingTable({
 }) {
   return (
     <MinecraftPanel className={cn("rounded-sm", className)}>
-      {/* Top alignment (`items-start`) anchors the seasoning row to
-          the same y-position as the 3×3 grid's first row. The arrow
-          is shifted down by one slot height + half a slot so it sits
-          on row 2 of the grid, the same line the result slot
-          occupies — keeps the "ingredients → arrow → result"
-          reading line straight across regardless of whether the
-          campfire mode is on. */}
-      <div className="flex items-start gap-3">
+      {/* Layout: 3 columns (grid · arrow · right column) all stretched
+          to the same height via `items-stretch`. The middle column is
+          a flex container that centres the arrow vertically — this
+          avoids the brittle `mt-11` hand-tuned offset that drifted
+          out of alignment as the grid sizing changed. The right
+          column does the same with the result slot, so "ingredients
+          → arrow → result" reads as a straight horizontal line
+          regardless of whether the seasoning strip is present. */}
+      <div className="flex items-stretch gap-3">
         {/* 3×3 input grid */}
         <div className="grid grid-cols-3 gap-1">
           {grid.map((slot, i) => (
@@ -765,54 +1114,49 @@ export function MinecraftCraftingTable({
           ))}
         </div>
 
-        {/* Static arrow — positioned vertically to line up with the
-            middle row of the 3×3 grid (= slot height + gap before it).
-            Same icon the rest of the app uses for "produces" /
-            "evolves into" so the crafting widget stays consistent
-            with the Pokédex evolution panels. */}
-        <ArrowRight className="mt-11 size-6 shrink-0 text-[#373737] dark:text-foreground" />
+        {/* Arrow column — centred vertically against the 3×3 grid's
+            full height. Same icon the rest of the app uses for
+            "produces" / "evolves into". */}
+        <div className="flex items-center">
+          <ArrowRight className="size-6 shrink-0 text-[#373737] dark:text-foreground" />
+        </div>
 
-        {/* Right column: 3 horizontal seasoning slots at the top (same
-            row as the grid's first row), small down-arrow, then the
-            larger result slot. The down-arrow makes the flow
-            "(base + seasonings) produces snack" explicit. Without
-            seasonings, the result slot is offset to sit on the same
-            middle-row as the right-arrow. */}
-        <div className="flex flex-col items-center gap-1">
-          {seasonings ? (
-            <>
-              <div className="flex gap-1">
-                {seasonings.map((s, i) => (
-                  <MinecraftSlot
-                    key={i}
-                    item={s?.item}
-                    count={s?.count}
-                    empty={!s?.item}
-                    title={s?.label}
-                  />
-                ))}
-              </div>
-              <ArrowDown className="size-4 shrink-0 text-[#373737] dark:text-foreground" />
-              <MinecraftSlot
-                item={result}
-                count={resultCount}
-                title={resultLabel}
-                size="size-14"
-              />
-            </>
-          ) : (
-            // Without seasonings we offset the result with `mt-9` so
-            // it lines up with the grid's middle row (where the
-            // right-arrow sits).
+        {/* Right column: when seasonings are passed, render the 3-slot
+            strip at the top (aligned with the grid's first row), a
+            down-arrow, then the result. Without seasonings, the
+            result slot is centred vertically against the grid so
+            it sits on the same line as the right-arrow. */}
+        {seasonings ? (
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex gap-1">
+              {seasonings.map((s, i) => (
+                <MinecraftSlot
+                  key={i}
+                  item={s?.item}
+                  count={s?.count}
+                  empty={!s?.item}
+                  title={s?.label}
+                />
+              ))}
+            </div>
+            <ArrowDown className="size-4 shrink-0 text-[#373737] dark:text-foreground" />
             <MinecraftSlot
               item={result}
               count={resultCount}
               title={resultLabel}
               size="size-14"
-              className="mt-9"
             />
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="flex items-center">
+            <MinecraftSlot
+              item={result}
+              count={resultCount}
+              title={resultLabel}
+              size="size-14"
+            />
+          </div>
+        )}
       </div>
     </MinecraftPanel>
   );

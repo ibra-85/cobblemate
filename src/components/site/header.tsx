@@ -282,14 +282,22 @@ export function Header() {
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur md:px-6">
       <MobileNav />
 
+      {/* `min-w-0` + `flex-1` lets the flex parent shrink this button
+          below its intrinsic width on narrow screens — without it
+          the button's content (icon + label + sibling theme toggle)
+          pushed the row past the viewport. `md:max-w-md` caps the
+          width on desktop so the search bar doesn't hog the row. */}
       <Button
         variant="outline"
         size="sm"
-        className="w-full justify-start gap-2 text-muted-foreground md:max-w-md"
+        className="min-w-0 flex-1 justify-start gap-2 overflow-hidden text-muted-foreground md:max-w-md"
         onClick={() => setOpen(true)}
       >
         <Search data-icon="inline-start" />
-        Rechercher Pokémon, attaque, type…
+        <span className="truncate md:hidden">Recherche…</span>
+        <span className="hidden truncate md:inline">
+          Rechercher Pokémon, attaque, type…
+        </span>
         <kbd className="ml-auto hidden rounded border bg-muted px-1.5 text-[10px] md:inline-flex">
           Ctrl K
         </kbd>

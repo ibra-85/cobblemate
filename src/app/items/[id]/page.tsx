@@ -177,19 +177,47 @@ export default async function ItemDetailPage({
 
 function RecipeCard({ item }: { item: Item }) {
   const recipe = item.recipe!;
+  const isCooking = recipe.kind === "cooking";
+  const isShapeless = recipe.shapeless === true;
+  // Cooking recipes (Campfire Pot) render with the same widget the
+  // PokéSnacks page uses — 3×3 ingredient grid, 3-slot seasoning
+  // strip on the right (empty for food items, only Pokésnacks
+  // fill it), then the result. Pass an empty 3-slot strip so the
+  // result lines up with the Pot's in-game UI even when no
+  // seasonings apply.
+  const emptySeasonings = isCooking ? [null, null, null] : undefined;
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <ChefHat className="size-4 text-muted-foreground" />
-          Recette
+          {isCooking ? "Recette (Campfire Pot)" : "Recette"}
           {recipe.output && recipe.output > 1 && (
             <Badge variant="secondary" className="font-mono text-[10px]">
               ×{recipe.output}
             </Badge>
           )}
+          {isShapeless && (
+            <Badge
+              variant="outline"
+              className="border-amber-500/40 text-[10px] text-amber-600 dark:text-amber-300"
+              title="Recette informe — les ingrédients peuvent être placés dans n'importe quel ordre"
+            >
+              Informe ⭍
+            </Badge>
+          )}
         </CardTitle>
         {recipe.note && <CardDescription>{recipe.note}</CardDescription>}
+        {!recipe.note && isShapeless && (
+          <CardDescription>
+            Recette informe : les ingrédients peuvent être placés dans n&apos;importe quel ordre sur la grille.
+          </CardDescription>
+        )}
+        {!recipe.note && !isShapeless && isCooking && (
+          <CardDescription>
+            Recette de cuisson du Campfire Pot.
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         {/* `overflow-x-auto` lets the crafting widget scroll
@@ -199,6 +227,7 @@ function RecipeCard({ item }: { item: Item }) {
         <div className="-mx-3 overflow-x-auto px-3 py-1">
           <MinecraftCraftingTable
             grid={recipe.grid}
+            seasonings={emptySeasonings}
             result={`cobblemon:${item.id.replace(/-/g, "_")}`}
             resultCount={recipe.output}
             resultLabel={item.name}

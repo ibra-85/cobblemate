@@ -1,0 +1,4034 @@
+{
+  "ability_capsule": {
+    "id": "ability_capsule",
+    "nameEn": "Ability Capsule",
+    "nameFr": "Pilule Talent",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/90/Ability_Capsule.png",
+    "recipe": null
+  },
+  "ability_patch": {
+    "id": "ability_patch",
+    "nameEn": "Ability Patch",
+    "nameFr": "Patch Talent",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2b/Ability_Patch.png",
+    "recipe": null
+  },
+  "ability_shield": {
+    "id": "ability_shield",
+    "nameEn": "Ability Shield",
+    "nameFr": "Garde-Talent",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/6c/Ability_Shield.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        "minecraft:diamond",
+        "minecraft:iron_ingot",
+        "minecraft:diamond",
+        "minecraft:shield",
+        "minecraft:diamond",
+        null,
+        "minecraft:amethyst_shard",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "absorb_bulb": {
+    "id": "absorb_bulb",
+    "nameEn": "Absorb Bulb",
+    "nameFr": "Bulbe",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/16/Absorb_Bulb.png",
+    "recipe": null
+  },
+  "air_balloon": {
+    "id": "air_balloon",
+    "nameEn": "Air Balloon",
+    "nameFr": "Ballon",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/bb/Air_Balloon.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:red_wool",
+        "minecraft:red_wool",
+        null,
+        "minecraft:phantom_membrane",
+        "minecraft:red_wool",
+        "minecraft:string",
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "ancient_poke_ball": {
+    "id": "ancient_poke_ball",
+    "nameEn": "Ancient Poké Ball",
+    "nameFr": "Poké Ball Antique",
+    "category": "ball",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/4e/Ancient_Poke_Ball.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "cobblemon:red_apricorn",
+        null,
+        "cobblemon:tumblestone",
+        "minecraft:copper_ingot",
+        "cobblemon:tumblestone",
+        null,
+        "cobblemon:red_apricorn",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "antidote": {
+    "id": "antidote",
+    "nameEn": "Antidote",
+    "nameFr": "Antidote",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/71/Antidote.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pecha_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "assault_vest": {
+    "id": "assault_vest",
+    "nameEn": "Assault Vest",
+    "nameFr": "Veste de Combat",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/de/Assault_Vest.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:protector",
+        null,
+        "cobblemon:protector",
+        "minecraft:red_wool",
+        "minecraft:leather_tunic",
+        "minecraft:red_wool",
+        "minecraft:red_wool",
+        "minecraft:red_wool",
+        "minecraft:red_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "auspicious_armor": {
+    "id": "auspicious_armor",
+    "nameEn": "Auspicious Armor",
+    "nameFr": "Armure de la Fortune",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/69/Auspicious_Armor.png",
+    "recipe": null
+  },
+  "awakening": {
+    "id": "awakening",
+    "nameEn": "Awakening",
+    "nameFr": "Réveil",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b7/Awakening.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:chesto_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "berry_juice": {
+    "id": "berry_juice",
+    "nameEn": "Berry Juice",
+    "nameFr": "Jus de Baie",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/3a/Berry_Juice.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "group:any_berry|cobblemon:oran_berry",
+        "group:any_berry|cobblemon:oran_berry",
+        null,
+        "minecraft:bowl",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "big_malasada": {
+    "id": "big_malasada",
+    "nameEn": "Big Malasada",
+    "nameFr": "Malasada Maxi",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/cc/Big_Malasada.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:wheat",
+        "cobblemon:moomoo_milk",
+        "minecraft:sugar",
+        "cobblemon:melon",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "big_root": {
+    "id": "big_root",
+    "nameEn": "Big Root",
+    "nameFr": "Grosse Racine",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/dd/Big_Root.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        null,
+        "cobblemon:big_root",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "binding_band": {
+    "id": "binding_band",
+    "nameEn": "Binding Band",
+    "nameFr": "Bande Étreinte",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8e/Binding_Band.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:string",
+        "minecraft:brown_wool",
+        "minecraft:string",
+        "minecraft:slimeball",
+        "minecraft:string",
+        "minecraft:brown_wool",
+        "minecraft:string",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "black_augurite": {
+    "id": "black_augurite",
+    "nameEn": "Black Augurite",
+    "nameFr": "Augurite Noir",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/bf/Black_Augurite.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:black_augurite",
+        "cobblemon:black_augurite",
+        null,
+        "cobblemon:black_augurite",
+        "cobblemon:black_augurite",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "black_belt": {
+    "id": "black_belt",
+    "nameEn": "Black Belt",
+    "nameFr": "Ceinture Noire",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f4/Black_Belt.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:dried_kelp",
+        null,
+        null,
+        "minecraft:dried_kelp",
+        "cobblemon:fighting_gem",
+        "minecraft:dried_kelp",
+        null,
+        null,
+        "minecraft:dried_kelp"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "black_glasses": {
+    "id": "black_glasses",
+    "nameEn": "Black Glasses",
+    "nameFr": "Lunettes Noires",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/97/Black_Glasses.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot",
+        "minecraft:tinted_glass",
+        "cobblemon:dark_gem",
+        "minecraft:tinted_glass"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "black_sludge": {
+    "id": "black_sludge",
+    "nameEn": "Black Sludge",
+    "nameFr": "Boue Noire",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/3d/Black_Sludge.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:fermented_spider_eye",
+        "minecraft:tinted_glass",
+        "cobblemon:black_sludge",
+        "minecraft:tinted_glass",
+        "minecraft:ender_pearl",
+        "minecraft:tinted_glass",
+        "cobblemon:black_sludge",
+        "minecraft:tinted_glass",
+        "minecraft:fermented_spider_eye"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "blunder_policy": {
+    "id": "blunder_policy",
+    "nameEn": "Blunder Policy",
+    "nameFr": "Assurance Échec",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/19/Blunder_Policy.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:rabbits_foot",
+        null,
+        "minecraft:yellow_dye",
+        "minecraft:ink_sac",
+        "minecraft:feather",
+        null,
+        "minecraft:paper",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "braised_vivichoke": {
+    "id": "braised_vivichoke",
+    "nameEn": "Braised Vivichoke",
+    "nameFr": "Vivichoke Braisée",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/45/Braised_Vivichoke.png",
+    "recipe": null
+  },
+  "bright_powder": {
+    "id": "bright_powder",
+    "nameEn": "Bright Powder",
+    "nameFr": "Poudre Claire",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/92/Bright_Powder.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        "group:any_apricorn|cobblemon:red_apricorn",
+        "minecraft:copper_ingot",
+        "minecraft:iron_ingot",
+        "cobblemon:bright_powder",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        "group:any_apricorn|cobblemon:red_apricorn",
+        "minecraft:copper_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "burn_heal": {
+    "id": "burn_heal",
+    "nameEn": "Burn Heal",
+    "nameFr": "Anti-Brûle",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/10/Burn_Heal.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:rawst_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "campfire_pot": {
+    "id": "campfire_pot",
+    "nameEn": "Campfire Pot",
+    "nameFr": "Marmite à Feu de Camp",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/0a/Red_Campfire_Pot.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:copper_ingot",
+        "minecraft:glass",
+        "minecraft:copper_ingot",
+        "group:red_apricorn_yellow_apricorn_green_apricorn_blue_apricorn_pink_apricorn_black_apricorn_white_apricorn|cobblemon:red_apricorn",
+        null,
+        "group:red_apricorn_yellow_apricorn_green_apricorn_blue_apricorn_pink_apricorn_black_apricorn_white_apricorn|cobblemon:red_apricorn",
+        "minecraft:copper_ingot",
+        "minecraft:copper_ingot",
+        "minecraft:copper_ingot"
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "candied_apple": {
+    "id": "candied_apple",
+    "nameEn": "Candied Apple",
+    "nameFr": "Pomme d'Amour",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/3a/Candied_Apple.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:apple",
+        "minecraft:sugar",
+        "minecraft:stick",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "candied_berries": {
+    "id": "candied_berries",
+    "nameEn": "Candied Berries",
+    "nameFr": "Baies Confites",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2f/Candied_Berries.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "group:any_berry|cobblemon:oran_berry",
+        "group:any_berry|cobblemon:oran_berry",
+        "group:any_berry|cobblemon:oran_berry",
+        "minecraft:stick",
+        "minecraft:sugar",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "casteliacone": {
+    "id": "casteliacone",
+    "nameEn": "Casteliacone",
+    "nameFr": "Glace Volute",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8b/Casteliacone.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:wheat",
+        "group:any_milk|cobblemon:milk_bucket",
+        "minecraft:snowball",
+        "minecraft:sugar",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "cell_battery": {
+    "id": "cell_battery",
+    "nameEn": "Cell Battery",
+    "nameFr": "Pile",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/10/Cell_Battery.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        null,
+        null,
+        "minecraft:redstone_dust",
+        null,
+        null,
+        "minecraft:copper_ingot",
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "charcoal_stick": {
+    "id": "charcoal_stick",
+    "nameEn": "Charcoal Stick",
+    "nameFr": "Bâton de Charbon",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/fd/Charcoal_Stick.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:charcoal",
+        null,
+        null,
+        "cobblemon:fire_gem",
+        null,
+        null,
+        "minecraft:charcoal",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "chipped_pot": {
+    "id": "chipped_pot",
+    "nameEn": "Chipped Pot",
+    "nameFr": "Théière Ébréchée",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2e/Chipped_Pot.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:clay_ball",
+        "minecraft:gold_nugget",
+        null,
+        "minecraft:clay_ball",
+        "cobblemon:chipped_pot",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "choice_band": {
+    "id": "choice_band",
+    "nameEn": "Choice Band",
+    "nameFr": "Bandeau Choix",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/bb/Choice_Band.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:white_wool",
+        "minecraft:nether_quartz",
+        "minecraft:white_wool",
+        "minecraft:lapis_lazuli",
+        "cobblemon:muscle_band",
+        "minecraft:nether_quartz",
+        "minecraft:redstone_dust",
+        "minecraft:lapis_lazuli",
+        "minecraft:white_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "choice_scarf": {
+    "id": "choice_scarf",
+    "nameEn": "Choice Scarf",
+    "nameFr": "Mouchoir Choix",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/00/Choice_Scarf.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:light_blue_wool",
+        "minecraft:diamond",
+        "minecraft:diamond",
+        "cobblemon:silk_scarf",
+        "minecraft:light_blue_wool",
+        "minecraft:light_blue_wool",
+        "minecraft:diamond",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "choice_specs": {
+    "id": "choice_specs",
+    "nameEn": "Choice Specs",
+    "nameFr": "Lunettes Choix",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/eb/Choice_Specs.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:blaze_rod",
+        null,
+        "minecraft:blaze_rod",
+        "minecraft:gold_ingot",
+        "cobblemon:wise_glasses",
+        "minecraft:gold_ingot",
+        "minecraft:redstone_dust",
+        "minecraft:gold_ingot",
+        "minecraft:redstone_dust"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "cleanse_tag": {
+    "id": "cleanse_tag",
+    "nameEn": "Cleanse Tag",
+    "nameFr": "Rune Purifiante",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/16/Cleanse_Tag.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:paper",
+        "minecraft:white_dye",
+        "minecraft:paper",
+        "minecraft:red_dye",
+        "minecraft:paper",
+        "minecraft:white_dye",
+        "minecraft:paper",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "clear_amulet": {
+    "id": "clear_amulet",
+    "nameEn": "Clear Amulet",
+    "nameFr": "Talisman Sain",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e2/Clear_Amulet.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:string",
+        "minecraft:diamond",
+        "minecraft:string",
+        "minecraft:gold_ingot",
+        "minecraft:amethyst_shard",
+        "minecraft:gold_ingot",
+        null,
+        "minecraft:diamond",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "covert_cloak": {
+    "id": "covert_cloak",
+    "nameEn": "Covert Cloak",
+    "nameFr": "Cape Obscure",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/9a/Covert_Cloak.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:gray_wool",
+        null,
+        "minecraft:gray_wool",
+        "minecraft:phantom_membrane",
+        "minecraft:gray_wool",
+        "minecraft:gray_wool",
+        "minecraft:golden_carrot",
+        "minecraft:gray_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "cracked_pot": {
+    "id": "cracked_pot",
+    "nameEn": "Cracked Pot",
+    "nameFr": "Théière Fêlée",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8a/Cracked_Pot.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:clay_ball",
+        "minecraft:gold_nugget",
+        null,
+        "minecraft:clay_ball",
+        "minecraft:clay_ball",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "damp_rock": {
+    "id": "damp_rock",
+    "nameEn": "Damp Rock",
+    "nameFr": "Roche Humide",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b0/Damp_Rock.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:dripstone_block",
+        "cobblemon:water_stone",
+        null,
+        "cobblemon:hard_stone",
+        "minecraft:dripstone_block",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "deep_sea_scale": {
+    "id": "deep_sea_scale",
+    "nameEn": "Deep Sea Scale",
+    "nameFr": "Écaille Océan",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/61/Deep_Sea_Scale.png",
+    "recipe": null
+  },
+  "deep_sea_tooth": {
+    "id": "deep_sea_tooth",
+    "nameEn": "Deep Sea Tooth",
+    "nameFr": "Dent Océan",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2d/Deep_Sea_Tooth.png",
+    "recipe": null
+  },
+  "destiny_knot": {
+    "id": "destiny_knot",
+    "nameEn": "Destiny Knot",
+    "nameFr": "Nœud Destin",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8d/Destiny_Knot.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:red_wool",
+        "minecraft:red_wool",
+        null,
+        "minecraft:red_wool",
+        "minecraft:ghast_tear",
+        "minecraft:string",
+        null,
+        "minecraft:string",
+        "minecraft:string"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "dire_hit": {
+    "id": "dire_hit",
+    "nameEn": "Dire Hit",
+    "nameFr": "Muscle +",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8b/Dire_Hit.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:tamato_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "dragon_fang": {
+    "id": "dragon_fang",
+    "nameEn": "Dragon Fang",
+    "nameFr": "Croc Dragon",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/4b/Dragon_Fang.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:razor_fang",
+        "cobblemon:dragon_gem",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "dragon_scale": {
+    "id": "dragon_scale",
+    "nameEn": "Dragon Scale",
+    "nameFr": "Écaille Draco",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/25/Dragon_Scale.png",
+    "recipe": null
+  },
+  "dubious_disc": {
+    "id": "dubious_disc",
+    "nameEn": "Dubious Disc",
+    "nameFr": "CD Douteux",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/59/Dubious_Disc.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        "minecraft:tinted_glass",
+        "minecraft:sea_lantern",
+        "minecraft:tinted_glass",
+        "minecraft:sculk",
+        "minecraft:amethyst_shard",
+        "minecraft:sculk"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "eject_button": {
+    "id": "eject_button",
+    "nameEn": "Eject Button",
+    "nameFr": "Bouton Fuite",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/69/Eject_Button.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        "group:any_button|cobblemon:apricorn_button",
+        "minecraft:iron_ingot",
+        "minecraft:yellow_dye",
+        "minecraft:piston",
+        "minecraft:yellow_dye",
+        "minecraft:iron_ingot",
+        "minecraft:redstone_dust",
+        "minecraft:iron_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "eject_pack": {
+    "id": "eject_pack",
+    "nameEn": "Eject Pack",
+    "nameFr": "Sac Fuite",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/7c/Eject_Pack.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "group:any_wool|minecraft:white_wool",
+        "group:any_wool|minecraft:white_wool",
+        "group:any_wool|minecraft:white_wool",
+        "group:any_wool|minecraft:white_wool",
+        "cobblemon:eject_button",
+        "group:any_wool|minecraft:white_wool",
+        "minecraft:leather",
+        "minecraft:redstone_dust",
+        "minecraft:leather"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "electirizer": {
+    "id": "electirizer",
+    "nameEn": "Electirizer",
+    "nameFr": "Électriseur",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/23/Electirizer.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:gold_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:block_of_redstone",
+        "minecraft:iron_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:gold_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "elixir": {
+    "id": "elixir",
+    "nameEn": "Elixir",
+    "nameFr": "Élixir",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/43/Elixir.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:medicinal_brew",
+        "cobblemon:hopo_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "ether": {
+    "id": "ether",
+    "nameEn": "Ether",
+    "nameFr": "Huile",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/3c/Ether.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:medicinal_brew",
+        "cobblemon:leppa_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "everstone": {
+    "id": "everstone",
+    "nameEn": "Everstone",
+    "nameFr": "Pierre Stase",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/86/Everstone.png",
+    "recipe": null
+  },
+  "eviolite": {
+    "id": "eviolite",
+    "nameEn": "Eviolite",
+    "nameFr": "Évoluroc",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e0/Eviolite.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:amethyst_shard",
+        null,
+        "minecraft:amethyst_shard",
+        "cobblemon:everstone",
+        "minecraft:amethyst_shard",
+        null,
+        "minecraft:amethyst_shard",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "evolution_stone": {
+    "id": "evolution_stone",
+    "nameEn": "Evolution Stone",
+    "nameFr": "Pierre Évolutive",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/63/Fire_Stone.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone",
+        "group:any_evolution_stone|cobblemon:fire_stone"
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "exp_share": {
+    "id": "exp_share",
+    "nameEn": "Exp. Share",
+    "nameFr": "Multi Exp",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f5/Exp._Share.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:amethyst_shard",
+        "minecraft:gold_ingot",
+        "minecraft:amethyst_shard",
+        "minecraft:lapis_lazuli",
+        "minecraft:iron_helmet",
+        "minecraft:lapis_lazuli",
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "expert_belt": {
+    "id": "expert_belt",
+    "nameEn": "Expert Belt",
+    "nameFr": "Ceinture Pro",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c7/Expert_Belt.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:blaze_powder",
+        null,
+        null,
+        "minecraft:black_wool",
+        "cobblemon:black_belt",
+        "minecraft:black_wool",
+        null,
+        null,
+        "minecraft:blaze_powder"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "fairy_feather": {
+    "id": "fairy_feather",
+    "nameEn": "Fairy Feather",
+    "nameFr": "Plume Fée",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/7e/Fairy_Feather.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:fairy_gem",
+        "minecraft:feather",
+        null,
+        "minecraft:nether_quartz",
+        "minecraft:amethyst_shard",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "fine_remedy": {
+    "id": "fine_remedy",
+    "nameEn": "Fine Remedy",
+    "nameFr": "Remède Fin",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/16/Fine_Remedy.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:remedy",
+        "minecraft:sweet_berries",
+        null,
+        "minecraft:sweet_berries",
+        "cobblemon:pep_up_flower",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "flame_orb": {
+    "id": "flame_orb",
+    "nameEn": "Flame Orb",
+    "nameFr": "Orbe Flamme",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/0a/Flame_Orb.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:blaze_powder",
+        "minecraft:tinted_glass",
+        "group:fire_stone_fire_gem|cobblemon:fire_stone",
+        "minecraft:tinted_glass",
+        "minecraft:ender_pearl",
+        "minecraft:tinted_glass",
+        "group:fire_stone_fire_gem|cobblemon:fire_stone",
+        "minecraft:tinted_glass",
+        "minecraft:blaze_powder"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "float_stone": {
+    "id": "float_stone",
+    "nameEn": "Float Stone",
+    "nameFr": "Pierrallégée",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/89/Float_Stone.png",
+    "recipe": null
+  },
+  "focus_band": {
+    "id": "focus_band",
+    "nameEn": "Focus Band",
+    "nameFr": "Bandeau",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/3e/Focus_Band.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:red_wool",
+        "minecraft:copper_ingot",
+        "minecraft:red_wool",
+        "minecraft:blaze_powder",
+        null,
+        "minecraft:copper_ingot",
+        "minecraft:red_wool",
+        "minecraft:blaze_powder",
+        "minecraft:red_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "focus_sash": {
+    "id": "focus_sash",
+    "nameEn": "Focus Sash",
+    "nameFr": "Ceinture Force",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/49/Focus_Sash.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:blaze_powder",
+        null,
+        null,
+        "minecraft:red_wool",
+        "minecraft:copper_ingot",
+        "minecraft:red_wool",
+        null,
+        null,
+        "minecraft:blaze_powder"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "full_heal": {
+    "id": "full_heal",
+    "nameEn": "Full Heal",
+    "nameFr": "Total Soin",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/9c/Full_Heal.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:lum_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "full_restore": {
+    "id": "full_restore",
+    "nameEn": "Full Restore",
+    "nameFr": "Guérison",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c3/Full_Restore.png",
+    "recipe": null
+  },
+  "galarica_cuff": {
+    "id": "galarica_cuff",
+    "nameEn": "Galarica Cuff",
+    "nameFr": "Bracelet Galanoa",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/0c/Galarica_Cuff.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:stick",
+        "cobblemon:galarica_nuts",
+        "minecraft:stick",
+        "cobblemon:galarica_nuts",
+        null,
+        "cobblemon:galarica_nuts",
+        "minecraft:stick",
+        "cobblemon:galarica_nuts",
+        "minecraft:stick"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "galarica_nuts": {
+    "id": "galarica_nuts",
+    "nameEn": "Galarica Nuts",
+    "nameFr": "Noix Galanoa",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/76/Galarica_Nuts.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        null,
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "galarica_wreath": {
+    "id": "galarica_wreath",
+    "nameEn": "Galarica Wreath",
+    "nameFr": "Couronne Galanoa",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/86/Galarica_Wreath.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        null,
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts",
+        "cobblemon:galarica_nuts"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "grip_claw": {
+    "id": "grip_claw",
+    "nameEn": "Grip Claw",
+    "nameFr": "Accro Griffe",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/a4/Grip_Claw.png",
+    "recipe": null
+  },
+  "guard_spec": {
+    "id": "guard_spec",
+    "nameEn": "Guard Spec",
+    "nameFr": "Garde-Stats",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/01/Guard_Spec.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:starf_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "hard_stone": {
+    "id": "hard_stone",
+    "nameEn": "Hard Stone",
+    "nameFr": "Pierre Dure",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/59/Hard_Stone.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "cobblemon:rock_gem",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone",
+        "group:stone_deepslate_blackstone_tuff|minecraft:stone"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "heal_powder": {
+    "id": "heal_powder",
+    "nameEn": "Heal Powder",
+    "nameFr": "Poudre Soin",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c3/Heal_Powder.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:revival_herb",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "hearty_grains": {
+    "id": "hearty_grains",
+    "nameEn": "Hearty Grains",
+    "nameFr": "Grains Nourrissants",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/cf/Hearty_Grains.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        null,
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "heat_rock": {
+    "id": "heat_rock",
+    "nameEn": "Heat Rock",
+    "nameFr": "Roche Chaude",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/dc/Heat_Rock.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:dripstone_block",
+        "group:fire_stone_fire_gem|cobblemon:fire_stone",
+        null,
+        "cobblemon:hard_stone",
+        "minecraft:dripstone_block",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "heavy_duty_boots": {
+    "id": "heavy_duty_boots",
+    "nameEn": "Heavy-Duty Boots",
+    "nameFr": "Grosses Bottes",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b8/Heavy-Duty_Boots.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:obsidian",
+        null,
+        "minecraft:obsidian",
+        "minecraft:obsidian",
+        "minecraft:leather_boots",
+        "minecraft:obsidian",
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "hyper_potion": {
+    "id": "hyper_potion",
+    "nameEn": "Hyper Potion",
+    "nameFr": "Hyper Potion",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/23/Hyper_Potion.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:medicinal_brew",
+        "cobblemon:sitrus_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "ice_heal": {
+    "id": "ice_heal",
+    "nameEn": "Ice Heal",
+    "nameFr": "Antigel",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/41/Ice_Heal.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:aspear_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "icy_rock": {
+    "id": "icy_rock",
+    "nameEn": "Icy Rock",
+    "nameFr": "Roche Glace",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/75/Icy_Rock.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:dripstone_block",
+        "cobblemon:ice_stone",
+        null,
+        "cobblemon:hard_stone",
+        "minecraft:dripstone_block",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "iron_ball": {
+    "id": "iron_ball",
+    "nameEn": "Iron Ball",
+    "nameFr": "Balle Fer",
+    "category": "ball",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/98/Iron_Ball.png",
+    "recipe": null
+  },
+  "jubilife_muffin": {
+    "id": "jubilife_muffin",
+    "nameEn": "Jubilife Muffin",
+    "nameFr": "Muffin de Floraville",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e4/Jubilife_Muffin.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "minecraft:honey_bottle",
+        "minecraft:sweet_berries",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "kings_rock": {
+    "id": "kings_rock",
+    "nameEn": "King's Rock",
+    "nameFr": "Roche Royale",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/ff/King%27s_Rock.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:chiseled_sandstone",
+        null,
+        "minecraft:raw_gold",
+        "minecraft:sandstone",
+        "minecraft:raw_gold",
+        "minecraft:sandstone",
+        "minecraft:raw_gold",
+        "minecraft:sandstone"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "lagging_tail": {
+    "id": "lagging_tail",
+    "nameEn": "Lagging Tail",
+    "nameFr": "Ralentiqueue",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/36/Lagging_Tail.png",
+    "recipe": null
+  },
+  "lava_cookie": {
+    "id": "lava_cookie",
+    "nameEn": "Lava Cookie",
+    "nameFr": "Lava Cookie",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8f/Lava_Cookie.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "minecraft:dried_kelp",
+        "minecraft:magma_cream",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "leftovers": {
+    "id": "leftovers",
+    "nameEn": "Leftovers",
+    "nameFr": "Restes",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/7f/Leftovers.png",
+    "recipe": null
+  },
+  "life_orb": {
+    "id": "life_orb",
+    "nameEn": "Life Orb",
+    "nameFr": "Orbe Vie",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/a5/Life_Orb.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:ghast_tear",
+        "minecraft:tinted_glass",
+        "minecraft:golden_apple",
+        "minecraft:tinted_glass",
+        "minecraft:ender_pearl",
+        "minecraft:tinted_glass",
+        "minecraft:golden_apple",
+        "minecraft:tinted_glass",
+        "minecraft:ghast_tear"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "light_ball": {
+    "id": "light_ball",
+    "nameEn": "Light Ball",
+    "nameFr": "Balle Lumière",
+    "category": "ball",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/4a/Light_Ball.png",
+    "recipe": null
+  },
+  "light_clay": {
+    "id": "light_clay",
+    "nameEn": "Light Clay",
+    "nameFr": "Lumargile",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/13/Light_Clay.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:glow_ink_sac",
+        "minecraft:clay_ball",
+        "minecraft:glow_ink_sac",
+        "minecraft:clay_ball",
+        "minecraft:ender_pearl",
+        "minecraft:clay_ball",
+        "minecraft:glow_ink_sac",
+        "minecraft:clay_ball",
+        "minecraft:glow_ink_sac"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "link_cable": {
+    "id": "link_cable",
+    "nameEn": "Link Cable",
+    "nameFr": "Câble Échange",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/33/Link_Cable.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        "minecraft:nether_quartz",
+        "minecraft:copper_ingot",
+        "minecraft:ender_pearl",
+        "minecraft:copper_ingot",
+        "minecraft:nether_quartz",
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "loaded_dice": {
+    "id": "loaded_dice",
+    "nameEn": "Loaded Dice",
+    "nameFr": "Dé Pipé",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/0d/Loaded_Dice.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:slimeball",
+        "minecraft:obsidian",
+        "minecraft:slimeball",
+        "minecraft:obsidian",
+        "minecraft:rabbits_foot",
+        "minecraft:obsidian",
+        "cobblemon:iron_ball",
+        "minecraft:obsidian",
+        "cobblemon:iron_ball"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "lucky_egg": {
+    "id": "lucky_egg",
+    "nameEn": "Lucky Egg",
+    "nameFr": "Œuf Chance",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/72/Lucky_Egg.png",
+    "recipe": null
+  },
+  "luminous_moss": {
+    "id": "luminous_moss",
+    "nameEn": "Luminous Moss",
+    "nameFr": "Lichen Lumineux",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b9/Luminous_Moss.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:glow_berries",
+        "minecraft:moss_block",
+        null,
+        "minecraft:bowl",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "lumiose_galette": {
+    "id": "lumiose_galette",
+    "nameEn": "Lumiose Galette",
+    "nameFr": "Galette Illumis",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f9/Lumiose_Galette.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:wheat",
+        "group:any_milk|cobblemon:milk_bucket",
+        "minecraft:sugar",
+        "minecraft:glow_berries",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "magmarizer": {
+    "id": "magmarizer",
+    "nameEn": "Magmarizer",
+    "nameFr": "Magmariseur",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b2/Magmarizer.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:blaze_powder",
+        "minecraft:iron_ingot",
+        "minecraft:blaze_powder",
+        "minecraft:iron_ingot",
+        "minecraft:iron_bars",
+        "minecraft:iron_ingot",
+        "minecraft:magma_block",
+        "minecraft:iron_ingot",
+        "minecraft:magma_block"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "magnet": {
+    "id": "magnet",
+    "nameEn": "Magnet",
+    "nameFr": "Aimant",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8c/Magnet.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        "cobblemon:electric_gem",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot",
+        "minecraft:redstone_dust",
+        null,
+        "minecraft:blue_dye"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "malicious_armor": {
+    "id": "malicious_armor",
+    "nameEn": "Malicious Armor",
+    "nameFr": "Armure de la Rancune",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/32/Malicious_Armor.png",
+    "recipe": null
+  },
+  "masterpiece_teacup": {
+    "id": "masterpiece_teacup",
+    "nameEn": "Masterpiece Teacup",
+    "nameFr": "Bol Exceptionnel",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/35/Masterpiece_Teacup.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:clay_ball",
+        "cobblemon:masterpiece_teacup",
+        "minecraft:clay_ball",
+        "minecraft:nether_quartz",
+        "minecraft:clay_ball",
+        "minecraft:nether_quartz",
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "max_elixir": {
+    "id": "max_elixir",
+    "nameEn": "Max Elixir",
+    "nameFr": "Élixir Max",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/cd/Max_Elixir.png",
+    "recipe": null
+  },
+  "max_ether": {
+    "id": "max_ether",
+    "nameEn": "Max Ether",
+    "nameFr": "Huile Max",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/fd/Max_Ether.png",
+    "recipe": null
+  },
+  "max_potion": {
+    "id": "max_potion",
+    "nameEn": "Max Potion",
+    "nameFr": "Potion Max",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/03/Max_Potion.png",
+    "recipe": null
+  },
+  "max_revive": {
+    "id": "max_revive",
+    "nameEn": "Max Revive",
+    "nameFr": "Rappel Max",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d0/Max_Revive.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:revive",
+        "cobblemon:revive",
+        "cobblemon:vivichoke",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "medicinal_brew": {
+    "id": "medicinal_brew",
+    "nameEn": "Medicinal Brew",
+    "nameFr": "Bouillon Médicinal",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2f/Medicinal_Brew.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:medicinal_leek",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "medicinal_leek": {
+    "id": "medicinal_leek",
+    "nameEn": "Medicinal Leek",
+    "nameFr": "Poireau Médicinal",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/de/Medicinal_Leek.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:medicinal_leek",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "mental_herb": {
+    "id": "mental_herb",
+    "nameEn": "Mental Herb",
+    "nameFr": "Herbe Mental",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d3/Mental_Herb.png",
+    "recipe": null
+  },
+  "metal_alloy": {
+    "id": "metal_alloy",
+    "nameEn": "Metal Alloy",
+    "nameFr": "Alliage Métal",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/07/Metal_Alloy.png",
+    "recipe": null
+  },
+  "metal_coat": {
+    "id": "metal_coat",
+    "nameEn": "Metal Coat",
+    "nameFr": "Peau Métal",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/51/Metal_Coat.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:clay_ball",
+        "cobblemon:steel_gem",
+        "minecraft:honeycomb",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "metal_powder": {
+    "id": "metal_powder",
+    "nameEn": "Metal Powder",
+    "nameFr": "Poudre Métal",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/be/Metal_Powder.png",
+    "recipe": null
+  },
+  "metronome": {
+    "id": "metronome",
+    "nameEn": "Metronome",
+    "nameFr": "Métronome",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/1c/Metronome.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot",
+        "minecraft:iron_bars",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:note_block",
+        "minecraft:iron_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "miracle_seed": {
+    "id": "miracle_seed",
+    "nameEn": "Miracle Seed",
+    "nameFr": "Graine Miracle",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/7e/Miracle_Seed.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "group:any_seeds|minecraft:wheat_seeds",
+        null,
+        "group:any_seeds|minecraft:wheat_seeds",
+        "cobblemon:grass_gem",
+        "group:any_seeds|minecraft:wheat_seeds",
+        null,
+        "group:any_seeds|minecraft:wheat_seeds",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "mirror_herb": {
+    "id": "mirror_herb",
+    "nameEn": "Mirror Herb",
+    "nameFr": "Feuille Copieuse",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/0b/Mirror_Herb.png",
+    "recipe": null
+  },
+  "moomoo_milk": {
+    "id": "moomoo_milk",
+    "nameEn": "Moomoo Milk",
+    "nameFr": "Lait Meumeu",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f3/Moomoo_Milk.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:wheat",
+        "cobblemon:moomoo_milk",
+        "minecraft:sugar",
+        "minecraft:cocoa_beans",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "mulch": {
+    "id": "mulch",
+    "nameEn": "Mulch",
+    "nameFr": "Paillage",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/be/Mulch.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:bone_meal",
+        "minecraft:rotten_flesh",
+        null,
+        "minecraft:dirt",
+        "minecraft:paper",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "muscle_band": {
+    "id": "muscle_band",
+    "nameEn": "Muscle Band",
+    "nameFr": "Bandeau Muscle",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c7/Muscle_Band.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:yellow_wool",
+        "minecraft:gold_ingot",
+        "minecraft:yellow_wool",
+        "minecraft:redstone_dust",
+        null,
+        "minecraft:gold_ingot",
+        "minecraft:yellow_wool",
+        "minecraft:redstone_dust",
+        "minecraft:yellow_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "mystic_water": {
+    "id": "mystic_water",
+    "nameEn": "Mystic Water",
+    "nameFr": "Eau Mystique",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/05/Mystic_Water.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:string",
+        null,
+        "minecraft:string",
+        null,
+        "minecraft:string",
+        "cobblemon:water_gem",
+        "minecraft:string",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "never_melt_ice": {
+    "id": "never_melt_ice",
+    "nameEn": "Never-Melt Ice",
+    "nameFr": "Glace Éternelle",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/af/Never-Melt_Ice.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:snowball",
+        null,
+        "minecraft:snowball",
+        "minecraft:snowball",
+        "minecraft:snowball",
+        "minecraft:snowball",
+        "cobblemon:ice_gem",
+        "minecraft:snowball"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "old_gateau": {
+    "id": "old_gateau",
+    "nameEn": "Old Gateau",
+    "nameFr": "Vieux Gâteau",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/93/Old_Gateau.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:potato",
+        "minecraft:beetroot",
+        "minecraft:honey_bottle",
+        "minecraft:sugar",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "open_faced_sandwich": {
+    "id": "open_faced_sandwich",
+    "nameEn": "Open-Faced Sandwich",
+    "nameFr": "Tartine",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/57/Open-Faced_Sandwich.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:bread",
+        "minecraft:egg",
+        "group:any_raw_meat|cobblemon:raw_chicken",
+        "group:any_sandwich_vegetable|cobblemon:medicinal_leek",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "oval_stone": {
+    "id": "oval_stone",
+    "nameEn": "Oval Stone",
+    "nameFr": "Pierre Ovale",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/24/Oval_Stone.png",
+    "recipe": null
+  },
+  "paralyze_heal": {
+    "id": "paralyze_heal",
+    "nameEn": "Paralyze Heal",
+    "nameFr": "Anti-Para",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d6/Paralyze_Heal.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:cheri_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "peat_block": {
+    "id": "peat_block",
+    "nameEn": "Peat Block",
+    "nameFr": "Bloc de Tourbe",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/7a/Peat_Block.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:mud",
+        "minecraft:dirt",
+        null,
+        "minecraft:moss_block",
+        "minecraft:clay",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "pep_up_flower": {
+    "id": "pep_up_flower",
+    "nameEn": "Pep-Up Flower",
+    "nameFr": "Fleur Coup d'Boost",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/a0/Pep-Up_Flower.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        null,
+        "cobblemon:liechi_berry",
+        "cobblemon:liechi_berry",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "pewter_crunchies": {
+    "id": "pewter_crunchies",
+    "nameEn": "Pewter Crunchies",
+    "nameFr": "Crok’Argenta",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/07/Pewter_Crunchies.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "minecraft:honey_bottle",
+        "minecraft:pumpkin_seeds",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "poison_barb": {
+    "id": "poison_barb",
+    "nameEn": "Poison Barb",
+    "nameFr": "Pic Venin",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/12/Poison_Barb.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        "cobblemon:poison_gem",
+        null,
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot",
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "poke_bait": {
+    "id": "poke_bait",
+    "nameEn": "Poké Bait",
+    "nameFr": "Appât Poké",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/20/Pok%C3%A9_Bait.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:honey_bottle",
+        "cobblemon:brown_mushroom",
+        null,
+        "minecraft:wheat",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "poke_ball": {
+    "id": "poke_ball",
+    "nameEn": "Poké Ball",
+    "nameFr": "Poké Ball",
+    "category": "ball",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/6f/Poke_Ball.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "cobblemon:red_apricorn",
+        null,
+        "cobblemon:red_apricorn",
+        "minecraft:copper_ingot",
+        "cobblemon:red_apricorn",
+        null,
+        "cobblemon:red_apricorn",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "poke_cake": {
+    "id": "poke_cake",
+    "nameEn": "Poké Cake",
+    "nameFr": "Poké Gâteau",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/0f/Pok%C3%A9_Cake.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "group:any_milk|cobblemon:milk_bucket",
+        "group:any_milk|cobblemon:milk_bucket",
+        "group:any_milk|cobblemon:milk_bucket",
+        "minecraft:sugar",
+        "cobblemon:vivichoke",
+        "minecraft:sugar",
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "poke_rod": {
+    "id": "poke_rod",
+    "nameEn": "Poké Rod",
+    "nameFr": "Canne Poké",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/cb/Poke_Rod_%28Poke_Ball%29.png",
+    "recipe": null
+  },
+  "poke_snack": {
+    "id": "poke_snack",
+    "nameEn": "Poké Snack",
+    "nameFr": "PokéSnack",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/31/Pok%C3%A9_Snack.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "group:any_milk|cobblemon:milk_bucket",
+        "group:any_milk|cobblemon:milk_bucket",
+        "group:any_milk|cobblemon:milk_bucket",
+        "minecraft:honey_bottle",
+        "cobblemon:vivichoke",
+        "minecraft:honey_bottle",
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "ponigiri": {
+    "id": "ponigiri",
+    "nameEn": "Ponigiri",
+    "nameFr": "Ponigiri",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/ed/Ponigiri.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "minecraft:dried_kelp",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "potato_mochi": {
+    "id": "potato_mochi",
+    "nameEn": "Potato Mochi",
+    "nameFr": "Mochi à la Patate",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/55/Potato_Mochi.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "minecraft:honey_bottle",
+        "minecraft:potato",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "potion": {
+    "id": "potion",
+    "nameEn": "Potion",
+    "nameFr": "Potion",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/7a/Potion.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:medicinal_brew",
+        "cobblemon:oran_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "power_anklet": {
+    "id": "power_anklet",
+    "nameEn": "Power Anklet",
+    "nameFr": "Chaîne Pouvoir",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/39/Power_Anklet.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:green_mint_leaf",
+        "minecraft:light_blue_concrete",
+        "minecraft:diamond",
+        "minecraft:light_blue_concrete",
+        null,
+        "minecraft:light_blue_concrete",
+        "minecraft:diamond",
+        "minecraft:light_blue_concrete",
+        "cobblemon:green_mint_leaf"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "power_band": {
+    "id": "power_band",
+    "nameEn": "Power Band",
+    "nameFr": "Bandeau Pouvoir",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d7/Power_Band.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:pink_mint_leaf",
+        "minecraft:yellow_concrete",
+        "minecraft:diamond",
+        "minecraft:yellow_concrete",
+        null,
+        "minecraft:yellow_concrete",
+        "minecraft:diamond",
+        "minecraft:yellow_concrete",
+        "cobblemon:pink_mint_leaf"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "power_belt": {
+    "id": "power_belt",
+    "nameEn": "Power Belt",
+    "nameFr": "Ceinture Pouvoir",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/a3/Power_Belt.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:blue_mint_leaf",
+        "minecraft:orange_concrete",
+        "minecraft:diamond",
+        "minecraft:orange_concrete",
+        null,
+        "minecraft:orange_concrete",
+        "minecraft:diamond",
+        "minecraft:orange_concrete",
+        "cobblemon:blue_mint_leaf"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "power_bracer": {
+    "id": "power_bracer",
+    "nameEn": "Power Bracer",
+    "nameFr": "Poignet Pouvoir",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/5b/Power_Bracer.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:red_mint_leaf",
+        "minecraft:red_concrete",
+        "minecraft:diamond",
+        "minecraft:red_concrete",
+        null,
+        "minecraft:red_concrete",
+        "minecraft:diamond",
+        "minecraft:red_concrete",
+        "cobblemon:red_mint_leaf"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "power_herb": {
+    "id": "power_herb",
+    "nameEn": "Power Herb",
+    "nameFr": "Herbe Pouvoir",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/25/Power_Herb.png",
+    "recipe": null
+  },
+  "power_lens": {
+    "id": "power_lens",
+    "nameEn": "Power Lens",
+    "nameFr": "Lentille Pouvoir",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c4/Power_Lens.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:cyan_mint_leaf",
+        "minecraft:magenta_concrete",
+        "minecraft:diamond",
+        "minecraft:magenta_concrete",
+        null,
+        "minecraft:magenta_concrete",
+        "minecraft:diamond",
+        "minecraft:magenta_concrete",
+        "cobblemon:cyan_mint_leaf"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "power_weight": {
+    "id": "power_weight",
+    "nameEn": "Power Weight",
+    "nameFr": "Poids Pouvoir",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d9/Power_Weight.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:white_mint_leaf",
+        "minecraft:lime_concrete",
+        "minecraft:diamond",
+        "minecraft:lime_concrete",
+        null,
+        "minecraft:lime_concrete",
+        "minecraft:diamond",
+        "minecraft:lime_concrete",
+        "cobblemon:white_mint_leaf"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "prism_scale": {
+    "id": "prism_scale",
+    "nameEn": "Prism Scale",
+    "nameFr": "Bel’Écaille",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/1a/Prism_Scale.png",
+    "recipe": null
+  },
+  "protective_pads": {
+    "id": "protective_pads",
+    "nameEn": "Protective Pads",
+    "nameFr": "Pare-Effet",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/fb/Protective_Pads.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:blue_wool",
+        "minecraft:blue_wool",
+        null,
+        "minecraft:blue_wool",
+        "minecraft:rabbit_hide",
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot",
+        "minecraft:blue_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "protector": {
+    "id": "protector",
+    "nameEn": "Protector",
+    "nameFr": "Protecteur",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/cc/Protector.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:brick",
+        null,
+        "minecraft:armadillo_scute",
+        "minecraft:copper_ingot",
+        "minecraft:armadillo_scute",
+        "minecraft:brick",
+        null,
+        "minecraft:brick"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "punching_glove": {
+    "id": "punching_glove",
+    "nameEn": "Punching Glove",
+    "nameFr": "Gant de Boxe",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/73/Punching_Glove.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:red_wool",
+        "minecraft:red_wool",
+        "minecraft:gold_ingot",
+        "minecraft:rabbit_hide",
+        "minecraft:red_wool",
+        "minecraft:red_wool",
+        "minecraft:gold_ingot",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "quick_claw": {
+    "id": "quick_claw",
+    "nameEn": "Quick Claw",
+    "nameFr": "Vive Griffe",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/18/Quick_Claw.png",
+    "recipe": null
+  },
+  "quick_powder": {
+    "id": "quick_powder",
+    "nameEn": "Quick Powder",
+    "nameFr": "Poudre Vite",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/ee/Quick_Powder.png",
+    "recipe": null
+  },
+  "rage_candy_bar": {
+    "id": "rage_candy_bar",
+    "nameEn": "Rage Candy Bar",
+    "nameFr": "Bonbon Rage",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/4f/Rage_Candy_Bar.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:wheat",
+        "group:any_milk|minecraft:milk_bucket",
+        "minecraft:sugar",
+        "minecraft:cocoa_beans",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "rare_candy": {
+    "id": "rare_candy",
+    "nameEn": "Rare Candy",
+    "nameFr": "Super Bonbon",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/a2/Rare_Candy.png",
+    "recipe": null
+  },
+  "razor_claw": {
+    "id": "razor_claw",
+    "nameEn": "Razor Claw",
+    "nameFr": "Griffe Rasoir",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f6/Razor_Claw.png",
+    "recipe": null
+  },
+  "razor_fang": {
+    "id": "razor_fang",
+    "nameEn": "Razor Fang",
+    "nameFr": "Croc Rasoir",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e7/Razor_Fang.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:razor_fang",
+        "minecraft:dragons_breath",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "reaper_cloth": {
+    "id": "reaper_cloth",
+    "nameEn": "Reaper Cloth",
+    "nameFr": "Tissu Fauche",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d5/Reaper_Cloth.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:gray_wool",
+        null,
+        "minecraft:phantom_membrane",
+        "minecraft:ghast_tear",
+        "minecraft:phantom_membrane",
+        "minecraft:gray_wool",
+        "minecraft:phantom_membrane",
+        "minecraft:gray_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "red_card": {
+    "id": "red_card",
+    "nameEn": "Red Card",
+    "nameFr": "Carton Rouge",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/93/Red_Card.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:paper",
+        null,
+        "minecraft:paper",
+        "minecraft:red_dye",
+        "minecraft:paper",
+        null,
+        "minecraft:paper",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "relic_coin": {
+    "id": "relic_coin",
+    "nameEn": "Relic Coin",
+    "nameFr": "Relic Coin",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/15/Relic_Coin.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin",
+        "cobblemon:relic_coin"
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "remedy": {
+    "id": "remedy",
+    "nameEn": "Remedy",
+    "nameFr": "Remède",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b7/Remedy.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:remedy",
+        "minecraft:sweet_berries",
+        null,
+        "minecraft:sweet_berries",
+        "cobblemon:pep_up_flower",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "revival_herb": {
+    "id": "revival_herb",
+    "nameEn": "Revival Herb",
+    "nameFr": "Herbe Rappel",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/45/Revival_Herb.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:revival_herb",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "revive": {
+    "id": "revive",
+    "nameEn": "Revive",
+    "nameFr": "Rappel",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/13/Revive.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:heal_powder",
+        "minecraft:honey_bottle",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "ring_target": {
+    "id": "ring_target",
+    "nameEn": "Ring Target",
+    "nameFr": "Point de Mire",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d4/Ring_Target.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        "minecraft:target",
+        "group:any_wood_slab|cobblemon:apricorn_slab",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "rocky_helmet": {
+    "id": "rocky_helmet",
+    "nameEn": "Rocky Helmet",
+    "nameFr": "Casque Brut",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f7/Rocky_Helmet.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:hard_stone",
+        "cobblemon:hard_stone",
+        "cobblemon:hard_stone",
+        "minecraft:lime_dye",
+        "minecraft:golden_helmet",
+        "minecraft:lime_dye",
+        "minecraft:gold_ingot",
+        null,
+        "minecraft:gold_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "room_service": {
+    "id": "room_service",
+    "nameEn": "Room Service",
+    "nameFr": "Chariot Distordu",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/17/Room_Service.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:white_wool",
+        "minecraft:white_wool",
+        "minecraft:white_wool",
+        "minecraft:white_wool",
+        "minecraft:minecart",
+        "minecraft:white_wool"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "sachet": {
+    "id": "sachet",
+    "nameEn": "Sachet",
+    "nameFr": "Sachet Senteur",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/95/Sachet.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:string",
+        null,
+        "minecraft:string",
+        "minecraft:rabbit_hide",
+        "minecraft:pink_petals",
+        "minecraft:rabbit_hide",
+        "minecraft:amethyst_shard",
+        "minecraft:rabbit_hide",
+        "minecraft:amethyst_shard"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "safety_goggles": {
+    "id": "safety_goggles",
+    "nameEn": "Safety Goggles",
+    "nameFr": "Lunettes Filtre",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/23/Safety_Goggles.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:scute",
+        null,
+        "minecraft:scute",
+        null,
+        "minecraft:scute",
+        "minecraft:red_stained_glass",
+        "minecraft:red_stained_glass",
+        "minecraft:red_stained_glass"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "scope_lens": {
+    "id": "scope_lens",
+    "nameEn": "Scope Lens",
+    "nameFr": "Lentilscope",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/fe/Scope_Lens.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:gold_ingot",
+        "minecraft:amethyst_shard",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:amethyst_shard",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "scroll_of_darkness": {
+    "id": "scroll_of_darkness",
+    "nameEn": "Scroll of Darkness",
+    "nameFr": "Rouleau des Ténèbres",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/ae/Scroll_of_Darkness.png",
+    "recipe": null
+  },
+  "scroll_of_waters": {
+    "id": "scroll_of_waters",
+    "nameEn": "Scroll of Waters",
+    "nameFr": "Rouleau de l'Eau",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2d/Scroll_of_Waters.png",
+    "recipe": null
+  },
+  "sharp_beak": {
+    "id": "sharp_beak",
+    "nameEn": "Sharp Beak",
+    "nameFr": "Bec Pointu",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d2/Sharp_Beak.png",
+    "recipe": null
+  },
+  "shed_shell": {
+    "id": "shed_shell",
+    "nameEn": "Shed Shell",
+    "nameFr": "Carapace Mue",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/89/Shed_Shell.png",
+    "recipe": null
+  },
+  "shell_bell": {
+    "id": "shell_bell",
+    "nameEn": "Shell Bell",
+    "nameFr": "Grelot Coque",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d2/Shell_Bell.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:nautilus_shell",
+        "minecraft:prismarine_crystals",
+        "minecraft:iron_ingot",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "shell_helmet": {
+    "id": "shell_helmet",
+    "nameEn": "Shell Helmet",
+    "nameFr": "Casque-Coque",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/6a/Shell_Helmet.png",
+    "recipe": null
+  },
+  "silk_scarf": {
+    "id": "silk_scarf",
+    "nameEn": "Silk Scarf",
+    "nameFr": "Mouchoir Soie",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/4f/Silk_Scarf.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "group:any_wool|minecraft:white_wool",
+        "minecraft:string",
+        "minecraft:string",
+        "cobblemon:normal_gem",
+        "group:any_wool|minecraft:white_wool",
+        "group:any_wool|minecraft:white_wool",
+        "minecraft:string",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "silver_powder": {
+    "id": "silver_powder",
+    "nameEn": "Silver Powder",
+    "nameFr": "Poudre Argentée",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/be/Silver_Powder.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:bug_gem",
+        "minecraft:iron_nugget",
+        null,
+        "minecraft:string",
+        "minecraft:paper",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "sinister_tea": {
+    "id": "sinister_tea",
+    "nameEn": "Sinister Tea",
+    "nameFr": "Thé Sinistre",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/58/Sinister_Tea.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:unremarkable_teacup",
+        "cobblemon:unremarkable_teacup",
+        "cobblemon:unremarkable_teacup",
+        "group:water_bucket_or_any_milk|minecraft:water_bucket",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "smoke_ball": {
+    "id": "smoke_ball",
+    "nameEn": "Smoke Ball",
+    "nameFr": "Boule Fumée",
+    "category": "ball",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/dc/Smoke_Ball.png",
+    "recipe": null
+  },
+  "smoked_tail_curry": {
+    "id": "smoked_tail_curry",
+    "nameEn": "Smoked-Tail Curry",
+    "nameFr": "Curry à la Queue Fumée",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/73/Smoked-Tail_Curry.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:tasty_tail",
+        "minecraft:carrot",
+        "cobblemon:galarica_nuts",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "smooth_rock": {
+    "id": "smooth_rock",
+    "nameEn": "Smooth Rock",
+    "nameFr": "Roche Lisse",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/1e/Smooth_Rock.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:dripstone_block",
+        "group:soft_sand_rock_gem_ground_gem|cobblemon:soft_sand",
+        null,
+        "cobblemon:hard_stone",
+        "minecraft:dripstone_block",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "soft_sand": {
+    "id": "soft_sand",
+    "nameEn": "Soft Sand",
+    "nameFr": "Sable Doux",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e9/Soft_Sand.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:rabbit_hide",
+        "minecraft:rabbit_hide",
+        "minecraft:sand",
+        "cobblemon:ground_gem",
+        "minecraft:rabbit_hide",
+        "minecraft:sand",
+        "minecraft:sand",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "soothe_bell": {
+    "id": "soothe_bell",
+    "nameEn": "Soothe Bell",
+    "nameFr": "Grelot Zen",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/4c/Soothe_Bell.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "group:any_wool|minecraft:white_wool",
+        null,
+        "minecraft:iron_ingot",
+        "minecraft:iron_nugget",
+        "group:any_wool|minecraft:white_wool",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ingot",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "spell_tag": {
+    "id": "spell_tag",
+    "nameEn": "Spell Tag",
+    "nameFr": "Rune Sort",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/5/5e/Spell_Tag.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:ink_sac",
+        "minecraft:paper",
+        null,
+        "cobblemon:ghost_gem",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "sticky_barb": {
+    "id": "sticky_barb",
+    "nameEn": "Sticky Barb",
+    "nameFr": "Piquants",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/82/Sticky_Barb.png",
+    "recipe": null
+  },
+  "super_potion": {
+    "id": "super_potion",
+    "nameEn": "Super Potion",
+    "nameFr": "Super Potion",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/8f/Super_Potion.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:medicinal_brew",
+        "group:any_super_potion_ingredient|cobblemon:wiki_berry",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "superb_remedy": {
+    "id": "superb_remedy",
+    "nameEn": "Superb Remedy",
+    "nameFr": "Remède Suprême",
+    "category": "healing",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f5/Superb_Remedy.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:fine_remedy",
+        "cobblemon:vivichoke",
+        null,
+        "cobblemon:energy_root",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "sweet": {
+    "id": "sweet",
+    "nameEn": "Sweet",
+    "nameFr": "Bonbon Décoratif",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/49/Sweet.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:red_dye",
+        "minecraft:honey_bottle",
+        "minecraft:sugar",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "sweet_apple": {
+    "id": "sweet_apple",
+    "nameEn": "Sweet Apple",
+    "nameFr": "Pomme Sucrée",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2a/Sweet_Apple.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:sweet_apple",
+        "minecraft:sugar",
+        "minecraft:stick",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "syrupy_apple": {
+    "id": "syrupy_apple",
+    "nameEn": "Syrupy Apple",
+    "nameFr": "Pomme Nectar",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/42/Syrupy_Apple.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:syrupy_apple",
+        "minecraft:sugar",
+        "minecraft:stick",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "tart_apple": {
+    "id": "tart_apple",
+    "nameEn": "Tart Apple",
+    "nameFr": "Pomme Acidulée",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/81/Tart_Apple.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:tart_apple",
+        "minecraft:sugar",
+        "minecraft:stick",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "tasty_tail": {
+    "id": "tasty_tail",
+    "nameEn": "Tasty Tail",
+    "nameFr": "Queue Savoureuse",
+    "category": "food",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/48/Tasty_Tail.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "cobblemon:hearty_grains",
+        "minecraft:dried_kelp",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "terrain_extender": {
+    "id": "terrain_extender",
+    "nameEn": "Terrain Extender",
+    "nameFr": "Champ’Duit",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/a9/Terrain_Extender.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_trapdoor",
+        "minecraft:string",
+        null,
+        "minecraft:bone_meal",
+        "minecraft:rabbit_hide",
+        null,
+        "minecraft:bucket",
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "terrain_seeds": {
+    "id": "terrain_seeds",
+    "nameEn": "Terrain Seeds",
+    "nameFr": "Terrain Seeds",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/47/Electric_Seed.png",
+    "recipe": null
+  },
+  "throat_spray": {
+    "id": "throat_spray",
+    "nameEn": "Throat Spray",
+    "nameFr": "Spray Gorge",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/0/03/Throat_Spray.png",
+    "recipe": null
+  },
+  "toxic_orb": {
+    "id": "toxic_orb",
+    "nameEn": "Toxic Orb",
+    "nameFr": "Orbe Toxique",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/8/85/Toxic_Orb.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:fermented_spider_eye",
+        "minecraft:tinted_glass",
+        "cobblemon:black_sludge",
+        "minecraft:tinted_glass",
+        "minecraft:ender_pearl",
+        "minecraft:tinted_glass",
+        "cobblemon:black_sludge",
+        "minecraft:tinted_glass",
+        "minecraft:fermented_spider_eye"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "tumblestone": {
+    "id": "tumblestone",
+    "nameEn": "Tumblestone",
+    "nameFr": "Pierre Pétante",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/95/Tumblestone.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:tumblestone",
+        "cobblemon:tumblestone",
+        null,
+        "cobblemon:tumblestone",
+        "cobblemon:tumblestone",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "tumblestone_block_set": {
+    "id": "tumblestone_block_set",
+    "nameEn": "Tumblestone Block Set",
+    "nameFr": "Tumblestone Block Set",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/a/ad/Tumblestone_Block_Set.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "cobblemon:tumblestone",
+        "cobblemon:tumblestone",
+        null,
+        "cobblemon:tumblestone",
+        "cobblemon:tumblestone",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "twisted_spoon": {
+    "id": "twisted_spoon",
+    "nameEn": "Twisted Spoon",
+    "nameFr": "Cuillère Tordue",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/dd/Twisted_Spoon.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_nugget",
+        "minecraft:iron_ingot",
+        null,
+        "cobblemon:psychic_gem",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "unremarkable_teacup": {
+    "id": "unremarkable_teacup",
+    "nameEn": "Unremarkable Teacup",
+    "nameFr": "Bol Médiocre",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/9/9c/Unremarkable_Teacup.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:clay_ball",
+        null,
+        "minecraft:clay_ball",
+        "minecraft:nether_quartz",
+        "minecraft:clay_ball",
+        "minecraft:nether_quartz",
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "upgrade": {
+    "id": "upgrade",
+    "nameEn": "Upgrade",
+    "nameFr": "Upgrade",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/1/1d/Upgrade.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        "minecraft:glass",
+        "minecraft:redstone_lamp",
+        "minecraft:glass",
+        "minecraft:copper_ingot",
+        "minecraft:amethyst_shard",
+        "minecraft:copper_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "utility_umbrella": {
+    "id": "utility_umbrella",
+    "nameEn": "Utility Umbrella",
+    "nameFr": "Parapluie Solide",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/2/2d/Utility_Umbrella.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:black_wool",
+        "minecraft:black_wool",
+        "minecraft:black_wool",
+        null,
+        "minecraft:iron_bars",
+        null,
+        null,
+        "minecraft:blackstone",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "vitamin": {
+    "id": "vitamin",
+    "nameEn": "Vitamin",
+    "nameFr": "Vitamin",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/f/f5/Calcium.png",
+    "recipe": null
+  },
+  "vivichoke": {
+    "id": "vivichoke",
+    "nameEn": "Vivichoke",
+    "nameFr": "Vivichoke",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c2/Vivichoke.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        null,
+        "cobblemon:vivichoke",
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "vivichoke_dip": {
+    "id": "vivichoke_dip",
+    "nameEn": "Vivichoke Dip",
+    "nameFr": "Dip de Vivichoke",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/dc/Vivichoke_Dip.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:vivichoke",
+        "group:any_milk|cobblemon:milk_bucket",
+        "minecraft:bowl",
+        "minecraft:bread",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "weakness_policy": {
+    "id": "weakness_policy",
+    "nameEn": "Weakness Policy",
+    "nameFr": "Vulné-Assurance",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/4/45/Weakness_Policy.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        "minecraft:fermented_spider_eye",
+        null,
+        "minecraft:blue_dye",
+        "minecraft:ink_sac",
+        "minecraft:feather",
+        null,
+        "minecraft:paper",
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "whipped_dream": {
+    "id": "whipped_dream",
+    "nameEn": "Whipped Dream",
+    "nameFr": "Chantibonbon",
+    "category": "evolution",
+    "imageUrl": "https://wiki.cobblemon.com/images/6/6b/Whipped_Dream.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "cobblemon:sweet_berries",
+        "group:any_milk|cobblemon:moomoo_milk",
+        "minecraft:sugar",
+        "minecraft:honey_bottle",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "white_herb": {
+    "id": "white_herb",
+    "nameEn": "White Herb",
+    "nameFr": "Herbe Blanche",
+    "category": "natural",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/cc/White_Herb.png",
+    "recipe": null
+  },
+  "wide_lens": {
+    "id": "wide_lens",
+    "nameEn": "Wide Lens",
+    "nameFr": "Loupe",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d2/Wide_Lens.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:iron_ingot",
+        "minecraft:amethyst_shard",
+        null,
+        "minecraft:copper_ingot",
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:copper_ingot",
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "wise_glasses": {
+    "id": "wise_glasses",
+    "nameEn": "Wise Glasses",
+    "nameFr": "Lunettes Sages",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/da/Wise_Glasses.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        null,
+        null,
+        null,
+        "minecraft:iron_ingot",
+        null,
+        "minecraft:iron_ingot",
+        "minecraft:glass",
+        "minecraft:iron_ingot",
+        "minecraft:glass"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  },
+  "x_accuracy": {
+    "id": "x_accuracy",
+    "nameEn": "X Accuracy",
+    "nameFr": "Précision +",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e1/X_Accuracy.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:micle_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "x_attack": {
+    "id": "x_attack",
+    "nameEn": "X Attack",
+    "nameFr": "Attaque +",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/c/c9/X_Attack.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:liechi_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "x_defense": {
+    "id": "x_defense",
+    "nameEn": "X Defense",
+    "nameFr": "Défense +",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/d/d6/X_Defense.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:ganlon_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "x_special_attack": {
+    "id": "x_special_attack",
+    "nameEn": "X Special Attack",
+    "nameFr": "X Special Attack",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/3/30/X_Sp_Atk.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:petaya_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "x_special_defense": {
+    "id": "x_special_defense",
+    "nameEn": "X Special Defense",
+    "nameFr": "X Special Defense",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/b/b4/X_Sp_Def.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:apicot_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "x_speed": {
+    "id": "x_speed",
+    "nameEn": "X Speed",
+    "nameFr": "Vitesse +",
+    "category": "vitamin",
+    "imageUrl": "https://wiki.cobblemon.com/images/e/e4/X_Speed.png",
+    "recipe": {
+      "kind": "cooking",
+      "grid": [
+        "minecraft:glass_bottle",
+        "cobblemon:pep_up_flower",
+        "minecraft:bone_meal",
+        "cobblemon:salac_berry",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "output": 1,
+      "shapeless": true
+    }
+  },
+  "zoom_lens": {
+    "id": "zoom_lens",
+    "nameEn": "Zoom Lens",
+    "nameFr": "Lentille Zoom",
+    "category": "held",
+    "imageUrl": "https://wiki.cobblemon.com/images/7/78/Zoom_Lens.png",
+    "recipe": {
+      "kind": "crafting",
+      "grid": [
+        "minecraft:amethyst_shard",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:copper_ingot",
+        "minecraft:copper_ingot",
+        null,
+        null,
+        "minecraft:copper_ingot"
+      ],
+      "output": 1,
+      "shapeless": false
+    }
+  }
+}

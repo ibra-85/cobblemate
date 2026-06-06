@@ -55,7 +55,11 @@ const CATEGORIES: { id: ItemCategory | "all"; label: string }[] = [
   { id: "held",      label: "Tenus" },
   { id: "evolution", label: "Évolution" },
   { id: "healing",   label: "Soins" },
+  { id: "vitamin",   label: "Vitamines" },
+  { id: "natural",   label: "Naturels" },
+  { id: "food",      label: "Nourriture" },
   { id: "berry",     label: "Baies" },
+  { id: "utility",   label: "Utilitaires" },
 ];
 
 export default function ItemsPage() {
