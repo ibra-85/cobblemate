@@ -192,6 +192,24 @@ export interface Item {
   /** Pokémon ids it specifically benefits (evolution stones, etc.). */
   relatedPokemonIds?: string[];
   rarity?: Rarity;
+  /** Optional crafting recipe shown on `/items/[id]` and consumed by
+   *  the same `MinecraftPanel`/`MinecraftSlot` UI the snack section
+   *  uses. The grid is row-major, 9 entries (3×3). Slots are item ids
+   *  in Cobblemon/Minecraft namespace ("cobblemon:apricorn_red") or
+   *  `null` for empty cells. */
+  recipe?: ItemRecipe;
+}
+
+export interface ItemRecipe {
+  /** 9-slot 3×3 grid (row-major). `null` = empty slot. */
+  grid: (string | null)[];
+  /** Optional human note describing the craft (workbench, special
+   *  station, alternative inputs). Rendered under the panel. */
+  note?: string;
+  /** Number of items the recipe yields per craft. Defaults to 1 when
+   *  unspecified. Apricorn ball recipes yield 4 — surfacing the count
+   *  on the result slot is important context for the player. */
+  output?: number;
 }
 
 export interface Pokesnack {
@@ -202,6 +220,26 @@ export interface Pokesnack {
   attractsPokemonIds: string[];
   preferredBiomes?: string[];
   rarity: Rarity;
+  /** Optional Campfire Pot recipe. When absent, the snack is treated
+   *  as loot-only (chest drop, NPC trade). Distinct from the
+   *  standard `ItemRecipe` because the Campfire Pot adds a 3-slot
+   *  bait-seasoning strip alongside the 3×3 base recipe. */
+  recipe?: SnackRecipe;
+}
+
+export interface SnackRecipe {
+  /** 9-slot 3×3 base pattern fed into the Campfire Pot. Most snacks
+   *  share the canonical pokesnack base; some specialty recipes vary
+   *  the base ingredients. */
+  grid: (string | null)[];
+  /** Up to 3 seasoning items applied on top of the base. These are
+   *  the bait items that decide which Pokémon the resulting snack
+   *  attracts. */
+  seasonings: (string | null)[];
+  /** Optional human note (alternative inputs, station, etc.). */
+  note?: string;
+  /** Number of snacks produced per craft (defaults to 1). */
+  output?: number;
 }
 
 /** A single Smogon-style "X used by Y%" data point. */

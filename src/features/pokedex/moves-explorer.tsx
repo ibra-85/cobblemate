@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, X, SlidersHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   InputGroup,
@@ -16,6 +16,12 @@ import { lookupMove } from "@/data/moves";
 import { getSpeciesExtras, type MovesByMethod } from "@/data/species-extras";
 import type { Move, PokemonTypeId } from "@/types";
 import { cn } from "@/lib/utils";
+
+const TYPE_OPTIONS: PokemonTypeId[] = [
+  "normal","fire","water","electric","grass","ice","fighting","poison",
+  "ground","flying","psychic","bug","rock","ghost","dragon","dark",
+  "steel","fairy",
+];
 
 interface Props {
   pokemonId: string;
@@ -66,6 +72,10 @@ export function MovesExplorer({ pokemonId }: Props) {
     new Set(["level"]),
   );
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
+  // Multi-select type filter — empty set = "all types". Aligns with
+  // the include-OR semantics used by the Pokédex `FiltersBar`.
+  const [activeTypes, setActiveTypes] = useState<Set<PokemonTypeId>>(new Set());
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const allRows: Row[] = useMemo(() => {
     if (!moves) return [];
@@ -90,10 +100,12 @@ export function MovesExplorer({ pokemonId }: Props) {
     return allRows.filter((r) => {
       if (!activeMethods.has(r.method)) return false;
       if (activeCategory !== "all" && r.move?.category !== activeCategory) return false;
+      if (activeTypes.size > 0 && (!r.move || !activeTypes.has(r.move.type as PokemonTypeId)))
+        return false;
       if (!q) return true;
       return r.haystack.includes(q);
     });
-  }, [allRows, query, activeMethods, activeCategory]);
+  }, [allRows, query, activeMethods, activeCategory, activeTypes]);
 
   const methodCounts = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -102,11 +114,16 @@ export function MovesExplorer({ pokemonId }: Props) {
     };
     for (const r of allRows) {
       if (activeCategory !== "all" && r.move?.category !== activeCategory) continue;
+      if (activeTypes.size > 0 && (!r.move || !activeTypes.has(r.move.type as PokemonTypeId)))
+        continue;
       if (q && !r.haystack.includes(q)) continue;
       counts[r.method] += 1;
     }
     return counts;
-  }, [allRows, query, activeCategory]);
+  }, [allRows, query, activeCategory, activeTypes]);
+
+  const activeFilterCount =
+    (activeCategory !== "all" ? 1 : 0) + (activeTypes.size > 0 ? 1 : 0);
 
   if (!moves) {
     return (
@@ -125,10 +142,29 @@ export function MovesExplorer({ pokemonId }: Props) {
     });
   }
 
+  function toggleType(t: PokemonTypeId) {
+    setActiveTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t);
+      else next.add(t);
+      return next;
+    });
+  }
+
+  function resetFilters() {
+    setActiveCategory("all");
+    setActiveTypes(new Set());
+    setQuery("");
+  }
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full min-w-0 max-w-full flex-col gap-4">
+      {/* Top row: search + advanced toggle. The advanced toggle
+          collapses the long type-grid by default so the section stays
+          tight on small viewports; opens to reveal the per-type
+          chips + reset action. */}
       <div className="flex flex-wrap items-center gap-2">
-        <InputGroup className="min-w-[16rem] flex-1 sm:max-w-sm">
+        <InputGroup className="min-w-0 flex-1 sm:max-w-sm">
           <InputGroupAddon>
             <Search className="size-4 opacity-60" />
           </InputGroupAddon>
@@ -139,21 +175,40 @@ export function MovesExplorer({ pokemonId }: Props) {
           />
         </InputGroup>
 
-        <div className="ml-auto flex flex-wrap gap-1.5">
-          {(["all", "physical", "special", "status"] as const).map((c) => (
-            <Button
-              key={c}
-              variant={activeCategory === c ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveCategory(c)}
+        <Button
+          variant={showAdvanced ? "default" : "outline"}
+          size="sm"
+          onClick={() => setShowAdvanced((v) => !v)}
+          className="gap-1.5"
+        >
+          <SlidersHorizontal className="size-3.5" />
+          Filtres
+          {activeFilterCount > 0 && (
+            <Badge
+              variant="secondary"
+              className="ml-1 size-5 justify-center rounded-full p-0 font-mono text-[10px]"
             >
-              {c === "all" ? "Toutes" : CATEGORY_LABEL_FR[c]}
-            </Button>
-          ))}
-        </div>
+              {activeFilterCount}
+            </Badge>
+          )}
+        </Button>
+
+        {activeFilterCount > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetFilters}
+            className="gap-1"
+          >
+            <X className="size-3.5" /> Réinitialiser
+          </Button>
+        )}
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
+      {/* Method chips — always visible (primary axis the player
+          switches on). Horizontally scrollable on mobile so adding
+          new methods later doesn't break the layout. */}
+      <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {(Object.keys(METHOD_LABEL) as MethodKey[]).map((m) => {
           const active = activeMethods.has(m);
           const n = methodCounts[m];
@@ -163,7 +218,7 @@ export function MovesExplorer({ pokemonId }: Props) {
               type="button"
               onClick={() => toggleMethod(m)}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
+                "inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
                 active
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-input bg-background text-muted-foreground hover:bg-accent",
@@ -176,10 +231,62 @@ export function MovesExplorer({ pokemonId }: Props) {
         })}
       </div>
 
+      {/* Advanced filters panel — collapsed by default. Holds the
+          category radio and the multi-select type grid. */}
+      {showAdvanced && (
+        <div className="flex flex-col gap-3 rounded-md border bg-muted/20 p-3">
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Catégorie
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {(["all", "physical", "special", "status"] as const).map((c) => (
+                <Button
+                  key={c}
+                  variant={activeCategory === c ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveCategory(c)}
+                >
+                  {c === "all" ? "Toutes" : CATEGORY_LABEL_FR[c]}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Type {activeTypes.size > 0 && (
+                <span className="ml-1 font-mono text-muted-foreground">
+                  ({activeTypes.size})
+                </span>
+              )}
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {TYPE_OPTIONS.map((t) => {
+                const active = activeTypes.has(t);
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => toggleType(t)}
+                    className={cn(
+                      "rounded-md transition-opacity",
+                      active ? "opacity-100 ring-2 ring-primary" : "opacity-60 hover:opacity-100",
+                    )}
+                  >
+                    <TypeBadge type={t} size="sm" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       <p className="text-xs text-muted-foreground">
         <strong className="text-foreground">{filtered.length}</strong>{" "}
         attaque{filtered.length > 1 ? "s" : ""}
-        {(query || activeCategory !== "all" || activeMethods.size !== 1 || !activeMethods.has("level")) &&
+        {(query || activeFilterCount > 0 || activeMethods.size !== 1 || !activeMethods.has("level")) &&
           " correspondant aux filtres"}
       </p>
 
@@ -188,7 +295,7 @@ export function MovesExplorer({ pokemonId }: Props) {
           Aucune attaque ne correspond.
         </div>
       ) : (
-        <div className="grid gap-1.5 md:grid-cols-2">
+        <div className="grid w-full min-w-0 max-w-full gap-1.5 md:grid-cols-2">
           {filtered.map((r, i) => (
             <MoveRow key={`${r.method}-${r.moveId}-${i}`} row={r} />
           ))}
@@ -206,36 +313,51 @@ function MoveRow({ row }: { row: Row }) {
 
   // Click navigates to the dedicated /moves/[id] page; hover still
   // pops the FR description tooltip below.
+  //
+  // Mobile layout: two rows of badges so nothing has to fit on a
+  // single 320-360px line (the previous single-row layout overflowed
+  // the parent Card when the move name was long and there was a
+  // category + power/acc trailing block). From `sm` up we go back to
+  // one inline row.
   const inner = (
     <Link
       href={`/moves/${moveId}`}
-      className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors hover:bg-accent/30"
+      className="flex w-full min-w-0 max-w-full flex-col gap-1 overflow-hidden rounded-md border px-3 py-2 text-sm transition-colors hover:bg-accent/30 sm:flex-row sm:items-center sm:gap-2"
     >
-      <Badge variant="outline" className="px-1.5 text-[10px] uppercase">
-        {METHOD_LABEL[method]}
-      </Badge>
-      {level != null && (
-        <span className="font-mono text-xs text-muted-foreground">Lv.{level}</span>
-      )}
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Badge variant="outline" className="shrink-0 px-1.5 text-[10px] uppercase">
+          {METHOD_LABEL[method]}
+        </Badge>
+        {level != null && (
+          <span className="shrink-0 font-mono text-xs text-muted-foreground">
+            Lv.{level}
+          </span>
+        )}
+        {move && (
+          <span className="shrink-0">
+            <TypeBadge type={move.type as PokemonTypeId} size="sm" />
+          </span>
+        )}
+        <span className="truncate font-medium">{nameFr}</span>
+      </div>
       {move ? (
-        <>
-          <TypeBadge type={move.type as PokemonTypeId} size="sm" />
-          <span className="truncate font-medium">{nameFr}</span>
-          <span className="ml-auto flex shrink-0 items-center gap-2 font-mono text-[10px] text-muted-foreground">
-            {showEn && <span className="italic">{nameEn}</span>}
-            <Badge variant="secondary" className="px-1.5">
-              {CATEGORY_BADGE_LABEL[move.category] ?? move.category}
-            </Badge>
+        <span className="flex flex-wrap items-center gap-2 font-mono text-[10px] text-muted-foreground sm:flex-nowrap">
+          {showEn && (
+            <span className="truncate italic max-w-[8rem] sm:max-w-none">
+              {nameEn}
+            </span>
+          )}
+          <Badge variant="secondary" className="shrink-0 px-1.5">
+            {CATEGORY_BADGE_LABEL[move.category] ?? move.category}
+          </Badge>
+          <span className="shrink-0 whitespace-nowrap">
             {move.power ?? "—"}p · {move.accuracy ?? "—"}%
           </span>
-        </>
+        </span>
       ) : (
-        <>
-          <span className="truncate font-medium">{nameFr}</span>
-          <span className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground">
-            {moveId}
-          </span>
-        </>
+        <span className="truncate font-mono text-[10px] text-muted-foreground">
+          {moveId}
+        </span>
       )}
     </Link>
   );

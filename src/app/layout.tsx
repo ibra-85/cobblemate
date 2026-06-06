@@ -39,9 +39,19 @@ export default function RootLayout({
             <TooltipProvider delay={0}>
               <div className="flex min-h-screen">
                 <Sidebar />
-                <div className="flex min-w-0 flex-1 flex-col">
+                {/* `min-w-0` on the column lets it shrink narrower than
+                    its widest grandchild — without it, a single
+                    overflow-x table inside the page would push the
+                    flex column wider than the viewport and the header
+                    separator (border-b) wouldn't reach the right
+                    edge. `overflow-x-clip` on the column is a belt-
+                    and-braces net: it kills any residual horizontal
+                    scroll bleed without disabling `position: sticky`
+                    inside the column the way `overflow-x-hidden`
+                    would. */}
+                <div className="flex min-w-0 flex-1 flex-col overflow-x-clip">
                   <Header />
-                  <main className="flex-1 px-4 py-6 md:px-8 md:py-8">{children}</main>
+                  <main className="min-w-0 flex-1 px-4 py-6 md:px-8 md:py-8">{children}</main>
                 </div>
               </div>
               <Toaster richColors closeButton />

@@ -11,6 +11,7 @@ import {
   Package,
   Zap,
   Wand2,
+  Cookie,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
@@ -25,6 +26,7 @@ export const NAV = [
   { href: "/team-builder", label: "Builder",   icon: Users,           badge: "teams" as const },
   { href: "/battle",       label: "Combat",    icon: Swords,          badge: "none" as const },
   { href: "/items",        label: "Objets",    icon: Package,         badge: "none" as const },
+  { href: "/pokesnacks",   label: "PokéSnacks",icon: Cookie,          badge: "none" as const },
   { href: "/wishlist",     label: "Wishlist",  icon: Heart,           badge: "wishlist" as const },
 ];
 

@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { Check, GitBranch, Layers, Wand2 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { ArrowDown, ArrowRight, Check, GitBranch, Layers, Wand2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import {
   POKEMON_BY_ID,
   evolutionChain,
+  resolveEvolutionTo,
   rootOf,
   type ChainStage,
 } from "@/data/pokemon";
 import { EvolutionMethod } from "@/features/pokedex/evolution-method";
-import type { Pokemon } from "@/types";
+import { displayName } from "@/lib/pokemon-form";
+import type { Pokemon, EvolutionDetails } from "@/types";
 import { cn } from "@/lib/utils";
 
 // ─── Public helpers ───────────────────────────────────────────────────
@@ -20,231 +22,479 @@ export function hasEvolutions(pokemon: Pokemon): boolean {
   return stages.length > 1 || (stages[0]?.length ?? 0) > 1;
 }
 
-/**
- * True when *any* stage in the chain branches into 5+ evolutions —
- * Eevee territory. The hub switches from a flat "all evolutions in
- * one grid" layout to method-family groups at this threshold.
- */
-export function hasHeavyBranch(pokemon: Pokemon): boolean {
-  const stages = evolutionChain(rootOf(pokemon.id));
-  return stages.some((s) => s.length >= HEAVY_BRANCH_THRESHOLD);
-}
-
-const HEAVY_BRANCH_THRESHOLD = 5;
-
 // ─── Hub entry-point ─────────────────────────────────────────────────
 
 /**
- * Catalogue-style rendering for the "Évolutions" SectionCard.
- * Modelled on the "Où le trouver" section (CatchingGuide):
+ * "Évolutions" — the section block on the Pokédex detail page.
  *
- *   1. Top strip of summary `MetaChip`s (base form, branch count,
- *      distinct method families).
- *   2. Either a single flat grid of cards (chains under the heavy
- *      threshold) or grouped grids by method family (Eevee).
+ * One layout, always: a Pokepedia-style HTML `<table>` IS the main
+ * component (no outer SectionCard wrapper — that would read as a
+ * card-inside-a-card). The thead "Famille d'évolution de X" plays
+ * the role of the section title, and a footer row carries the
+ * Base / Branches / Méthodes summary chips.
  *
- * No timeline, no connectors, no arrows — every evolution is a
- * regular tile carrying its own condition chip. The page reads as
- * "here are the available evolutions and what triggers them",
- * matching the user's stated mental model.
+ * Works for everything from a linear 1→1 chain (Magikarp) up to the
+ * Eevee fork (8 branches). When the leaf count gets very wide the
+ * outer wrapper's `overflow-x-auto` lets the user scroll, rather
+ * than break the layout.
  */
+/** Max leaf count we still render as the horizontal Pokepedia table.
+ *  Beyond this the table doesn't fit (cards are 9rem each, plus
+ *  gaps; 4 cols ≈ 600 px which is the comfortable max inside a
+ *  standard section card on desktop). Wider chains fall back to the
+ *  vertical 2-column layout. */
+const WIDE_CHAIN_THRESHOLD = 4;
+
 export function EvolutionHub({ pokemon }: { pokemon: Pokemon }) {
   if (!hasEvolutions(pokemon)) return null;
-  const stages = evolutionChain(rootOf(pokemon.id));
   const rootId = rootOf(pokemon.id);
-  const root = POKEMON_BY_ID[rootId];
-  const heavy = stages.some((s) => s.length >= HEAVY_BRANCH_THRESHOLD);
-
-  // Flatten every reachable form. The root sits at stage 0 with no
-  // method; every other stage carries the method that brought it
-  // there. Both go into the same render pipeline so the visual
-  // language stays uniform.
+  const root = buildTree(rootId);
+  const stages = evolutionChain(rootId);
   const allForms: ChainStage[] = stages.flat();
-
-  // Method-family count drives the `MÉTHODES` summary chip. Only the
-  // forms with a method contribute (the root has none). We count
-  // *distinct* families so a chain with five "use stone" branches
-  // reads as 1 method, not 5.
   const methodFamilyCount = countMethodFamilies(allForms);
-
-  // Branch count = everything minus the root (= every reachable
-  // post-root form).
   const branchCount = allForms.length - 1;
+  const leaves = countLeaves(root);
 
   return (
-    <div className="flex flex-col gap-4">
-      <SummaryStrip
-        rootName={root?.name ?? rootId}
-        branchCount={branchCount}
-        methodCount={methodFamilyCount}
-      />
-
-      {heavy ? (
-        <GroupedGrid
-          stages={stages}
+    <Card className="overflow-hidden p-0">
+      {leaves > WIDE_CHAIN_THRESHOLD ? (
+        // Wide chains (Évoli with 8 branches): vertical layout so
+        // the section never overflows the card horizontally.
+        <EvolutionTableVertical
+          root={root}
           currentId={pokemon.id}
+          branchCount={branchCount}
+          methodCount={methodFamilyCount}
         />
       ) : (
-        <FlatGrid
-          forms={allForms}
+        <EvolutionTable
+          root={root}
           currentId={pokemon.id}
+          branchCount={branchCount}
+          methodCount={methodFamilyCount}
         />
       )}
-    </div>
+    </Card>
   );
 }
 
-// ─── Top summary strip ───────────────────────────────────────────────
+// ─── Recursive tree builder ─────────────────────────────────────────
 
-function SummaryStrip({
-  rootName,
+interface TreeNode {
+  /** Pokémon roster id. */
+  id: string;
+  /** Evolution method that brought us to THIS node from its parent.
+   *  Null for the root. */
+  method: string | null;
+  details: EvolutionDetails | null;
+  children: TreeNode[];
+}
+
+/**
+ * Build the full evolution tree from a root id. Uses each species'
+ * `evolutions[]` directly so branching is preserved natively (each
+ * parent points to its real children, no flat-stage flattening). The
+ * `visited` set prevents Cobblemon's rare loop-style data (form
+ * cycles, demoted evolutions) from looping the renderer forever.
+ */
+function buildTree(rootId: string): TreeNode {
+  const visited = new Set<string>();
+  function walk(
+    id: string,
+    method: string | null,
+    details: EvolutionDetails | null,
+  ): TreeNode {
+    visited.add(id);
+    const p = POKEMON_BY_ID[id];
+    const children: TreeNode[] = [];
+    if (p) {
+      for (const e of p.evolutions) {
+        const target = resolveEvolutionTo(e.to);
+        if (visited.has(target)) continue;
+        children.push(walk(target, e.method, e.details ?? null));
+      }
+    }
+    return { id, method, details, children };
+  }
+  return walk(rootId, null, null);
+}
+
+// ─── The table ───────────────────────────────────────────────────────
+
+/**
+ * Renders the evolution tree as a real HTML `<table>` — same shape as
+ * the Pokepedia "Famille d'évolution" widget.
+ *
+ * Per row:
+ *   - thead caption:    "Famille d'évolution de <root>" spanning N cols
+ *   - row 1 (card):     root, colspan = N
+ *   - row 2 (condition): one cell per direct child, colspan = leaves(child)
+ *   - row 3 (cards):    direct children
+ *   - row 4 (condition): grand-children conditions
+ *   - row 5 (cards):    grand-children
+ *   - …
+ *   - footer:           Base / Branches / Méthodes meta chips
+ *
+ * `colspan` is computed from `countLeaves(subtree)` so each parent
+ * cell sits exactly above its descendant cells. Native `<table>`
+ * handles all the sizing — no manual grid maths, no flex drift.
+ */
+function EvolutionTable({
+  root,
+  currentId,
   branchCount,
   methodCount,
 }: {
-  rootName: string;
+  root: TreeNode;
+  currentId: string;
   branchCount: number;
   methodCount: number;
 }) {
+  const totalCols = countLeaves(root);
+  const rootName = POKEMON_BY_ID[root.id]?.name ?? root.id;
+  const byDepth = collectByDepth(root);
+
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <MetaChip icon={<GitBranch className="size-3.5" />} label="Base">
-        {rootName}
-      </MetaChip>
-      <MetaChip icon={<Layers className="size-3.5" />} label="Branches">
-        <span className="font-mono">{branchCount}</span>
-      </MetaChip>
-      <MetaChip icon={<Wand2 className="size-3.5" />} label="Méthodes">
-        <span className="font-mono">{methodCount || 1}</span>
-      </MetaChip>
+    // The parent <Card> already provides the chrome — table goes
+    // edge-to-edge. `overflow-x-auto` is the safety net for very
+    // wide chains (Eevee = 8 leaf columns).
+    <div className="w-full overflow-x-auto">
+      <table className="w-full border-separate border-spacing-0 text-center align-middle">
+        <thead>
+          <tr>
+            <th
+              colSpan={totalCols}
+              className="border-b bg-muted/60 px-3 py-3 font-heading text-sm font-semibold"
+            >
+              Famille d&apos;évolution de {rootName}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {byDepth.map((nodes, depth) => (
+            <Fragment key={depth}>
+              {depth > 0 && (
+                // Condition row — one cell per node at this depth,
+                // each holding the method that brought us TO it.
+                <tr>
+                  {nodes.map((node, i) => (
+                    <td
+                      key={`cond-${node.id}-${i}`}
+                      colSpan={countLeaves(node)}
+                      className="border-b border-r border-border/60 bg-muted/20 px-2 py-2 last:border-r-0"
+                    >
+                      <BranchConnector
+                        method={node.method}
+                        details={node.details}
+                        targetId={node.id}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              )}
+              <tr>
+                {nodes.map((node, i) => (
+                  <td
+                    key={`card-${node.id}-${i}`}
+                    colSpan={countLeaves(node)}
+                    className={cn(
+                      "border-r border-border/60 px-3 py-3 last:border-r-0",
+                      depth < byDepth.length - 1 && "border-b",
+                    )}
+                  >
+                    <div className="flex justify-center">
+                      <EvoCard
+                        stage={{ id: node.id, method: null, details: null }}
+                        current={node.id === currentId}
+                      />
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            </Fragment>
+          ))}
+          {/* Footer row — at-a-glance summary chips inside the same
+              table chrome. */}
+          <tr>
+            <td colSpan={totalCols} className="border-t bg-muted/40 px-3 py-2">
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                <MetaChip icon={<GitBranch className="size-3.5" />} label="Base">
+                  {rootName}
+                </MetaChip>
+                <MetaChip icon={<Layers className="size-3.5" />} label="Branches">
+                  <span className="font-mono">{branchCount}</span>
+                </MetaChip>
+                <MetaChip icon={<Wand2 className="size-3.5" />} label="Méthodes">
+                  <span className="font-mono">{methodCount || 1}</span>
+                </MetaChip>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
 
 /**
- * Copied verbatim from `CatchingGuide.MetaChip` (kept inline rather
- * than promoted to a shared component because the catching-guide one
- * is local to that file and small enough to mirror cleanly — saves a
- * cross-feature dependency just to dedupe ten lines of CSS).
+ * Vertical layout for wide chains (Évoli & friends — anything past
+ * the WIDE_CHAIN_THRESHOLD horizontal leaves). Three columns:
+ *
+ *   | Root (rowspan)  |  ↓ condition row 1  |  target card row 1  |
+ *   |                 |  ↓ condition row 2  |  target card row 2  |
+ *   |                 |  ↓ condition row 3  |  target card row 3  |
+ *   |                 |  …                                        |
+ *
+ * The root sits on the left with a `rowSpan` covering every branch
+ * row so the eye reads it as "from this Pokémon → these arrows →
+ * those targets". For grandchildren we recurse with a small nested
+ * 3-col table inside the target cell.
+ *
+ * This keeps the section comfortably narrow (3 fixed-width columns)
+ * regardless of how many branches Évoli has — no horizontal scroll.
  */
-function MetaChip({
-  icon,
-  label,
-  children,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-md border bg-muted/40 px-2 py-1 text-xs">
-      <span className="text-muted-foreground">{icon}</span>
-      <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
-      <span className="text-foreground">{children}</span>
-    </span>
-  );
-}
-
-// ─── Grids ───────────────────────────────────────────────────────────
-
-function FlatGrid({
-  forms,
+function EvolutionTableVertical({
+  root,
   currentId,
+  branchCount,
+  methodCount,
 }: {
-  forms: ChainStage[];
+  root: TreeNode;
   currentId: string;
+  branchCount: number;
+  methodCount: number;
 }) {
+  const rootName = POKEMON_BY_ID[root.id]?.name ?? root.id;
+  // Need at least 1 row for the rowSpan; defaults to a "no further
+  // evolutions" placeholder if root somehow has no children (we
+  // shouldn't reach this layout in that case, but be defensive).
+  const branchRows = root.children.length || 1;
+
   return (
-    <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-6">
-      {forms.map((s) => (
-        <EvoCard key={s.id} stage={s} current={s.id === currentId} />
-      ))}
+    <div className="w-full">
+      <table className="w-full border-separate border-spacing-0 text-center align-middle">
+        <thead>
+          <tr>
+            <th
+              colSpan={3}
+              className="border-b bg-muted/60 px-3 py-3 font-heading text-sm font-semibold"
+            >
+              Famille d&apos;évolution de {rootName}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {root.children.map((child, i) => (
+            <Fragment key={child.id}>
+              <VerticalBranchRow3
+                node={child}
+                currentId={currentId}
+                isLast={i === root.children.length - 1}
+                // Only the FIRST branch row carries the root cell —
+                // it uses rowSpan to stretch over every following
+                // branch row so the root reads as the shared
+                // ancestor of every target.
+                rootCell={
+                  i === 0 ? (
+                    <td
+                      rowSpan={branchRows}
+                      className="w-[12rem] border-b border-r border-border/60 bg-muted/10 px-3 py-3 align-middle"
+                    >
+                      <div className="flex justify-center">
+                        <EvoCard
+                          stage={{ id: root.id, method: null, details: null }}
+                          current={root.id === currentId}
+                        />
+                      </div>
+                    </td>
+                  ) : null
+                }
+              />
+            </Fragment>
+          ))}
+
+          {/* Footer chips. */}
+          <tr>
+            <td colSpan={3} className="border-t bg-muted/40 px-3 py-2">
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                <MetaChip icon={<GitBranch className="size-3.5" />} label="Base">
+                  {rootName}
+                </MetaChip>
+                <MetaChip icon={<Layers className="size-3.5" />} label="Branches">
+                  <span className="font-mono">{branchCount}</span>
+                </MetaChip>
+                <MetaChip icon={<Wand2 className="size-3.5" />} label="Méthodes">
+                  <span className="font-mono">{methodCount || 1}</span>
+                </MetaChip>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
 
-function GroupedGrid({
-  stages,
+/** One row of the 3-col vertical layout :
+ *  `[root (rowspan, rendered only on first row)] | [condition] | [target card]`.
+ *
+ *  If the target has its own children we recurse with a nested
+ *  3-col mini table inside the right cell — keeps the layout
+ *  consistent at any depth without ever overflowing horizontally.
+ */
+function VerticalBranchRow3({
+  node,
   currentId,
+  isLast,
+  rootCell,
 }: {
-  stages: ChainStage[][];
+  node: TreeNode;
   currentId: string;
+  isLast: boolean;
+  /** When non-null, this is the first branch row and the parent has
+   *  asked us to render the rowspan'd root cell on the left. */
+  rootCell: React.ReactNode;
 }) {
-  // For the heavy/grouped layout we keep the root visible as its own
-  // group ("Forme de base") so the user always sees Évoli first, then
-  // the method-family groups for the fork.
-  const rootStage = stages[0] ?? [];
-  const heavyIdx = stages.findIndex(
-    (s) => s.length >= HEAVY_BRANCH_THRESHOLD,
-  );
-  // Linear intermediate stages between the root and the heavy fork
-  // (rare — Eevee jumps straight from root to fork). Surface them as
-  // a "Forme intermédiaire" group so they don't get lost.
-  const intermediates = stages.slice(1, heavyIdx).flat();
-  const branched = stages[heavyIdx] ?? [];
-  const families = groupBranchesByFamily(branched);
-
+  const borderBottom = isLast ? "" : "border-b";
   return (
-    <div className="flex flex-col gap-3">
-      {rootStage.length > 0 && (
-        <Group label="Forme de base">
-          <FlatGrid forms={rootStage} currentId={currentId} />
-        </Group>
-      )}
-      {intermediates.length > 0 && (
-        <>
-          <Separator />
-          <Group label="Étape intermédiaire">
-            <FlatGrid forms={intermediates} currentId={currentId} />
-          </Group>
-        </>
-      )}
-      {families.map((g) => (
-        <Fragment key={g.label}>
-          <Separator />
-          <Group label={g.label} count={g.items.length}>
-            <FlatGrid forms={g.items} currentId={currentId} />
-          </Group>
-        </Fragment>
-      ))}
-    </div>
-  );
-}
-
-function Group({
-  label,
-  count,
-  children,
-}: {
-  label: string;
-  count?: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-baseline justify-between gap-2">
-        <h4 className="text-sm font-semibold">{label}</h4>
-        {count != null && (
-          <span className="font-mono text-xs text-muted-foreground">
-            ×{count}
-          </span>
+    <tr>
+      {rootCell}
+      <td
+        className={cn(
+          "w-[12rem] border-r border-border/60 bg-muted/20 px-3 py-3",
+          borderBottom,
         )}
-      </div>
-      {children}
+      >
+        <BranchConnector
+          method={node.method}
+          details={node.details}
+          targetId={node.id}
+          direction="right"
+        />
+      </td>
+      <td className={cn("px-3 py-3", borderBottom)}>
+        <div className="flex flex-col items-center gap-3">
+          <EvoCard
+            stage={{ id: node.id, method: null, details: null }}
+            current={node.id === currentId}
+          />
+          {node.children.length > 0 && (
+            // Nested mini 3-col table so grandchildren of a wide
+            // branch keep the same visual rhythm.
+            <div className="w-full">
+              <table className="w-full border-separate border-spacing-0 text-center align-middle">
+                <tbody>
+                  {node.children.map((grand, i) => (
+                    <VerticalBranchRow3
+                      key={grand.id}
+                      node={grand}
+                      currentId={currentId}
+                      isLast={i === node.children.length - 1}
+                      rootCell={null}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+// ─── Tree helpers ───────────────────────────────────────────────────
+
+/** Count of leaves under `node` — drives the colspan maths. */
+function countLeaves(node: TreeNode): number {
+  if (node.children.length === 0) return 1;
+  return node.children.reduce((sum, c) => sum + countLeaves(c), 0);
+}
+
+/**
+ * BFS by depth. Returns `[ [root], [depth-1 nodes], [depth-2 nodes], … ]`
+ * in left-to-right tree-order so the cells naturally line up under
+ * their ancestor's colspan slice without any explicit column maths.
+ */
+function collectByDepth(root: TreeNode): TreeNode[][] {
+  const out: TreeNode[][] = [[root]];
+  let frontier: TreeNode[] = [root];
+  while (true) {
+    const next: TreeNode[] = [];
+    for (const n of frontier) for (const c of n.children) next.push(c);
+    if (next.length === 0) break;
+    out.push(next);
+    frontier = next;
+  }
+  return out;
+}
+
+/**
+ * Distinct method families across the chain — fed to the `MÉTHODES`
+ * chip in the table footer. A chain with five "use stone" branches
+ * reads as 1 method, not 5.
+ */
+function countMethodFamilies(forms: ChainStage[]): number {
+  const families = new Set<string>();
+  for (const s of forms) {
+    if (!s.method) continue;
+    const v = s.details?.variant;
+    const reqs = s.details?.requirements ?? [];
+    if (v === "item_interact" || v === "use_item") families.add("item");
+    else if (v === "trade") families.add("trade");
+    else if (reqs.some((r) => r.variant === "friendship"))
+      families.add("friendship");
+    else if (reqs.some((r) => r.variant === "level")) families.add("level");
+    else families.add("other");
+  }
+  return families.size;
+}
+
+// ─── Cell renderers ─────────────────────────────────────────────────
+
+/** The "arrow + condition chips" cell that sits between a parent
+ *  card and its child card. `direction` switches the arrow icon to
+ *  match the surrounding layout's flow:
+ *   - `"down"` (default) for the horizontal Pokepedia table where
+ *     children sit BELOW their parent rows;
+ *   - `"right"` for the vertical 3-col layout where the root is on
+ *     the left and the target is on the right (root → arrow →
+ *     target). */
+function BranchConnector({
+  method,
+  details,
+  targetId,
+  direction = "down",
+}: {
+  method: string | null;
+  details: EvolutionDetails | null;
+  targetId: string;
+  direction?: "down" | "right";
+}) {
+  const Arrow = direction === "right" ? ArrowRight : ArrowDown;
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <Arrow className="size-4 shrink-0 text-muted-foreground" />
+      {method && (
+        <div className="max-w-full">
+          <EvolutionMethod
+            evolution={{
+              to: targetId,
+              method,
+              details: details ?? undefined,
+            }}
+            size="sm"
+            align="center"
+          />
+        </div>
+      )}
     </div>
   );
 }
 
-// ─── Card ────────────────────────────────────────────────────────────
-
-/**
- * Single evolution tile. Visual chrome matches the `CompetitorCard`
- * used by "Où le trouver" (`bg-muted/40` surface, sprite top, name,
- * condition badge at the bottom) so the Pokédex page reads as one
- * coherent catalogue layout. Method chip stands in for the
- * CompetitorCard's rarity badge.
- */
+/** Single Pokémon card — sprite + name + dex, fixed compact width
+ *  so cards stay balanced regardless of how many leaf columns the
+ *  cell spans. */
 function EvoCard({
   stage,
   current,
@@ -255,25 +505,23 @@ function EvoCard({
   const p = POKEMON_BY_ID[stage.id];
   if (!p) {
     return (
-      <div className="flex h-full min-h-[6rem] flex-col items-center justify-center gap-1 rounded-md border border-dashed bg-muted/30 p-2 text-[10px] text-muted-foreground">
+      <div className="flex min-h-[5rem] w-[9rem] flex-col items-center justify-center gap-1 rounded-md border border-dashed bg-muted/30 p-2 text-[10px] text-muted-foreground">
         {stage.id}
       </div>
     );
   }
 
-  // Pokémon identity (sprite + name + dex) — this is the part that
-  // navigates to /pokedex/<id>. The method chip lives *outside* this
-  // Link as a sibling because the chip itself wraps its item icon in
-  // a `<Link href="/items/...">`, and nesting two anchors is invalid
-  // HTML — that was the hydration error the user hit.
   const identity = (
     <>
-      <div className="size-14">
+      <div className="size-14 shrink-0">
         <PokemonSprite pokemon={p} variant="sprite" />
       </div>
-      <div className="flex flex-col items-center gap-0">
-        <span className="line-clamp-1 w-full text-center text-xs font-medium capitalize">
-          {p.name}
+      <div className="flex min-w-0 flex-col items-center gap-0">
+        <span className="line-clamp-2 w-full text-center text-xs font-medium capitalize">
+          {/* `displayName` appends "(Galar)", "(Eau)" etc. for
+              regional / Rotom / Deoxys variants so two entries
+              sharing the same species name stay distinguishable. */}
+          {displayName(p)}
         </span>
         <span className="font-mono text-[9px] text-muted-foreground">
           #{p.dexNumber.toString().padStart(4, "0")}
@@ -282,18 +530,13 @@ function EvoCard({
     </>
   );
 
-  // Outer card chrome — sets the tile surface, holds the absolute
-  // "current" badge, and stacks the identity link + method chip as
-  // siblings.
   const cardClasses = cn(
-    "group relative flex h-full flex-col items-center gap-1 rounded-md p-2 text-center transition-colors",
+    "group relative flex w-[9rem] flex-col items-center gap-1 rounded-md p-2 text-center transition-colors",
     current
       ? "bg-primary/10 ring-1 ring-primary"
       : "bg-muted/40 hover:bg-accent/60",
   );
-  // Identity gets `flex-1` so the method chip docks to the bottom of
-  // the tile even when names take different vertical space.
-  const identityWrapper = "flex flex-1 flex-col items-center gap-0.5";
+  const identityWrapper = "flex flex-col items-center gap-0.5";
 
   return (
     <div className={cardClasses}>
@@ -317,7 +560,7 @@ function EvoCard({
         </Link>
       )}
       {stage.method && (
-        <div className="mt-auto flex flex-wrap justify-center gap-0.5 pt-1">
+        <div className="mt-1 flex flex-wrap justify-center gap-0.5">
           <EvolutionMethod
             evolution={{
               to: stage.id,
@@ -332,67 +575,33 @@ function EvoCard({
   );
 }
 
-// ─── Method family grouping + counting ──────────────────────────────
-
-interface BranchGroup {
-  label: string;
-  items: ChainStage[];
-}
-
-function groupBranchesByFamily(stage: ChainStage[]): BranchGroup[] {
-  const items: ChainStage[] = [];
-  const friendship: ChainStage[] = [];
-  const trade: ChainStage[] = [];
-  const level: ChainStage[] = [];
-  const other: ChainStage[] = [];
-
-  for (const s of stage) {
-    const v = s.details?.variant;
-    const reqs = s.details?.requirements ?? [];
-    const hasFriendship = reqs.some((r) => r.variant === "friendship");
-    const hasLevel = reqs.some((r) => r.variant === "level");
-    if (v === "item_interact" || v === "use_item") items.push(s);
-    else if (v === "trade") trade.push(s);
-    else if (hasFriendship) friendship.push(s);
-    else if (hasLevel) level.push(s);
-    else other.push(s);
-  }
-
-  const out: BranchGroup[] = [];
-  if (items.length) out.push({ label: "Avec un objet", items });
-  if (friendship.length) out.push({ label: "Par amitié", items: friendship });
-  if (trade.length) out.push({ label: "Par échange", items: trade });
-  if (level.length) out.push({ label: "Par montée de niveau", items: level });
-  if (other.length) out.push({ label: "Autres conditions", items: other });
-  return out;
-}
-
 /**
- * Distinct method families across the whole chain — fed to the
- * `MÉTHODES` chip in the summary strip. We re-use the same family
- * buckets `groupBranchesByFamily` walks, so the count is always
- * consistent with what the grouped layout actually surfaces.
+ * Small icon-label-value chip used in the table footer.
+ * Copied from `CatchingGuide` style.
  */
-function countMethodFamilies(forms: ChainStage[]): number {
-  const families = new Set<string>();
-  for (const s of forms) {
-    if (!s.method) continue; // root: no method, no family
-    const v = s.details?.variant;
-    const reqs = s.details?.requirements ?? [];
-    if (v === "item_interact" || v === "use_item") families.add("item");
-    else if (v === "trade") families.add("trade");
-    else if (reqs.some((r) => r.variant === "friendship"))
-      families.add("friendship");
-    else if (reqs.some((r) => r.variant === "level")) families.add("level");
-    else families.add("other");
-  }
-  return families.size;
+function MetaChip({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-md border bg-muted/40 px-2 py-1 text-xs">
+      <span className="text-muted-foreground">{icon}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      <span className="text-foreground">{children}</span>
+    </span>
+  );
 }
 
-// Tiny local Fragment alias so we don't import React just for one
-// type — the JSX runtime handles `Fragment` shorthand `<>` for the
-// JSX side, but we use it explicitly here as a map child to give the
-// linter a stable `key` target.
+// Tiny local Fragment alias — JSX `<>` works fine for in-line use,
+// but we need a named child to give the linter a stable `key` target
+// inside .map().
 function Fragment({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

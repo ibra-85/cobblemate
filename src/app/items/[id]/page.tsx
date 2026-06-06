@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Sparkles, Package } from "lucide-react";
+import { ArrowLeft, Sparkles, Package, ChefHat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -10,7 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
-import { SmogonItemIcon } from "@/features/pokedex/smogon-item-icon";
+import {
+  ItemIcon,
+  MinecraftCraftingTable,
+} from "@/components/site/minecraft-item";
 import {
   lookupItem,
   getItemHolders,
@@ -18,9 +21,40 @@ import {
   type ItemHolder,
 } from "@/data/items-pokeapi";
 import { frItem } from "@/data/smogon";
+import { ITEMS } from "@/data/items";
+import type { Item } from "@/types";
 
 export function generateStaticParams() {
-  return allHeldItemSlugs().map((id) => ({ id }));
+  // We need to cover both the held-item slugs Smogon references AND
+  // the curated catalogue ids ("poke-ball", "oran-berry", …) so the
+  // app router can statically render every link that exists on the
+  // /items grid. Set-dedupe in case the lists overlap.
+  const ids = new Set<string>([
+    ...allHeldItemSlugs(),
+    ...ITEMS.map((i) => i.id),
+  ]);
+  return Array.from(ids).map((id) => ({ id }));
+}
+
+/**
+ * Map a URL slug (hyphen or underscore) to the curated catalogue entry
+ * when it exists. The curated `ITEMS` list uses hyphenated ids
+ * (`poke-ball`); incoming PokéAPI slugs use underscores. Normalise both
+ * before comparing.
+ */
+function curatedItem(slug: string): Item | undefined {
+  const norm = slug.replace(/_/g, "-");
+  return ITEMS.find((i) => i.id === norm || i.id === slug);
+}
+
+/**
+ * Build the `cobblemon:`-prefixed id that the `ItemIcon` lookup chain
+ * (registry → bundled sprite → PokéAPI → Minecraft Wiki → SVG) expects.
+ * Mirrors the helper in `/items/page.tsx` so both pages render the
+ * same artwork.
+ */
+function cobblemonItemId(id: string): string {
+  return `cobblemon:${id.replace(/-/g, "_")}`;
 }
 
 export default async function ItemDetailPage({
@@ -30,14 +64,20 @@ export default async function ItemDetailPage({
 }) {
   const { id } = await params;
   const item = lookupItem(id);
+  const curated = curatedItem(id);
   const holders = getItemHolders(id);
 
-  if (!item && holders.length === 0) notFound();
+  if (!item && holders.length === 0 && !curated) notFound();
 
-  // The icon component expects the English Smogon name; we fall back
-  // to humanising the slug when PokéAPI didn't have the item.
   const englishName = item?.nameEn ?? humanize(id);
-  const display = item ? frItem(englishName).label : englishName;
+  // Prefer the curated French label (matches what the items grid
+  // shows), then the Smogon FR table, then the English name. This way
+  // "Poké Ball" stays "Poké Ball" on its detail page even when PokéAPI
+  // dumped "Poke Ball" without the accent.
+  const display = curated?.name ?? (item ? frItem(englishName).label : englishName);
+  const description = curated?.description ?? item?.shortEffect ?? null;
+  const flavor = item?.description && item.description !== description ? item.description : null;
+  const iconId = cobblemonItemId(curated?.id ?? id);
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -52,8 +92,11 @@ export default async function ItemDetailPage({
       <Card>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
+            {/* Use the same fallback chain as the items grid — works
+                for cobblemon-only items (apricorns, berries) that the
+                Smogon icon set never had. */}
             <div className="grid size-16 shrink-0 place-items-center rounded-md border bg-muted/30 p-1">
-              <SmogonItemIcon name={englishName} size={56} />
+              <ItemIcon item={iconId} size="size-12" />
             </div>
             <div className="flex flex-1 flex-col gap-1">
               <div className="flex flex-wrap items-baseline gap-2">
@@ -67,28 +110,46 @@ export default async function ItemDetailPage({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">
-                <strong className="text-foreground">{holders.length}</strong>{" "}
-                Pokémon le portent fréquemment selon les ladders Smogon.
-              </p>
+              {curated?.rarity && (
+                <Badge variant="outline" className="w-fit text-[10px] uppercase">
+                  {curated.rarity}
+                </Badge>
+              )}
+              {holders.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  <strong className="text-foreground">{holders.length}</strong>{" "}
+                  Pokémon le portent fréquemment selon les ladders Smogon.
+                </p>
+              )}
             </div>
           </div>
 
-          {(item?.shortEffect || item?.description) && (
+          {(description || flavor) && (
             <div className="flex flex-col gap-2 rounded-md border bg-muted/30 p-3">
-              {item.shortEffect && (
-                <p className="text-sm leading-relaxed">{item.shortEffect}</p>
+              {description && (
+                <p className="text-sm leading-relaxed">{description}</p>
               )}
-              {item.description && item.description !== item.shortEffect && (
+              {flavor && (
                 <p className="flex items-start gap-1.5 text-xs italic text-muted-foreground">
                   <Sparkles className="mt-0.5 size-3.5 shrink-0" />
-                  {item.description}
+                  {flavor}
+                </p>
+              )}
+              {curated?.obtain && (
+                <p className="text-xs text-muted-foreground">
+                  <strong className="text-foreground">Obtention :</strong>{" "}
+                  {curated.obtain}
                 </p>
               )}
             </div>
           )}
         </CardContent>
       </Card>
+
+      {/* Recipe — only when the curated catalogue carries a grid. The
+          MinecraftPanel+Slot widgets are the same the snack section
+          uses on /pokedex/[id] so the visual language stays uniform. */}
+      {curated?.recipe && <RecipeCard item={curated} />}
 
       {/* Holders */}
       {holders.length > 0 && (
@@ -111,6 +172,41 @@ export default async function ItemDetailPage({
         </Card>
       )}
     </div>
+  );
+}
+
+function RecipeCard({ item }: { item: Item }) {
+  const recipe = item.recipe!;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <ChefHat className="size-4 text-muted-foreground" />
+          Recette
+          {recipe.output && recipe.output > 1 && (
+            <Badge variant="secondary" className="font-mono text-[10px]">
+              ×{recipe.output}
+            </Badge>
+          )}
+        </CardTitle>
+        {recipe.note && <CardDescription>{recipe.note}</CardDescription>}
+      </CardHeader>
+      <CardContent>
+        {/* `overflow-x-auto` lets the crafting widget scroll
+            horizontally on very narrow viewports without forcing the
+            whole card to grow. `min-w-fit` on the inner widget keeps
+            the bevel intact while it overflows. */}
+        <div className="-mx-3 overflow-x-auto px-3 py-1">
+          <MinecraftCraftingTable
+            grid={recipe.grid}
+            result={`cobblemon:${item.id.replace(/-/g, "_")}`}
+            resultCount={recipe.output}
+            resultLabel={item.name}
+            className="min-w-fit"
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -140,7 +236,7 @@ function HolderGrid({ holders }: { holders: ItemHolder[] }) {
 
 function humanize(slug: string): string {
   return slug
-    .split("_")
+    .split(/[_-]/)
     .map((s) => (s ? s[0].toUpperCase() + s.slice(1) : s))
     .join(" ");
 }

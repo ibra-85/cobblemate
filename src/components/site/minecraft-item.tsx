@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { findItemById } from "@/data/competitive-items";
 import { cn } from "@/lib/utils";
@@ -191,6 +192,19 @@ const ITEMS: Record<string, ItemMeta> = {
   "cobblemon:chilan_berry": { color: "#d6d3d1", accent: "#57534e", shape: "berry", label: "Baie Chilan (Normal)" },
   // ─── Special-effect berries ───────────────────────────────────────
   "cobblemon:starf_berry":  { color: "#fbbf24", accent: "#a855f7", shape: "berry", label: "Baie Starf (Shiny)" },
+  // ─── Crafting components (used by item recipes) ──────────────────
+  // Apricorns + iron disc are the inputs for the Apricorn ball
+  // recipes shown on `/items/[id]`. Wiki paths come from the
+  // Cobblemon MediaWiki — `Special:FilePath` keeps us off the hash
+  // treadmill.
+  "cobblemon:red_apricorn":    { color: "#dc2626", accent: "#65a30d", shape: "berry", label: "Apricorn rouge",  image: `${WIKI_FILEPATH}/Red_Apricorn.png` },
+  "cobblemon:blue_apricorn":   { color: "#2563eb", accent: "#65a30d", shape: "berry", label: "Apricorn bleu",   image: `${WIKI_FILEPATH}/Blue_Apricorn.png` },
+  "cobblemon:yellow_apricorn": { color: "#eab308", accent: "#65a30d", shape: "berry", label: "Apricorn jaune",  image: `${WIKI_FILEPATH}/Yellow_Apricorn.png` },
+  "cobblemon:green_apricorn":  { color: "#16a34a", accent: "#365314", shape: "berry", label: "Apricorn vert",   image: `${WIKI_FILEPATH}/Green_Apricorn.png` },
+  "cobblemon:pink_apricorn":   { color: "#f472b6", accent: "#65a30d", shape: "berry", label: "Apricorn rose",   image: `${WIKI_FILEPATH}/Pink_Apricorn.png` },
+  "cobblemon:black_apricorn":  { color: "#1f2937", accent: "#65a30d", shape: "berry", label: "Apricorn noir",   image: `${WIKI_FILEPATH}/Black_Apricorn.png` },
+  "cobblemon:white_apricorn":  { color: "#f3f4f6", accent: "#65a30d", shape: "berry", label: "Apricorn blanc",  image: `${WIKI_FILEPATH}/White_Apricorn.png` },
+  "cobblemon:iron_disc":       { color: "#9ca3af", accent: "#475569", shape: "tag",   label: "Disque de fer",   image: `${WIKI_FILEPATH}/Iron_Disc.png` },
   // ─── Tag aggregates (no wiki page → keep the SVG sprite) ─────────
   "#cobblemon:berries":     { color: "#a855f7", accent: "#525252", shape: "tag",   label: "Toute baie Cobblemon", image: "" },
 };
@@ -210,7 +224,26 @@ function fallbackImageUrl(itemId: string): string {
   return `${WIKI_FILEPATH}/${encodeURIComponent(filename)}`;
 }
 
-/** Resolve the image URL for an item (null = no image, render SVG). */
+/** Resolve the image URL for an item (null = no image, render SVG).
+ *
+ *  Priority order (per user request — Cobblemon mod sprites first):
+ *   1. Registry override (`ITEMS[id].image`) — hand-pinned URLs.
+ *   2. `cobblemon:*` → Cobblemon Wiki Special:FilePath (16×16 in-game
+ *      sprite — matches what the player sees in the actual Minecraft
+ *      inventory). This BEATS the competitive Smogon lookups because
+ *      the user wants the Minecraft-flavoured art everywhere it
+ *      exists.
+ *   3. Local bundled `public/images/items/cobblemon/*.png`
+ *      (competitive subset that ships with the app — used for
+ *      held-item icons on the team builder).
+ *   4. `BULBAPEDIA_ITEMS` bundle (gen-9 items + plates/orbs).
+ *   5. PokéAPI sprite (mainline-series fallback for evolution items).
+ *   6. `minecraft:*` → Minecraft Wiki (Apple, Carrot, etc.).
+ *   7. Generic Special:FilePath redirect as best-effort.
+ *
+ * The `onError` handler in `ItemArtwork` swaps to the SVG sprite when
+ * the chosen URL 404s, so the chain degrades gracefully.
+ */
 export function itemImageUrl(itemId: string): string | null {
   // Same dual-key lookup as itemMeta — the recipe pattern yields tags
   // without their `#` prefix, so we have to probe both shapes.
@@ -219,13 +252,19 @@ export function itemImageUrl(itemId: string): string | null {
   if (meta?.image === "") return null;       // explicit opt-out
   if (meta?.image) return meta.image;        // registry-pinned URL
   if (itemId.startsWith("#")) return null;   // unknown tag → no image
-  // Competitive registry items: prefer the bundled local sprites
-  // when we know we shipped them. We try the Cobblemon-flavoured
-  // bundle first, then the Bulbapedia bundle (Gen-9 items, plates,
-  // orbs), then PokeAPI's mainline-series sprite set as a last
-  // network fallback. When dropping new files into
-  // `public/images/items/...`, add their ids to the matching set so
-  // they take precedence over the network paths.
+
+  // ─── Cobblemon mod art comes first ────────────────────────────
+  // The Cobblemon wiki ships the actual in-game 16×16 PNG for every
+  // cobblemon-namespaced item under Special:FilePath/<Name>.png.
+  // That's what the player sees in their inventory, so we lead with
+  // it (the user explicitly asked for the Cobblemon-flavoured art).
+  if (itemId.startsWith("cobblemon:")) {
+    const name = itemId.slice("cobblemon:".length);
+    return fallbackImageUrl(`cobblemon:${name}`);
+  }
+
+  // Competitive registry items: bundled local sprites when we shipped
+  // them, then Bulbapedia bundle, then PokeAPI as a network fallback.
   const competitive = findItemById(itemId);
   if (competitive) {
     if (LOCAL_ITEM_IDS.has(competitive.id)) {
@@ -236,29 +275,20 @@ export function itemImageUrl(itemId: string): string | null {
     }
     return pokeapiItemUrl(competitive.id);
   }
-  // No competitive-registry entry — split by namespace.
-  //
-  // `minecraft:*` items route to the Minecraft Wiki: PokéAPI's
-  // sprite repo has zero Minecraft items, so falling through there
-  // would 404 every time (the snack-recipe slots — Pomme, Carotte
-  // dorée, Baies sucrées — used to all render the generic SVG).
-  //
-  // `cobblemon:*` items (evolution stones, Pau métal, Improbio, …)
-  // try PokéAPI by kebab-cased name; that covers all mainline-series
-  // items including evolution-only ones that aren't in the
-  // competitive registry.
-  //
-  // `ItemArtwork`'s `onError` falls back to the SVG sprite when
-  // either remote 404s, so Cobblemon-exclusives like `peat_block`
-  // still render a sensible placeholder.
+
+  // `minecraft:*` items route to the Minecraft Wiki — PokéAPI has
+  // zero Minecraft items so it would 404 every time.
   if (itemId.startsWith("minecraft:")) {
     return minecraftWikiUrl(itemId.slice("minecraft:".length));
   }
+
+  // Last resort: try PokéAPI by stripped name, then the Cobblemon
+  // wiki redirect.
   const stripped = itemId.toLowerCase().replace(/^[a-z]+:/, "");
   if (stripped && stripped !== itemId.toLowerCase()) {
     return pokeapiItemUrl(stripped);
   }
-  return fallbackImageUrl(itemId);            // best-effort via redirect
+  return fallbackImageUrl(itemId);
 }
 
 const DEFAULT_META: ItemMeta = {
@@ -670,5 +700,120 @@ export function MinecraftPanel({
     >
       {children}
     </div>
+  );
+}
+
+// ─── Crafting table UI ────────────────────────────────────────────────
+
+interface SeasoningSpec {
+  item?: string;
+  count?: number;
+  label?: string;
+}
+
+/**
+ * A single Minecraft-style crafting table interface: 3×3 input grid on
+ * the left, arrow in the middle, large output slot on the right —
+ * all housed in one beveled panel so the layout reads as a single
+ * recognisable widget (matches the in-game crafting GUI).
+ *
+ * `seasonings` (optional) renders a 3-slot horizontal strip *above*
+ * the result slot — that mirrors how Cobblemon's Campfire Pot UI
+ * lays out the bait seasoning slots applied on top of the base
+ * recipe. Omit the prop for a standard crafting table (apricorn
+ * balls, held-item recipes).
+ */
+export function MinecraftCraftingTable({
+  grid,
+  seasonings,
+  result,
+  resultCount,
+  resultLabel,
+  className,
+}: {
+  /** 9-slot 3×3 input grid (row-major). `null` = empty slot. */
+  grid: (string | null)[];
+  /** Optional 3-slot bait-seasoning strip (Campfire Pot only).
+   *  Rendered horizontally just above the result item. */
+  seasonings?: (SeasoningSpec | null)[];
+  /** Item id of the craft result. */
+  result: string;
+  /** Number of items produced (defaults to 1). */
+  resultCount?: number;
+  /** Optional tooltip override for the result slot. */
+  resultLabel?: string;
+  className?: string;
+}) {
+  return (
+    <MinecraftPanel className={cn("rounded-sm", className)}>
+      {/* Top alignment (`items-start`) anchors the seasoning row to
+          the same y-position as the 3×3 grid's first row. The arrow
+          is shifted down by one slot height + half a slot so it sits
+          on row 2 of the grid, the same line the result slot
+          occupies — keeps the "ingredients → arrow → result"
+          reading line straight across regardless of whether the
+          campfire mode is on. */}
+      <div className="flex items-start gap-3">
+        {/* 3×3 input grid */}
+        <div className="grid grid-cols-3 gap-1">
+          {grid.map((slot, i) => (
+            <MinecraftSlot
+              key={i}
+              item={slot ?? undefined}
+              empty={!slot}
+            />
+          ))}
+        </div>
+
+        {/* Static arrow — positioned vertically to line up with the
+            middle row of the 3×3 grid (= slot height + gap before it).
+            Same icon the rest of the app uses for "produces" /
+            "evolves into" so the crafting widget stays consistent
+            with the Pokédex evolution panels. */}
+        <ArrowRight className="mt-11 size-6 shrink-0 text-[#373737] dark:text-foreground" />
+
+        {/* Right column: 3 horizontal seasoning slots at the top (same
+            row as the grid's first row), small down-arrow, then the
+            larger result slot. The down-arrow makes the flow
+            "(base + seasonings) produces snack" explicit. Without
+            seasonings, the result slot is offset to sit on the same
+            middle-row as the right-arrow. */}
+        <div className="flex flex-col items-center gap-1">
+          {seasonings ? (
+            <>
+              <div className="flex gap-1">
+                {seasonings.map((s, i) => (
+                  <MinecraftSlot
+                    key={i}
+                    item={s?.item}
+                    count={s?.count}
+                    empty={!s?.item}
+                    title={s?.label}
+                  />
+                ))}
+              </div>
+              <ArrowDown className="size-4 shrink-0 text-[#373737] dark:text-foreground" />
+              <MinecraftSlot
+                item={result}
+                count={resultCount}
+                title={resultLabel}
+                size="size-14"
+              />
+            </>
+          ) : (
+            // Without seasonings we offset the result with `mt-9` so
+            // it lines up with the grid's middle row (where the
+            // right-arrow sits).
+            <MinecraftSlot
+              item={result}
+              count={resultCount}
+              title={resultLabel}
+              size="size-14"
+              className="mt-9"
+            />
+          )}
+        </div>
+      </div>
+    </MinecraftPanel>
   );
 }

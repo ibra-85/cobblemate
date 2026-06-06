@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Calculator,
   Wand2,
+  Cookie,
 } from "lucide-react";
 import {
   Command,
@@ -26,8 +27,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TypeBadge } from "@/components/site/type-badge";
-import { POKEMON } from "@/data/pokemon";
-import { MOVES, lookupMove } from "@/data/moves";
+import { PokemonSprite } from "@/components/site/pokemon-sprite";
+import { POKEMON, POKEMON_BY_ID } from "@/data/pokemon";
+import {
+  displayNameWithEnglish,
+  englishName,
+  formLabel,
+} from "@/lib/pokemon-form";
+import { ALL_MOVE_IDS, lookupMove } from "@/data/moves";
 import {
   allAbilitySlugs,
   lookupAbility,
@@ -37,11 +44,12 @@ import {
   lookupItem,
 } from "@/data/items-pokeapi";
 import { frAbility, frItem } from "@/data/smogon";
+import { POKESNACKS } from "@/data/pokesnacks";
 import { SmogonItemIcon } from "@/features/pokedex/smogon-item-icon";
 import { MobileNav } from "@/components/site/mobile-nav";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { cn } from "@/lib/utils";
-import type { PokemonTypeId } from "@/types";
+import type { PokemonTypeId, Pokesnack } from "@/types";
 
 const CATEGORY_BADGE_LABEL: Record<string, string> = {
   physical: "Phys", special: "Spé", status: "Stat",
@@ -54,6 +62,7 @@ const QUICK_ACTIONS = [
   { href: "/battle?tab=calc", label: "Calc de dégâts", icon: Calculator,      hint: "Simuler un coup" },
   { href: "/team-builder",    label: "Team Builder",   icon: Users,           hint: "Composer son équipe" },
   { href: "/items",           label: "Objets",         icon: Package,         hint: "Catalogue Cobblemon" },
+  { href: "/pokesnacks",      label: "PokéSnacks",     icon: Cookie,          hint: "Recettes pour attirer un Pokémon" },
   { href: "/wishlist",        label: "Wishlist",       icon: Heart,           hint: "Mons à attraper" },
 ];
 
@@ -73,6 +82,9 @@ interface PokemonHit {
 interface MoveHit {
   id: string;
   name: string;
+  /** English (PokéAPI) name — surfaced as a secondary line when
+   *  it diverges from the French. */
+  nameEn?: string;
   type: string;
   category: string;
 }
@@ -86,13 +98,18 @@ interface ItemHit {
   name: string;
   labelFr: string;
 }
+interface SnackHit {
+  id: string;
+  name: string;
+  snack: Pokesnack;
+}
 
 /**
  * Build a cheap searchable haystack for an entry. Lowercase, joined
  * with spaces — `String.includes` matches in microseconds on this
  * shape so we don't need a fancy fuzzy library for ~2.5k rows.
  */
-function haystack(...parts: (string | number | undefined)[]): string {
+function haystack(...parts: (string | number | undefined | null)[]): string {
   return parts.filter(Boolean).join(" ").toLowerCase();
 }
 
@@ -120,7 +137,17 @@ export function Header() {
         id: p.id,
         name: p.name,
         dexNumber: p.dexNumber,
-        key: haystack(p.name, p.id, p.dexNumber),
+        // Haystack includes the form label ("Galar", "Eau") and the
+        // English species name so "slowpoke galar" or "rotom wash"
+        // resolve as direct hits, not just "ramoloss" / "motisma".
+        key: haystack(
+          p.name,
+          p.id,
+          p.dexNumber,
+          englishName(p),
+          formLabel(p.id),
+          ...p.types,
+        ),
       })),
     [],
   );
@@ -128,13 +155,22 @@ export function Header() {
     Array<MoveHit & { key: string }>
   >(
     () =>
-      MOVES.map((m) => ({
-        id: m.id,
-        name: m.name,
-        type: m.type,
-        category: m.category,
-        key: haystack(m.name, m.id, m.type),
-      })),
+      // Walk ALL_MOVE_IDS (937 entries, the full PokéAPI dump) instead
+      // of the 40-move curated MOVES list — the user noticed Gonflette
+      // (bulkup) was missing because it lives only in the generated
+      // layer. `lookupMove` merges the curated + generated rows when
+      // both exist so we never lose the hand-tuned FR for the staples.
+      ALL_MOVE_IDS.map((id) => {
+        const m = lookupMove(id);
+        return {
+          id,
+          name: m?.name ?? id,
+          nameEn: m?.nameEn,
+          type: m?.type ?? "normal",
+          category: m?.category ?? "physical",
+          key: haystack(m?.name, m?.nameEn, id, m?.type, m?.category),
+        };
+      }),
     [],
   );
   const abilityIndex = useMemo<
@@ -171,6 +207,21 @@ export function Header() {
       }),
     [],
   );
+  const snackIndex = useMemo<
+    Array<SnackHit & { key: string }>
+  >(
+    () =>
+      POKESNACKS.map((s) => ({
+        id: s.id,
+        name: s.name,
+        snack: s,
+        // Snacks live or die by which Pokémon / types they attract —
+        // include those in the haystack so "dragon" / "pikachu"
+        // surfaces the right snack.
+        key: haystack(s.name, s.id, s.description, ...s.attractsTypes, ...s.attractsPokemonIds),
+      })),
+    [],
+  );
 
   const isSearching = query.trim().length > 0;
 
@@ -186,6 +237,7 @@ export function Header() {
         moves: [] as MoveHit[],
         abilities: [] as AbilityHit[],
         items: [] as ItemHit[],
+        snacks: [] as SnackHit[],
       };
     }
     return {
@@ -201,14 +253,18 @@ export function Header() {
       items: itemIndex
         .filter((it) => it.key.includes(q))
         .slice(0, RESULTS_PER_CATEGORY),
+      snacks: snackIndex
+        .filter((s) => s.key.includes(q))
+        .slice(0, RESULTS_PER_CATEGORY),
     };
-  }, [deferredQuery, pokemonIndex, moveIndex, abilityIndex, itemIndex]);
+  }, [deferredQuery, pokemonIndex, moveIndex, abilityIndex, itemIndex, snackIndex]);
 
   const hasAnyResult =
     results.pokemon.length +
       results.moves.length +
       results.abilities.length +
-      results.items.length >
+      results.items.length +
+      results.snacks.length >
     0;
 
   useEffect(() => {
@@ -305,28 +361,50 @@ export function Header() {
                 `RESULTS_PER_CATEGORY` items so the DOM stays small. */}
             {isSearching && results.pokemon.length > 0 && (
               <CommandGroup heading="Pokémon">
-                {results.pokemon.map((p) => (
-                  <CommandItem
-                    key={p.id}
-                    value={p.id}
-                    onSelect={() => {
-                      setOpen(false);
-                      router.push(`/pokedex/${p.id}`);
-                    }}
-                  >
-                    <span className="font-mono text-xs text-muted-foreground">
-                      #{p.dexNumber}
-                    </span>
-                    <span>{p.name}</span>
-                  </CommandItem>
-                ))}
+                {results.pokemon.map((p) => {
+                  const poke = POKEMON_BY_ID[p.id];
+                  // Form label appended ("Ramoloss · Galar") to
+                  // distinguish multiple entries that share the
+                  // same species name; English in the shortcut
+                  // slot so power-users searching by EN spelling
+                  // can identify the hit at a glance.
+                  const { primary, english } = displayNameWithEnglish(p);
+                  return (
+                    <CommandItem
+                      key={p.id}
+                      value={p.id}
+                      onSelect={() => {
+                        setOpen(false);
+                        router.push(`/pokedex/${p.id}`);
+                      }}
+                    >
+                      {poke && (
+                        <span className="grid size-5 shrink-0 place-items-center">
+                          <PokemonSprite pokemon={poke} size="size-5" />
+                        </span>
+                      )}
+                      <span className="font-mono text-xs text-muted-foreground">
+                        #{p.dexNumber}
+                      </span>
+                      <span className="truncate">{primary}</span>
+                      {english && (
+                        <CommandShortcut className="italic">
+                          {english}
+                        </CommandShortcut>
+                      )}
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
             )}
 
             {isSearching && results.moves.length > 0 && (
               <CommandGroup heading="Attaques">
                 {results.moves.map((m) => {
-                  const move = lookupMove(m.id);
+                  // The FR name + English fallback are already resolved
+                  // into the index, so the renderer doesn't hit
+                  // `lookupMove` again on every keystroke.
+                  const showEn = m.nameEn && m.nameEn !== m.name;
                   return (
                     <CommandItem
                       key={m.id}
@@ -336,8 +414,11 @@ export function Header() {
                         router.push(`/moves/${m.id}`);
                       }}
                     >
-                      <span className="truncate">{move?.name ?? m.name}</span>
+                      <span className="truncate">{m.name}</span>
                       <CommandShortcut className="flex items-center gap-1.5">
+                        {showEn && (
+                          <span className="italic opacity-70">{m.nameEn}</span>
+                        )}
                         <TypeBadge type={m.type as PokemonTypeId} size="sm" />
                         <Badge
                           variant="secondary"
@@ -395,6 +476,33 @@ export function Header() {
                         {it.name}
                       </CommandShortcut>
                     )}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+
+            {isSearching && results.snacks.length > 0 && (
+              <CommandGroup heading="PokéSnacks">
+                {results.snacks.map((s) => (
+                  <CommandItem
+                    key={s.id}
+                    value={s.id}
+                    onSelect={() => {
+                      setOpen(false);
+                      router.push("/pokesnacks");
+                    }}
+                  >
+                    <Cookie className="size-3.5 text-amber-500/80" />
+                    <span className="truncate">{s.name}</span>
+                    <CommandShortcut className="flex items-center gap-1">
+                      {s.snack.attractsTypes.slice(0, 3).map((t) => (
+                        <TypeBadge
+                          key={t}
+                          type={t as PokemonTypeId}
+                          size="sm"
+                        />
+                      ))}
+                    </CommandShortcut>
                   </CommandItem>
                 ))}
               </CommandGroup>

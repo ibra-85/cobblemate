@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  ArrowRight,
   Zap,
   Sparkles,
   Crown,
@@ -10,8 +9,7 @@ import {
   Layers,
 } from "lucide-react";
 import {
-  MinecraftPanel,
-  MinecraftSlot,
+  MinecraftCraftingTable,
   itemMeta,
 } from "@/components/site/minecraft-item";
 import { Button } from "@/components/ui/button";
@@ -243,41 +241,23 @@ export function PokeSnackCooking({ pokemon }: Props) {
         {activeMode.help}
       </p>
 
-      {/* ─── Cooking interface ─────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-4">
-        <MinecraftPanel className="rounded-sm">
-          <div className="grid grid-cols-3 gap-1">
-            {baseRecipe.map((id, i) => (
-              <MinecraftSlot key={i} item={id ?? undefined} empty={!id} />
-            ))}
-          </div>
-        </MinecraftPanel>
-
-        <ArrowRight className="size-6 text-muted-foreground" />
-
-        <div className="flex flex-col gap-2">
-          <MinecraftPanel className="rounded-sm">
-            <div className="flex gap-1">
-              {recipe.slots.map((s, i) => (
-                <MinecraftSlot
-                  key={i}
-                  item={s?.item}
-                  count={s?.count}
-                  empty={!s}
-                  title={s ? itemMeta(s.item).label : "Slot libre"}
-                />
-              ))}
-            </div>
-          </MinecraftPanel>
-
-          <MinecraftPanel className="rounded-sm self-center">
-            <MinecraftSlot
-              item="cobblemon:poke_snack"
-              size="size-12"
-              title="Poké Snack"
-            />
-          </MinecraftPanel>
-        </div>
+      {/* ─── Campfire Pot ─────────────────────────────────────────────
+          The Campfire Pot UI takes the 3×3 PokéSnack base recipe AND
+          a 3-slot bait-seasoning strip together — all in one craft.
+          The `MinecraftCraftingTable` widget handles both via the
+          `seasonings` prop. */}
+      <div className="-mx-3 overflow-x-auto px-3 py-1">
+        <MinecraftCraftingTable
+          grid={baseRecipe}
+          seasonings={recipe.slots.map((s) =>
+            s
+              ? { item: s.item, count: s.count, label: itemMeta(s.item).label }
+              : null,
+          )}
+          result="cobblemon:poke_snack"
+          resultLabel={`Poké Snack — ${activeMode.label}`}
+          className="min-w-fit"
+        />
       </div>
 
       {/* ─── Effects summary ─────────────────────────────────────────
@@ -303,3 +283,4 @@ export function PokeSnackCooking({ pokemon }: Props) {
     </div>
   );
 }
+

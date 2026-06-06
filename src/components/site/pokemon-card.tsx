@@ -8,6 +8,7 @@ import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { TYPES_META } from "@/data/types";
 import type { Pokemon } from "@/types";
 import { baseStatTotal } from "@/lib/pokemon-utils";
+import { displayNameWithEnglish } from "@/lib/pokemon-form";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { cn } from "@/lib/utils";
 
@@ -65,11 +66,26 @@ export function PokemonCard({ pokemon, hrefQuery }: Props) {
               />
             </div>
 
-            {/* Name + types */}
-            <div className="flex flex-col items-center gap-2 text-center">
-              <h3 className="font-heading text-base font-semibold leading-tight">
-                {pokemon.name}
-              </h3>
+            {/* Name + types — FR primary (with form suffix when the
+                id encodes one, e.g. "Ramoloss · Galar") and the
+                English species name muted underneath when it
+                actually differs. */}
+            <div className="flex flex-col items-center gap-1 text-center">
+              {(() => {
+                const { primary, english } = displayNameWithEnglish(pokemon);
+                return (
+                  <>
+                    <h3 className="font-heading text-base font-semibold leading-tight">
+                      {primary}
+                    </h3>
+                    {english && (
+                      <span className="text-[10px] italic text-muted-foreground">
+                        ({english})
+                      </span>
+                    )}
+                  </>
+                );
+              })()}
               <TypeBadges types={pokemon.types} size="sm" />
             </div>
           </CardContent>

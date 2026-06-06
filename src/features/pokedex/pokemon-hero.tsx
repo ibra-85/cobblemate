@@ -8,6 +8,7 @@ import { PokemonDetailsModal } from "@/features/pokedex/pokemon-details-modal";
 import { getSpeciesExtras } from "@/data/species-extras";
 import { isSoloSpecies } from "@/data/pokemon";
 import { lookupAbility } from "@/data/abilities-pokeapi";
+import { displayNameWithEnglish } from "@/lib/pokemon-form";
 import { abilityDisplayFr } from "@/lib/ability-utils";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import type { SpawnAggregate } from "@/data/spawns";
@@ -65,11 +66,24 @@ export function PokemonHero({ pokemon, spawn }: Props) {
     <Card>
       <CardContent className="flex flex-col gap-5">
         {/* ─── Identity line ─────────────────────────────────────────
-            Name + dex + gen + types + rarity + actions all inline. */}
+            Name + dex + gen + types + rarity + actions all inline.
+            Name renders as "<FR> · <Form>?  (<English>)" so regional
+            variants stay distinguishable AND the player always sees
+            the EN name they might recognise from other sources. */}
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight">
-            {pokemon.name}
-          </h1>
+          {(() => {
+            const { primary, english } = displayNameWithEnglish(pokemon);
+            return (
+              <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight">
+                {primary}
+                {english && (
+                  <span className="ml-2 text-base font-normal italic text-muted-foreground">
+                    ({english})
+                  </span>
+                )}
+              </h1>
+            );
+          })()}
           <span className="font-mono text-sm text-muted-foreground">
             #{pokemon.dexNumber.toString().padStart(4, "0")}
           </span>

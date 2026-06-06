@@ -1,0 +1,101 @@
+{
+  "$comment": "Declarative recipe rules for the PokéSnack recommender. Each recipe lists up to 3 seasoning slot picks; the algorithm in scripts/build-pokesnacks-academy.mjs resolves them at build time against the Pokémon's types + category.",
+
+  "useCaseWeights": {
+    "$comment": "Determines which preset is highlighted as `bestGeneral` per category. Higher weight wins ties.",
+    "common":      { "bestGeneral": "typeCoverage", "budgetWeight": 2 },
+    "uncommon":    { "bestGeneral": "typeCoverage", "budgetWeight": 1 },
+    "rare":        { "bestGeneral": "rareSpawn",    "budgetWeight": 0 },
+    "ultra_rare":  { "bestGeneral": "rareSpawn",    "budgetWeight": 0 },
+    "starter":     { "bestGeneral": "rareSpawn",    "budgetWeight": 0 },
+    "fossil":      { "bestGeneral": "rareSpawn",    "budgetWeight": 0 },
+    "legendary":   { "bestGeneral": "rareSpawn",    "budgetWeight": 0 },
+    "mythical":    { "bestGeneral": "shinyHunt",    "budgetWeight": 0 },
+    "paradox":     { "bestGeneral": "rareSpawn",    "budgetWeight": 0 },
+    "ultra_beast": { "bestGeneral": "typeCoverage", "budgetWeight": 0 },
+    "regional":    { "bestGeneral": "typeCoverage", "budgetWeight": 1 }
+  },
+
+  "recipes": {
+    "$comment": "Slot specs:  { kind: 'typeBerry', typeIndex: 0 } picks the best berry for the mon's primary type. { kind: 'item', id: 'minecraft:golden_apple' } pins a specific item. Missing → null (empty slot).",
+
+    "bestGeneral": {
+      "$comment": "Resolved per-category — see useCaseWeights.bestGeneral.",
+      "delegateTo": "useCaseWeights"
+    },
+
+    "typeCoverage": {
+      "label": "Couvre les types",
+      "goal": "Augmenter les chances de spawn via les types du Pokémon.",
+      "reason": "Type berries multiplient le taux de spawn par 10 pour leur type — l'option la plus directe quand on cherche un Pokémon précis.",
+      "slots": [
+        { "kind": "typeBerry", "typeIndex": 0 },
+        { "kind": "typeBerry", "typeIndex": 1, "fallbackToItem": "minecraft:golden_carrot" },
+        { "kind": "item", "id": "minecraft:golden_apple" }
+      ],
+      "effectConfidence": "official"
+    },
+
+    "budget": {
+      "label": "Recette budget",
+      "goal": "Version moins chère pour les farms longues.",
+      "reason": "Pas d'items dorés ni de Pomme enchantée — boost de type + accélération de morsure pour les sessions de pêche.",
+      "slots": [
+        { "kind": "typeBerry", "typeIndex": 0 },
+        { "kind": "item", "id": "minecraft:apple" },
+        { "kind": "item", "id": "minecraft:sweet_berries" }
+      ],
+      "effectConfidence": "official"
+    },
+
+    "rareSpawn": {
+      "label": "Spawn rare",
+      "goal": "Prioriser les Pokémon rares ou difficiles à faire apparaître.",
+      "reason": "Combine la Pomme d'or (+1 palier de rareté) avec la Pomme d'or enchantée (+10) et un boost de type pour pousser l'apparition d'un mon difficile.",
+      "slots": [
+        { "kind": "item", "id": "minecraft:enchanted_golden_apple" },
+        { "kind": "item", "id": "minecraft:golden_apple" },
+        { "kind": "typeBerry", "typeIndex": 0, "fallbackToItem": "minecraft:golden_carrot" }
+      ],
+      "effectConfidence": "official"
+    },
+
+    "shinyHunt": {
+      "label": "Shiny hunt",
+      "goal": "Maximiser les chances shiny si les effets sont confirmés ou inférés.",
+      "reason": "Pomme d'or enchantée (shiny ×10) + Baie Starf (shiny ×5) = ×50 cumulés. Ajoute un boost de type pour cibler le bon mon.",
+      "slots": [
+        { "kind": "item", "id": "minecraft:enchanted_golden_apple" },
+        { "kind": "item", "id": "cobblemon:starf_berry" },
+        { "kind": "typeBerry", "typeIndex": 0 }
+      ],
+      "effectConfidence": "official"
+    }
+  },
+
+  "rarityScore": {
+    "$comment": "How Cobblemon's spawn rarity labels map to our 1..5 score. Used to decide which preset is the bestGeneral when both useCaseWeights.bestGeneral and the actual spawn rarity disagree (we prefer the spawn rarity).",
+    "common":     1,
+    "uncommon":   2,
+    "rare":       3,
+    "ultra-rare": 4,
+    "unknown":    0,
+    "missing":    0
+  },
+
+  "categoryFromLabels": {
+    "$comment": "Order matters: first matching label wins. `starter`, `fossil`, etc. are recognisable Academy labels.",
+    "ultra_beast": "ultra_beast",
+    "paradox":     "paradox",
+    "mythical":    "mythical",
+    "legendary":   "legendary",
+    "fossil":      "fossil",
+    "starter":     "starter",
+    "baby":        "baby",
+    "alolan_form":   "regional",
+    "galarian_form": "regional",
+    "hisuian_form":  "regional",
+    "paldean_form":  "regional",
+    "customized_official": "regional"
+  }
+}

@@ -1,0 +1,3879 @@
+[
+  {
+    "id": "aguav_berry",
+    "fullId": "cobblemon:aguav_berry",
+    "name": {
+      "en": "Aguav Berry",
+      "fr": "Aguav Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "apicot_berry",
+    "fullId": "cobblemon:apicot_berry",
+    "name": {
+      "en": "Apicot Berry",
+      "fr": "Apicot Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:spd",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "aspear_berry",
+    "fullId": "cobblemon:aspear_berry",
+    "name": {
+      "en": "Aspear Berry",
+      "fr": "Aspear Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "water_1",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "water_2",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "babiri_berry",
+    "fullId": "cobblemon:babiri_berry",
+    "name": {
+      "en": "Babiri Berry",
+      "fr": "Baie Babiri"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "steel",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "belue_berry",
+    "fullId": "cobblemon:belue_berry",
+    "name": {
+      "en": "Belue Berry",
+      "fr": "Belue Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "berry_sweet",
+    "fullId": "cobblemon:berry_sweet",
+    "name": {
+      "en": "Berry Sweet",
+      "fr": "Berry Sweet"
+    },
+    "color": "blue",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "big_root",
+    "fullId": "cobblemon:big_root",
+    "name": {
+      "en": "Big Root",
+      "fr": "Big Root"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "blue_mint_leaf",
+    "fullId": "cobblemon:blue_mint_leaf",
+    "name": {
+      "en": "Blue Mint Leaf",
+      "fr": "Blue Mint Leaf"
+    },
+    "color": "blue",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "bluk_berry",
+    "fullId": "cobblemon:bluk_berry",
+    "name": {
+      "en": "Bluk Berry",
+      "fr": "Bluk Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "charti_berry",
+    "fullId": "cobblemon:charti_berry",
+    "name": {
+      "en": "Charti Berry",
+      "fr": "Baie Charti"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "rock",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "cheri_berry",
+    "fullId": "cobblemon:cheri_berry",
+    "name": {
+      "en": "Cheri Berry",
+      "fr": "Cheri Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "fairy",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "grass",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "chesto_berry",
+    "fullId": "cobblemon:chesto_berry",
+    "name": {
+      "en": "Chesto Berry",
+      "fr": "Chesto Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "human_like",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "flying",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "chilan_berry",
+    "fullId": "cobblemon:chilan_berry",
+    "name": {
+      "en": "Chilan Berry",
+      "fr": "Baie Chilan"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "normal",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "chople_berry",
+    "fullId": "cobblemon:chople_berry",
+    "name": {
+      "en": "Chople Berry",
+      "fr": "Baie Chople"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "fighting",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "clover_sweet",
+    "fullId": "cobblemon:clover_sweet",
+    "name": {
+      "en": "Clover Sweet",
+      "fr": "Clover Sweet"
+    },
+    "color": "green",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "coba_berry",
+    "fullId": "cobblemon:coba_berry",
+    "name": {
+      "en": "Coba Berry",
+      "fr": "Baie Coba"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "flying",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "colbur_berry",
+    "fullId": "cobblemon:colbur_berry",
+    "name": {
+      "en": "Colbur Berry",
+      "fr": "Baie Colbur"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "dark",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "cornn_berry",
+    "fullId": "cobblemon:cornn_berry",
+    "name": {
+      "en": "Cornn Berry",
+      "fr": "Cornn Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "custap_berry",
+    "fullId": "cobblemon:custap_berry",
+    "name": {
+      "en": "Custap Berry",
+      "fr": "Custap Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 1
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "cyan_mint_leaf",
+    "fullId": "cobblemon:cyan_mint_leaf",
+    "name": {
+      "en": "Cyan Mint Leaf",
+      "fr": "Cyan Mint Leaf"
+    },
+    "color": "cyan",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "durin_berry",
+    "fullId": "cobblemon:durin_berry",
+    "name": {
+      "en": "Durin Berry",
+      "fr": "Durin Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "eggant_berry",
+    "fullId": "cobblemon:eggant_berry",
+    "name": {
+      "en": "Eggant Berry",
+      "fr": "Eggant Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "ditto",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "energy_root",
+    "fullId": "cobblemon:energy_root",
+    "name": {
+      "en": "Energy Root",
+      "fr": "Energy Root"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "enigma_berry",
+    "fullId": "cobblemon:enigma_berry",
+    "name": {
+      "en": "Enigma Berry",
+      "fr": "Enigma Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "figy_berry",
+    "fullId": "cobblemon:figy_berry",
+    "name": {
+      "en": "Figy Berry",
+      "fr": "Figy Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "flower_sweet",
+    "fullId": "cobblemon:flower_sweet",
+    "name": {
+      "en": "Flower Sweet",
+      "fr": "Flower Sweet"
+    },
+    "color": "orange",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "galarica_nuts",
+    "fullId": "cobblemon:galarica_nuts",
+    "name": {
+      "en": "Galarica Nuts",
+      "fr": "Galarica Nuts"
+    },
+    "color": "orange",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "ganlon_berry",
+    "fullId": "cobblemon:ganlon_berry",
+    "name": {
+      "en": "Ganlon Berry",
+      "fr": "Ganlon Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:def",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "green_mint_leaf",
+    "fullId": "cobblemon:green_mint_leaf",
+    "name": {
+      "en": "Green Mint Leaf",
+      "fr": "Green Mint Leaf"
+    },
+    "color": "green",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "grepa_berry",
+    "fullId": "cobblemon:grepa_berry",
+    "name": {
+      "en": "Grepa Berry",
+      "fr": "Grepa Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "ev",
+          "subcategory": "spd",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "haban_berry",
+    "fullId": "cobblemon:haban_berry",
+    "name": {
+      "en": "Haban Berry",
+      "fr": "Baie Haban"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "dragon",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "hondew_berry",
+    "fullId": "cobblemon:hondew_berry",
+    "name": {
+      "en": "Hondew Berry",
+      "fr": "Hondew Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "ev",
+          "subcategory": "spa",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "hopo_berry",
+    "fullId": "cobblemon:hopo_berry",
+    "name": {
+      "en": "Hopo Berry",
+      "fr": "Hopo Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "iapapa_berry",
+    "fullId": "cobblemon:iapapa_berry",
+    "name": {
+      "en": "Iapapa Berry",
+      "fr": "Iapapa Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "jaboca_berry",
+    "fullId": "cobblemon:jaboca_berry",
+    "name": {
+      "en": "Jaboca Berry",
+      "fr": "Jaboca Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "size",
+          "subcategory": null,
+          "chance": 1,
+          "value": 50
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "kasib_berry",
+    "fullId": "cobblemon:kasib_berry",
+    "name": {
+      "en": "Kasib Berry",
+      "fr": "Baie Kasib"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "ghost",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "kebia_berry",
+    "fullId": "cobblemon:kebia_berry",
+    "name": {
+      "en": "Kebia Berry",
+      "fr": "Baie Kébia"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "poison",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "kee_berry",
+    "fullId": "cobblemon:kee_berry",
+    "name": {
+      "en": "Kee Berry",
+      "fr": "Kee Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "gender_chance",
+          "subcategory": "cobblemon:female",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "kelpsy_berry",
+    "fullId": "cobblemon:kelpsy_berry",
+    "name": {
+      "en": "Kelpsy Berry",
+      "fr": "Kelpsy Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "ev",
+          "subcategory": "atk",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "lansat_berry",
+    "fullId": "cobblemon:lansat_berry",
+    "name": {
+      "en": "Lansat Berry",
+      "fr": "Lansat Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:hp",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "leppa_berry",
+    "fullId": "cobblemon:leppa_berry",
+    "name": {
+      "en": "Leppa Berry",
+      "fr": "Leppa Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "level_raise",
+          "subcategory": null,
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "liechi_berry",
+    "fullId": "cobblemon:liechi_berry",
+    "name": {
+      "en": "Liechi Berry",
+      "fr": "Liechi Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:atk",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "love_sweet",
+    "fullId": "cobblemon:love_sweet",
+    "name": {
+      "en": "Love Sweet",
+      "fr": "Love Sweet"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "lum_berry",
+    "fullId": "cobblemon:lum_berry",
+    "name": {
+      "en": "Lum Berry",
+      "fr": "Lum Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "dragon",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "monster",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "mago_berry",
+    "fullId": "cobblemon:mago_berry",
+    "name": {
+      "en": "Mago Berry",
+      "fr": "Mago Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "magost_berry",
+    "fullId": "cobblemon:magost_berry",
+    "name": {
+      "en": "Magost Berry",
+      "fr": "Magost Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "maranga_berry",
+    "fullId": "cobblemon:maranga_berry",
+    "name": {
+      "en": "Maranga Berry",
+      "fr": "Maranga Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "gender_chance",
+          "subcategory": "cobblemon:male",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "medicinal_leek",
+    "fullId": "cobblemon:medicinal_leek",
+    "name": {
+      "en": "Medicinal Leek",
+      "fr": "Medicinal Leek"
+    },
+    "color": "magenta",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "mental_herb",
+    "fullId": "cobblemon:mental_herb",
+    "name": {
+      "en": "Mental Herb",
+      "fr": "Mental Herb"
+    },
+    "color": "light_blue",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "micle_berry",
+    "fullId": "cobblemon:micle_berry",
+    "name": {
+      "en": "Micle Berry",
+      "fr": "Micle Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 5,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "mirror_herb",
+    "fullId": "cobblemon:mirror_herb",
+    "name": {
+      "en": "Mirror Herb",
+      "fr": "Mirror Herb"
+    },
+    "color": "lime",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "moomoo_milk",
+    "fullId": "cobblemon:moomoo_milk",
+    "name": {
+      "en": "Moomoo Milk",
+      "fr": "Moomoo Milk"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "nanab_berry",
+    "fullId": "cobblemon:nanab_berry",
+    "name": {
+      "en": "Nanab Berry",
+      "fr": "Nanab Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "nomel_berry",
+    "fullId": "cobblemon:nomel_berry",
+    "name": {
+      "en": "Nomel Berry",
+      "fr": "Nomel Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "occa_berry",
+    "fullId": "cobblemon:occa_berry",
+    "name": {
+      "en": "Occa Berry",
+      "fr": "Baie Occa"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "fire",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "oran_berry",
+    "fullId": "cobblemon:oran_berry",
+    "name": {
+      "en": "Oran Berry",
+      "fr": "Oran Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0.33,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "pamtre_berry",
+    "fullId": "cobblemon:pamtre_berry",
+    "name": {
+      "en": "Pamtre Berry",
+      "fr": "Pamtre Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "passho_berry",
+    "fullId": "cobblemon:passho_berry",
+    "name": {
+      "en": "Passho Berry",
+      "fr": "Baie Passho"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "water",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "payapa_berry",
+    "fullId": "cobblemon:payapa_berry",
+    "name": {
+      "en": "Payapa Berry",
+      "fr": "Baie Payapa"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "psychic",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "pecha_berry",
+    "fullId": "cobblemon:pecha_berry",
+    "name": {
+      "en": "Pecha Berry",
+      "fr": "Pecha Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "water_3",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "bug",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "pep_up_flower",
+    "fullId": "cobblemon:pep_up_flower",
+    "name": {
+      "en": "Pep Up Flower",
+      "fr": "Pep Up Flower"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "persim_berry",
+    "fullId": "cobblemon:persim_berry",
+    "name": {
+      "en": "Persim Berry",
+      "fr": "Persim Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "mineral",
+          "chance": 1,
+          "value": 10
+        },
+        {
+          "type": "egg_group",
+          "subcategory": "amorphous",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "petaya_berry",
+    "fullId": "cobblemon:petaya_berry",
+    "name": {
+      "en": "Petaya Berry",
+      "fr": "Petaya Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:spa",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "pinap_berry",
+    "fullId": "cobblemon:pinap_berry",
+    "name": {
+      "en": "Pinap Berry",
+      "fr": "Pinap Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:def",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "pink_mint_leaf",
+    "fullId": "cobblemon:pink_mint_leaf",
+    "name": {
+      "en": "Pink Mint Leaf",
+      "fr": "Pink Mint Leaf"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "poke_bait",
+    "fullId": "cobblemon:poke_bait",
+    "name": {
+      "en": "Poke Bait",
+      "fr": "Poke Bait"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "pomeg_berry",
+    "fullId": "cobblemon:pomeg_berry",
+    "name": {
+      "en": "Pomeg Berry",
+      "fr": "Pomeg Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "ev",
+          "subcategory": "hp",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "power_herb",
+    "fullId": "cobblemon:power_herb",
+    "name": {
+      "en": "Power Herb",
+      "fr": "Power Herb"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "qualot_berry",
+    "fullId": "cobblemon:qualot_berry",
+    "name": {
+      "en": "Qualot Berry",
+      "fr": "Qualot Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "ev",
+          "subcategory": "def",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "rabuta_berry",
+    "fullId": "cobblemon:rabuta_berry",
+    "name": {
+      "en": "Rabuta Berry",
+      "fr": "Rabuta Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "rawst_berry",
+    "fullId": "cobblemon:rawst_berry",
+    "name": {
+      "en": "Rawst Berry",
+      "fr": "Rawst Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "egg_group",
+          "subcategory": "field",
+          "chance": 1,
+          "value": 10
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "razz_berry",
+    "fullId": "cobblemon:razz_berry",
+    "name": {
+      "en": "Razz Berry",
+      "fr": "Razz Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "red_mint_leaf",
+    "fullId": "cobblemon:red_mint_leaf",
+    "name": {
+      "en": "Red Mint Leaf",
+      "fr": "Red Mint Leaf"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "revival_herb",
+    "fullId": "cobblemon:revival_herb",
+    "name": {
+      "en": "Revival Herb",
+      "fr": "Revival Herb"
+    },
+    "color": "green",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "ribbon_sweet",
+    "fullId": "cobblemon:ribbon_sweet",
+    "name": {
+      "en": "Ribbon Sweet",
+      "fr": "Ribbon Sweet"
+    },
+    "color": "purple",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "rindo_berry",
+    "fullId": "cobblemon:rindo_berry",
+    "name": {
+      "en": "Rindo Berry",
+      "fr": "Baie Rindo"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "grass",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "roseli_berry",
+    "fullId": "cobblemon:roseli_berry",
+    "name": {
+      "en": "Roseli Berry",
+      "fr": "Baie Roseli"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "fairy",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "rowap_berry",
+    "fullId": "cobblemon:rowap_berry",
+    "name": {
+      "en": "Rowap Berry",
+      "fr": "Rowap Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "size",
+          "subcategory": null,
+          "chance": 1,
+          "value": -50
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "salac_berry",
+    "fullId": "cobblemon:salac_berry",
+    "name": {
+      "en": "Salac Berry",
+      "fr": "Salac Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "iv",
+          "subcategory": "cobblemon:spe",
+          "chance": 1,
+          "value": 5
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "shuca_berry",
+    "fullId": "cobblemon:shuca_berry",
+    "name": {
+      "en": "Shuca Berry",
+      "fr": "Baie Shuca"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "ground",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "sitrus_berry",
+    "fullId": "cobblemon:sitrus_berry",
+    "name": {
+      "en": "Sitrus Berry",
+      "fr": "Sitrus Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0.5,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "spelon_berry",
+    "fullId": "cobblemon:spelon_berry",
+    "name": {
+      "en": "Spelon Berry",
+      "fr": "Spelon Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "star_sweet",
+    "fullId": "cobblemon:star_sweet",
+    "name": {
+      "en": "Star Sweet",
+      "fr": "Star Sweet"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "starf_berry",
+    "fullId": "cobblemon:starf_berry",
+    "name": {
+      "en": "Starf Berry",
+      "fr": "Baie Starf"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 4,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "strawberry_sweet",
+    "fullId": "cobblemon:strawberry_sweet",
+    "name": {
+      "en": "Strawberry Sweet",
+      "fr": "Strawberry Sweet"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "sweet_heart",
+    "fullId": "cobblemon:sweet_heart",
+    "name": {
+      "en": "Sweet Heart",
+      "fr": "Sweet Heart"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 35,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "tamato_berry",
+    "fullId": "cobblemon:tamato_berry",
+    "name": {
+      "en": "Tamato Berry",
+      "fr": "Tamato Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "ev",
+          "subcategory": "spe",
+          "chance": 1,
+          "value": 100
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "tanga_berry",
+    "fullId": "cobblemon:tanga_berry",
+    "name": {
+      "en": "Tanga Berry",
+      "fr": "Baie Tanga"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "bug",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "tasty_tail",
+    "fullId": "cobblemon:tasty_tail",
+    "name": {
+      "en": "Tasty Tail",
+      "fr": "Tasty Tail"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "touga_berry",
+    "fullId": "cobblemon:touga_berry",
+    "name": {
+      "en": "Touga Berry",
+      "fr": "Touga Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:atk",
+          "chance": 0.75,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "vivichoke",
+    "fullId": "cobblemon:vivichoke",
+    "name": {
+      "en": "Vivichoke",
+      "fr": "Vivichoke"
+    },
+    "color": "green",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "wacan_berry",
+    "fullId": "cobblemon:wacan_berry",
+    "name": {
+      "en": "Wacan Berry",
+      "fr": "Baie Wacan"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "electric",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "watmel_berry",
+    "fullId": "cobblemon:watmel_berry",
+    "name": {
+      "en": "Watmel Berry",
+      "fr": "Watmel Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spe",
+          "chance": 1,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "wepear_berry",
+    "fullId": "cobblemon:wepear_berry",
+    "name": {
+      "en": "Wepear Berry",
+      "fr": "Wepear Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spd",
+          "chance": 0.25,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "white_herb",
+    "fullId": "cobblemon:white_herb",
+    "name": {
+      "en": "White Herb",
+      "fr": "White Herb"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "white_mint_leaf",
+    "fullId": "cobblemon:white_mint_leaf",
+    "name": {
+      "en": "White Mint Leaf",
+      "fr": "White Mint Leaf"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "wiki_berry",
+    "fullId": "cobblemon:wiki_berry",
+    "name": {
+      "en": "Wiki Berry",
+      "fr": "Wiki Berry"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0,
+      "extra": [
+        {
+          "type": "nature",
+          "subcategory": "cobblemon:spa",
+          "chance": 0.5,
+          "value": 0
+        }
+      ]
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "yache_berry",
+    "fullId": "cobblemon:yache_berry",
+    "name": {
+      "en": "Yache Berry",
+      "fr": "Baie Yache"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": {
+        "type": "ice",
+        "value": 10
+      },
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "allium",
+    "fullId": "minecraft:allium",
+    "name": {
+      "en": "Allium",
+      "fr": "Allium"
+    },
+    "color": "magenta",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "apple",
+    "fullId": "minecraft:apple",
+    "name": {
+      "en": "Apple",
+      "fr": "Pomme"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0.5,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "azure_bluet",
+    "fullId": "minecraft:azure_bluet",
+    "name": {
+      "en": "Azure Bluet",
+      "fr": "Azure Bluet"
+    },
+    "color": "light_gray",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "beef",
+    "fullId": "minecraft:beef",
+    "name": {
+      "en": "Beef",
+      "fr": "Beef"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "beetroot",
+    "fullId": "minecraft:beetroot",
+    "name": {
+      "en": "Beetroot",
+      "fr": "Beetroot"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "blue_orchid",
+    "fullId": "minecraft:blue_orchid",
+    "name": {
+      "en": "Blue Orchid",
+      "fr": "Blue Orchid"
+    },
+    "color": "light_blue",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "brown_mushroom",
+    "fullId": "minecraft:brown_mushroom",
+    "name": {
+      "en": "Brown Mushroom",
+      "fr": "Brown Mushroom"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "carrot",
+    "fullId": "minecraft:carrot",
+    "name": {
+      "en": "Carrot",
+      "fr": "Carrot"
+    },
+    "color": "orange",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "chicken",
+    "fullId": "minecraft:chicken",
+    "name": {
+      "en": "Chicken",
+      "fr": "Chicken"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "chorus_flower",
+    "fullId": "minecraft:chorus_flower",
+    "name": {
+      "en": "Chorus Flower",
+      "fr": "Chorus Flower"
+    },
+    "color": "purple",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "cod",
+    "fullId": "minecraft:cod",
+    "name": {
+      "en": "Cod",
+      "fr": "Cod"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "cornflower",
+    "fullId": "minecraft:cornflower",
+    "name": {
+      "en": "Cornflower",
+      "fr": "Cornflower"
+    },
+    "color": "blue",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "dandelion",
+    "fullId": "minecraft:dandelion",
+    "name": {
+      "en": "Dandelion",
+      "fr": "Dandelion"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "dead_bush",
+    "fullId": "minecraft:dead_bush",
+    "name": {
+      "en": "Dead Bush",
+      "fr": "Dead Bush"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "dried_kelp",
+    "fullId": "minecraft:dried_kelp",
+    "name": {
+      "en": "Dried Kelp",
+      "fr": "Dried Kelp"
+    },
+    "color": "gray",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "egg",
+    "fullId": "minecraft:egg",
+    "name": {
+      "en": "Egg",
+      "fr": "Egg"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "enchanted_golden_apple",
+    "fullId": "minecraft:enchanted_golden_apple",
+    "name": {
+      "en": "Enchanted Golden Apple",
+      "fr": "Pomme d'or enchantée"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 10,
+      "shinyMultiplier": 9,
+      "biteRateModifier": 1,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "glistering_melon_slice",
+    "fullId": "minecraft:glistering_melon_slice",
+    "name": {
+      "en": "Glistering Melon Slice",
+      "fr": "Tranche de melon scintillant"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 1,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "glow_berries",
+    "fullId": "minecraft:glow_berries",
+    "name": {
+      "en": "Glow Berries",
+      "fr": "Lumibaies"
+    },
+    "color": null,
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0.33,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "golden_apple",
+    "fullId": "minecraft:golden_apple",
+    "name": {
+      "en": "Golden Apple",
+      "fr": "Pomme d'or"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 1,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0.75,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "golden_carrot",
+    "fullId": "minecraft:golden_carrot",
+    "name": {
+      "en": "Golden Carrot",
+      "fr": "Carotte dorée"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 1,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "honey_bottle",
+    "fullId": "minecraft:honey_bottle",
+    "name": {
+      "en": "Honey Bottle",
+      "fr": "Pot de miel"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "lilac",
+    "fullId": "minecraft:lilac",
+    "name": {
+      "en": "Lilac",
+      "fr": "Lilac"
+    },
+    "color": "magenta",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "lily_of_the_valley",
+    "fullId": "minecraft:lily_of_the_valley",
+    "name": {
+      "en": "Lily Of The Valley",
+      "fr": "Lily Of The Valley"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "milk_bucket",
+    "fullId": "minecraft:milk_bucket",
+    "name": {
+      "en": "Milk Bucket",
+      "fr": "Milk Bucket"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "mutton",
+    "fullId": "minecraft:mutton",
+    "name": {
+      "en": "Mutton",
+      "fr": "Mutton"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "orange_tulip",
+    "fullId": "minecraft:orange_tulip",
+    "name": {
+      "en": "Orange Tulip",
+      "fr": "Orange Tulip"
+    },
+    "color": "orange",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "oxeye_daisy",
+    "fullId": "minecraft:oxeye_daisy",
+    "name": {
+      "en": "Oxeye Daisy",
+      "fr": "Oxeye Daisy"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "peony",
+    "fullId": "minecraft:peony",
+    "name": {
+      "en": "Peony",
+      "fr": "Peony"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "pink_petals",
+    "fullId": "minecraft:pink_petals",
+    "name": {
+      "en": "Pink Petals",
+      "fr": "Pink Petals"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "pink_tulip",
+    "fullId": "minecraft:pink_tulip",
+    "name": {
+      "en": "Pink Tulip",
+      "fr": "Pink Tulip"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "pitcher_plant",
+    "fullId": "minecraft:pitcher_plant",
+    "name": {
+      "en": "Pitcher Plant",
+      "fr": "Pitcher Plant"
+    },
+    "color": "cyan",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "poisonous_potato",
+    "fullId": "minecraft:poisonous_potato",
+    "name": {
+      "en": "Poisonous Potato",
+      "fr": "Poisonous Potato"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "poppy",
+    "fullId": "minecraft:poppy",
+    "name": {
+      "en": "Poppy",
+      "fr": "Poppy"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "porkchop",
+    "fullId": "minecraft:porkchop",
+    "name": {
+      "en": "Porkchop",
+      "fr": "Porkchop"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "potato",
+    "fullId": "minecraft:potato",
+    "name": {
+      "en": "Potato",
+      "fr": "Potato"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "pumpkin",
+    "fullId": "minecraft:pumpkin",
+    "name": {
+      "en": "Pumpkin",
+      "fr": "Pumpkin"
+    },
+    "color": "orange",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "rabbit",
+    "fullId": "minecraft:rabbit",
+    "name": {
+      "en": "Rabbit",
+      "fr": "Rabbit"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "red_mushroom",
+    "fullId": "minecraft:red_mushroom",
+    "name": {
+      "en": "Red Mushroom",
+      "fr": "Red Mushroom"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "red_tulip",
+    "fullId": "minecraft:red_tulip",
+    "name": {
+      "en": "Red Tulip",
+      "fr": "Red Tulip"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "rose_bush",
+    "fullId": "minecraft:rose_bush",
+    "name": {
+      "en": "Rose Bush",
+      "fr": "Rose Bush"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "rotten_flesh",
+    "fullId": "minecraft:rotten_flesh",
+    "name": {
+      "en": "Rotten Flesh",
+      "fr": "Rotten Flesh"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "salmon",
+    "fullId": "minecraft:salmon",
+    "name": {
+      "en": "Salmon",
+      "fr": "Salmon"
+    },
+    "color": "brown",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "spore_blossom",
+    "fullId": "minecraft:spore_blossom",
+    "name": {
+      "en": "Spore Blossom",
+      "fr": "Spore Blossom"
+    },
+    "color": "pink",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "sugar",
+    "fullId": "minecraft:sugar",
+    "name": {
+      "en": "Sugar",
+      "fr": "Sugar"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "sunflower",
+    "fullId": "minecraft:sunflower",
+    "name": {
+      "en": "Sunflower",
+      "fr": "Sunflower"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "sweet_berries",
+    "fullId": "minecraft:sweet_berries",
+    "name": {
+      "en": "Sweet Berries",
+      "fr": "Baies sucrées"
+    },
+    "color": "red",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0.25,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": true
+  },
+  {
+    "id": "torchflower",
+    "fullId": "minecraft:torchflower",
+    "name": {
+      "en": "Torchflower",
+      "fr": "Torchflower"
+    },
+    "color": "orange",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "white_tulip",
+    "fullId": "minecraft:white_tulip",
+    "name": {
+      "en": "White Tulip",
+      "fr": "White Tulip"
+    },
+    "color": "white",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "wildflowers",
+    "fullId": "minecraft:wildflowers",
+    "name": {
+      "en": "Wildflowers",
+      "fr": "Wildflowers"
+    },
+    "color": "yellow",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  },
+  {
+    "id": "wither_rose",
+    "fullId": "minecraft:wither_rose",
+    "name": {
+      "en": "Wither Rose",
+      "fr": "Wither Rose"
+    },
+    "color": "black",
+    "effects": {
+      "typeSpawnMultiplier": null,
+      "rarityBoost": 0,
+      "shinyMultiplier": 1,
+      "biteRateModifier": 0,
+      "hiddenAbilityBoost": 0,
+      "alphaBoost": 0,
+      "marksBoost": 0,
+      "friendshipDelta": 0,
+      "dropsRerolls": 0
+    },
+    "effectConfidence": "official",
+    "source": "cobblemon:bait_effects",
+    "validInCampfirePot": false
+  }
+]

@@ -36,6 +36,25 @@ import { itemDisplayName } from "@/data/competitive-items";
 import { lookupItem, itemSlug } from "@/data/items-pokeapi";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { moveDisplayName } from "@/data/competitive-moves";
+import { displayName as pokemonDisplayName } from "@/lib/pokemon-form";
+import { TYPES_META } from "@/data/types";
+import type { PokemonTypeId } from "@/types";
+import { lookupMove } from "@/data/moves";
+
+/**
+ * Resolve a move id (snake_case, hyphen, no separator…) to its French
+ * display name. Walks the full PokéAPI-sourced `moves-generated.json`
+ * registry (~937 entries, every gen-9 move) BEFORE falling back to
+ * the much smaller `competitive-moves` curated list, so niche
+ * evolution-trigger moves like "ragefist" (Poing Rage,
+ * Mankey → Annihilape) resolve properly instead of leaving the
+ * raw English id on screen.
+ */
+function moveLabelFr(rawId: string): string {
+  const full = lookupMove(rawId);
+  if (full?.name) return full.name;
+  return moveDisplayName(rawId);
+}
 import type {
   Evolution,
   EvolutionDetails,
@@ -97,6 +116,60 @@ const WEATHER_FR: Record<string, string> = {
   thunder: "Sous l'orage",
   snow: "Sous la neige",
   any: "Tout temps",
+};
+
+/**
+ * Cobblemon moon phase ids — numeric (`0`..`7`) or string. The map
+ * mirrors what the in-game F3 menu shows so French players see the
+ * familiar moon label.
+ */
+const MOON_PHASE_FR: Record<string, string> = {
+  "0": "Pleine lune",
+  "1": "Gibbeuse décroissante",
+  "2": "Dernier quartier",
+  "3": "Croissant décroissant",
+  "4": "Nouvelle lune",
+  "5": "Croissant croissant",
+  "6": "Premier quartier",
+  "7": "Gibbeuse croissante",
+  full_moon: "Pleine lune",
+  new_moon: "Nouvelle lune",
+  first_quarter: "Premier quartier",
+  last_quarter: "Dernier quartier",
+};
+
+/** Cobblemon world_environment → FR. Covers the three vanilla
+ *  dimensions and the underwater flag. */
+const ENVIRONMENT_FR: Record<string, string> = {
+  overworld: "Surface (Overworld)",
+  nether: "Nether",
+  end: "End",
+  underwater: "Sous l'eau",
+  surface: "En surface",
+  cave: "En grotte",
+  rain: "Sous la pluie",
+};
+
+/** Common Cobblemon structure ids → FR. The full list is huge; we
+ *  cover the ones actually referenced by evolutions. Anything else
+ *  falls back to the humanised slug. */
+const STRUCTURE_FR: Record<string, string> = {
+  village: "Village",
+  village_plains: "Village des plaines",
+  village_desert: "Village du désert",
+  village_savanna: "Village de la savane",
+  village_snowy: "Village enneigé",
+  village_taiga: "Village de la taïga",
+  pillager_outpost: "Avant-poste pillard",
+  stronghold: "Forteresse",
+  mineshaft: "Mine abandonnée",
+  ocean_monument: "Monument aquatique",
+  woodland_mansion: "Manoir sylvestre",
+  fortress: "Forteresse du Nether",
+  bastion_remnant: "Vestiges de bastion",
+  end_city: "Cité de l'End",
+  ancient_city: "Cité ancienne",
+  ruined_portal: "Portail en ruine",
 };
 
 /**
@@ -374,7 +447,7 @@ function PartnerTooltip({ pokemonId }: { pokemonId: string }) {
       <PokemonSprite pokemon={p} size="size-10" />
       <div className="flex flex-col gap-0.5">
         <span className="text-sm font-semibold leading-tight text-foreground">
-          {p.name}
+          {pokemonDisplayName(p)}
         </span>
         <span className="font-mono text-[10px] text-muted-foreground">
           #{p.dexNumber.toString().padStart(4, "0")}
@@ -415,7 +488,7 @@ function buildChips(details: EvolutionDetails): ChipSpec[] {
         label: (
           <span className="inline-flex items-center gap-1">
             <span className="opacity-70">Échange avec</span>
-            <span className="font-semibold">{partner.name}</span>
+            <span className="font-semibold">{pokemonDisplayName(partner)}</span>
           </span>
         ),
         tone: "trade",
@@ -602,10 +675,12 @@ function chipForRequirement(r: EvolutionRequirement): ChipSpec | null {
     case "world_environment": {
       const env =
         (r as { environment?: string }).environment ?? "";
+      const label = ENVIRONMENT_FR[env] ?? humanizeSlug(env) ?? "Environnement";
       return {
         icon: <Map className="size-3" />,
-        label: humanizeSlug(env) || "Environnement",
+        label,
         tone: "biome",
+        title: `Évolue dans la dimension : ${label}`,
       };
     }
     case "weather": {
@@ -633,11 +708,16 @@ function chipForRequirement(r: EvolutionRequirement): ChipSpec | null {
       };
     }
     case "moon_phase": {
-      const phase = (r as { moonPhase?: string }).moonPhase ?? "";
+      const phase = String(
+        (r as { moonPhase?: string | number }).moonPhase ?? "",
+      );
+      const label =
+        MOON_PHASE_FR[phase] ?? humanizeSlug(phase) ?? "Phase lunaire";
       return {
         icon: <Moon className="size-3" />,
-        label: humanizeSlug(phase) || "Phase lunaire",
+        label,
         tone: "time",
+        title: `Phase de la lune requise : ${label}`,
       };
     }
     // Cobblemon uses both `has_move` (current data) and `known_move`
@@ -646,38 +726,66 @@ function chipForRequirement(r: EvolutionRequirement): ChipSpec | null {
     case "has_move":
     case "known_move": {
       const move = (r as { move?: string }).move ?? "";
-      const display = moveDisplayName(move) || humanizeSlug(move);
+      const display = moveLabelFr(move) || humanizeSlug(move);
       return {
         icon: <Wand2 className="size-3" />,
         label: (
           <span>
-            <span className="opacity-70">Connaît</span>{" "}
+            <span className="opacity-70">Apprend</span>{" "}
             <span className="font-semibold">{display}</span>
           </span>
         ),
         tone: "stat",
-        title: `Doit connaître la capacité ${display}`,
+        title: `Doit avoir appris la capacité ${display}`,
       };
     }
     case "has_move_type":
     case "known_move_type": {
-      const type = (r as { type?: string }).type ?? "";
+      // Cobblemon ships the type slug in English ("fairy", "grass").
+      // Resolve to the FR label via TYPES_META and surface the type
+      // visually with a small coloured dot — a TypeBadge inside the
+      // chip would be a badge-in-a-badge and read poorly.
+      const typeId = (
+        (r as { type?: string }).type ?? ""
+      ).toLowerCase() as PokemonTypeId;
+      const meta = TYPES_META[typeId];
+      const label = meta?.label ?? humanizeSlug(typeId);
       return {
         icon: <Wand2 className="size-3" />,
-        label: `Move ${humanizeSlug(type)}`,
+        label: (
+          <span className="inline-flex items-center gap-1">
+            <span className="opacity-70">Avec une capacité</span>
+            {meta && (
+              <span
+                className="inline-block size-2 rounded-full"
+                style={{ backgroundColor: meta.color }}
+                aria-hidden
+              />
+            )}
+            <span className="font-semibold">{label}</span>
+          </span>
+        ),
         tone: "stat",
-        title: `Doit connaître une capacité de type ${humanizeSlug(type)}`,
+        title: `Doit connaître une capacité de type ${label}`,
       };
     }
     case "use_move": {
       const move = (r as { move?: string }).move ?? "";
       const amount = (r as { amount?: number }).amount;
-      const display = moveDisplayName(move) || humanizeSlug(move);
+      const display = moveLabelFr(move) || humanizeSlug(move);
       return {
         icon: <Footprints className="size-3" />,
-        label: amount ? `Utiliser ${display} ×${amount}` : `Utiliser ${display}`,
+        label: (
+          <span>
+            <span className="opacity-70">Utiliser</span>{" "}
+            <span className="font-semibold">{display}</span>
+            {amount ? <span className="ml-1 opacity-70">×{amount}</span> : null}
+          </span>
+        ),
         tone: "stat",
-        title: `Utiliser ${display} en combat${amount ? ` (${amount} fois)` : ""}`,
+        title: amount
+          ? `Utiliser ${display} ${amount} fois en combat`
+          : `Utiliser ${display} en combat`,
       };
     }
     // ─── Cobblemon-specific Minecraft requirements ────────────────
@@ -692,8 +800,8 @@ function chipForRequirement(r: EvolutionRequirement): ChipSpec | null {
       const negative = (r as { structureAnticondition?: string }).structureAnticondition ?? "";
       const raw = positive || negative;
       if (!raw) return null;
-      const label =
-        humanizeSlug(stripPrefix(raw).split("/").pop() ?? raw) || "Structure";
+      const tail = stripPrefix(raw).split("/").pop() ?? raw;
+      const label = STRUCTURE_FR[tail] ?? humanizeSlug(tail) ?? "Structure";
       return {
         icon: <Castle className="size-3" />,
         label: (
@@ -733,7 +841,7 @@ function chipForRequirement(r: EvolutionRequirement): ChipSpec | null {
           label: (
             <span>
               <span className="opacity-70">Avec</span>{" "}
-              <span className="font-semibold">{partner.name}</span>
+              <span className="font-semibold">{pokemonDisplayName(partner)}</span>
             </span>
           ),
           tone: "trade",

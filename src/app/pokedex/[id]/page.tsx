@@ -62,14 +62,10 @@ export default async function PokemonDetailPage({
           itself naturally. */}
       <PokemonHero pokemon={pokemon} spawn={spawn} />
 
-      {hasEvolutions(pokemon) && (
-        <SectionCard
-          title="Évolutions"
-          description="Chaînes, branches et conditions d'évolution."
-        >
-          <EvolutionHub pokemon={pokemon} />
-        </SectionCard>
-      )}
+      {/* EvolutionHub renders its own Card chrome (Pokepedia-style
+          table is the section's main component — no wrapper
+          SectionCard, otherwise it reads as a card-inside-a-card). */}
+      {hasEvolutions(pokemon) && <EvolutionHub pokemon={pokemon} />}
 
       {/* Stratégie : conseils auto-déduits + notes curatées si dispo */}
       <SectionCard
