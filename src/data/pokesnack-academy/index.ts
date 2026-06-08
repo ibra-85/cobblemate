@@ -9,6 +9,9 @@
 import seasoningsRaw from "./seasonings.json";
 import datasetRaw from "./pokesnacks.generated.json";
 import { BEST_GENERAL_OVERRIDES } from "./overrides";
+import { baitsForType } from "@/data/baits";
+import { getSpeciesExtras, type EvYield } from "@/data/species-extras";
+import type { PokemonTypeId } from "@/types";
 
 // ─── Confidence flags ───────────────────────────────────────────
 
@@ -75,6 +78,118 @@ export function getSeasoning(idOrFullId: string): Seasoning | null {
     SEASONING_BY_ID.get(idOrFullId) ??
     null
   );
+}
+
+// ─── Effect formatting ──────────────────────────────────────────
+
+/**
+ * French type labels — matches the rest of the app (see
+ * `src/data/types.ts`) so the bullet point line ("×10 spawn Feu")
+ * uses the same translation everywhere it appears.
+ */
+const TYPE_FR: Record<string, string> = {
+  normal: "Normal", fire: "Feu", water: "Eau", electric: "Électrik",
+  grass: "Plante", ice: "Glace", fighting: "Combat", poison: "Poison",
+  ground: "Sol", flying: "Vol", psychic: "Psy", bug: "Insecte",
+  rock: "Roche", ghost: "Spectre", dragon: "Dragon", dark: "Ténèbres",
+  steel: "Acier", fairy: "Fée",
+};
+
+/** EV/Nature subcategory codes used by Cobblemon. */
+const STAT_FR: Record<string, string> = {
+  hp:  "PV",
+  atk: "Atk",
+  def: "Déf",
+  spa: "Atk. Spé",
+  spd: "Déf. Spé",
+  spe: "Vit.",
+};
+
+/**
+ * Translate a single seasoning's effects into short, human-readable
+ * French bullets. Used by the PokéSnack cards to show what each
+ * slot in the recipe actually contributes (×10 spawn Feu, +1 palier
+ * rareté, Shiny ×5, Morsure -25 %, etc.) so the player understands
+ * the recipe at a glance instead of guessing.
+ *
+ * Returns an empty array when the seasoning has no measurable
+ * effect — the UI hides empty rows so they don't take vertical space.
+ */
+export function formatSeasoningEffects(s: Seasoning): string[] {
+  const e = s.effects;
+  const out: string[] = [];
+
+  if (e.typeSpawnMultiplier) {
+    const t = TYPE_FR[e.typeSpawnMultiplier.type] ?? e.typeSpawnMultiplier.type;
+    out.push(`×${e.typeSpawnMultiplier.value} spawn ${t}`);
+  }
+  if (e.rarityBoost > 0) {
+    out.push(`+${e.rarityBoost} palier${e.rarityBoost > 1 ? "s" : ""} rareté`);
+  }
+  if (e.shinyMultiplier > 1) {
+    out.push(`Shiny ×${e.shinyMultiplier}`);
+  }
+  if (e.biteRateModifier !== 0) {
+    // Stored as a fraction: 0.75 means "bite time is 75 % of normal"
+    // (i.e. 25 % faster). Convert to the player-facing percent.
+    const pct = Math.round((1 - (1 - e.biteRateModifier)) * 100);
+    // Simpler: biteRateModifier > 0 means the bite is faster by
+    // that fraction; modifier 0.75 → -25 % bite time.
+    const reduction = Math.round(e.biteRateModifier * 100);
+    out.push(`Morsure -${reduction} %`);
+    // (the unused `pct` keeps the math obvious — Cobblemon stores
+    // the *reduction*, not the multiplier).
+    void pct;
+  }
+  if (e.hiddenAbilityBoost > 0) {
+    out.push(`Talent caché +${e.hiddenAbilityBoost}`);
+  }
+  if (e.alphaBoost > 0) {
+    out.push(`Alpha +${e.alphaBoost}`);
+  }
+  if (e.marksBoost > 0) {
+    out.push(`Marques +${e.marksBoost}`);
+  }
+  if (e.friendshipDelta !== 0) {
+    const sign = e.friendshipDelta > 0 ? "+" : "";
+    out.push(`Amitié ${sign}${e.friendshipDelta}`);
+  }
+  if (e.dropsRerolls > 0) {
+    out.push(`Drops ×${e.dropsRerolls + 1} rerolls`);
+  }
+  for (const x of e.extra ?? []) {
+    const chance = Math.round(x.chance * 100);
+    const stripNs = (s: string | null) =>
+      s ? s.replace(/^[a-z]+:/, "") : "";
+    if (x.type === "ev") {
+      const stat =
+        STAT_FR[stripNs(x.subcategory)] ?? stripNs(x.subcategory);
+      out.push(`Attire +${x.value} EV ${stat}`);
+    } else if (x.type === "iv") {
+      const stat =
+        STAT_FR[stripNs(x.subcategory)] ?? stripNs(x.subcategory);
+      out.push(`IV ${stat} +${x.value}`);
+    } else if (x.type === "nature") {
+      const stat =
+        STAT_FR[stripNs(x.subcategory)] ?? stripNs(x.subcategory) ?? "?";
+      out.push(`Nature ${stat} (${chance}%)`);
+    } else if (x.type === "level_raise") {
+      out.push(`Niveau +${x.value}`);
+    } else if (x.type === "egg_group") {
+      const group = stripNs(x.subcategory).replace(/_/g, " ");
+      out.push(`×${x.value} groupe d'œuf ${group}`);
+    } else if (x.type === "gender_chance") {
+      const g = stripNs(x.subcategory);
+      const fr = g === "female" ? "femelle" : g === "male" ? "mâle" : g;
+      out.push(`${chance} % ${fr}`);
+    } else if (x.type === "size") {
+      // Jaboca = +50 (bigger), Rowap = -50 (smaller).
+      out.push(x.value > 0 ? `Taille +${x.value} %` : `Taille ${x.value} %`);
+    } else {
+      out.push(`${x.type} ${x.value} (${chance}%)`);
+    }
+  }
+  return out;
 }
 
 // ─── Per-Pokémon dataset ────────────────────────────────────────
@@ -264,10 +379,17 @@ function patchEntry(e: PokesnackEntry): PokesnackEntry {
       cleanNotes.push(`Lié à une structure : ${labels.join(", ")}.`);
   }
 
-  // Hand-curated `bestGeneral` recipe override for paradox / UB
-  // mons — see `overrides.ts`. When present, it replaces the
-  // build-script's inferred recipe (which used generic boosters
-  // that don't actually move the elite-spawn pool).
+  // `bestGeneral` recipe — replaces the build-script's inferred
+  // recipe (which always equalled `rareSpawn` so the two tabs
+  // showed identical content) with one of two sensible defaults:
+  //
+  //   1. Hand-curated `BEST_GENERAL_OVERRIDES` entry (paradox /
+  //      ultra-beast — recipes the user supplied per-mon).
+  //   2. Auto-generated `generateBestGeneral(e)` (everyone else):
+  //      Golden Apple + Golden Carrot + best type berry. This is
+  //      the universal "one good recipe" combo — +2 rarity paliers
+  //      and a 10× type-boost — distinct from `rareSpawn`'s
+  //      Enchanted Apple stack which is overkill for everyday use.
   let recommendedSnacks = e.recommendedSnacks;
   const override = BEST_GENERAL_OVERRIDES[e.slug];
   if (override) {
@@ -281,12 +403,102 @@ function patchEntry(e: PokesnackEntry): PokesnackEntry {
         effectConfidence: "community_or_inferred",
       },
     };
+  } else {
+    const generated = generateBestGeneral(e);
+    if (generated) {
+      recommendedSnacks = {
+        ...recommendedSnacks,
+        bestGeneral: generated,
+      };
+    }
   }
 
   return {
     ...e,
     recommendedSnacks,
     targeting: { ...e.targeting, notes: cleanNotes },
+  };
+}
+
+/** EV-stat → corresponding EV-attractor berry (Cobblemon bait
+ *  system: a non-zero EV yield in that stat makes the species
+ *  eligible for the bait's targeting pool). */
+const EV_BERRY: Record<keyof EvYield, { id: string; fr: string; statFr: string }> = {
+  hp:               { id: "cobblemon:pomeg_berry",  fr: "Baie Grena",  statFr: "PV" },
+  attack:           { id: "cobblemon:kelpsy_berry", fr: "Baie Alga",   statFr: "Atk" },
+  defence:          { id: "cobblemon:qualot_berry", fr: "Baie Qualot", statFr: "Déf" },
+  special_attack:   { id: "cobblemon:hondew_berry", fr: "Baie Lonme",  statFr: "Atk. Spé" },
+  special_defence:  { id: "cobblemon:grepa_berry",  fr: "Baie Resin",  statFr: "Déf. Spé" },
+  speed:            { id: "cobblemon:tamato_berry", fr: "Baie Tamato", statFr: "Vit." },
+};
+
+/** Pick the highest-yield EV stat. Ties resolve in the iteration
+ *  order of `EvYield` (hp → atk → def → spa → spd → spe) which
+ *  matches the gen-3 stat order players are used to. */
+function dominantEvStat(evY: EvYield): keyof EvYield | null {
+  let best: keyof EvYield | null = null;
+  let bestVal = 0;
+  for (const stat of Object.keys(EV_BERRY) as (keyof EvYield)[]) {
+    const v = evY[stat];
+    if (v > bestVal) { bestVal = v; best = stat; }
+  }
+  return best;
+}
+
+/**
+ * Build a "Meilleur choix" recipe for one entry — Pomme d'or +
+ * carotte d'or + baie EV-attractor matchée sur le yield principal
+ * du Pokémon. Fallback sur la baie de type quand le yield est
+ * inconnu ou nul (Pokémon legendary/mythical sans EV yield exposé).
+ *
+ * Stratégie (validée par la communauté Academy) : l'EV yield étant
+ * **figé par espèce**, la baie EV-attractor filtre la pool de spawn
+ * sur les espèces qui partagent ce yield — beaucoup plus fiable que
+ * les baies de nature (qui se déclenchent par individu aléatoire).
+ *
+ * Apple + carrot donnent +2 paliers de rareté (suffit pour la
+ * plupart des spawns rares sans Pomme d'or enchantée). Différent de
+ * `rareSpawn` qui sature avec la Pomme enchantée.
+ */
+function generateBestGeneral(e: PokesnackEntry): SnackRecipe | null {
+  const extras = getSpeciesExtras(e.slug);
+  const evY = extras?.evYield;
+  const dominant = evY ? dominantEvStat(evY) : null;
+
+  if (dominant) {
+    const berry = EV_BERRY[dominant];
+    const value = evY![dominant];
+    return {
+      label: "Meilleur choix",
+      ingredients: [
+        "minecraft:golden_apple",
+        "minecraft:golden_carrot",
+        berry.id,
+      ],
+      goal: "spawn",
+      reason:
+        `Pomme d'or + carotte d'or pour +2 paliers de rareté, ${berry.fr} pour cibler les espèces qui donnent ${value} EV ${berry.statFr} — comme ce Pokémon. L'EV yield est fixé par espèce donc le filtre est fiable.`,
+      effectConfidence: "community_or_inferred",
+    };
+  }
+
+  // Fallback: aucun EV yield exploitable (legendaires sans data, formes
+  // exotiques…) → on retombe sur la baie de type.
+  const primary = e.types[0];
+  if (!primary) return null;
+  const bait = baitsForType(primary as PokemonTypeId)[0];
+  if (!bait) return null;
+  return {
+    label: "Meilleur choix",
+    ingredients: [
+      "minecraft:golden_apple",
+      "minecraft:golden_carrot",
+      bait.id,
+    ],
+    goal: "spawn",
+    reason:
+      `Pomme d'or + carotte d'or pour +2 paliers de rareté, ${bait.label} pour cibler le type ${primary} (pas d'EV yield exposé pour ce mon).`,
+    effectConfidence: "community_or_inferred",
   };
 }
 

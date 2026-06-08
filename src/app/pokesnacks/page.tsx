@@ -34,11 +34,13 @@ import { TypeBadge } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import {
   MinecraftCraftingTable,
+  ItemIcon,
   itemMeta,
 } from "@/components/site/minecraft-item";
 import {
   POKESNACK_ENTRIES,
   getSeasoning,
+  formatSeasoningEffects,
   type PokesnackEntry,
   type SnackRecipe,
 } from "@/data/pokesnack-academy";
@@ -48,6 +50,8 @@ import {
   BIOME_LABELS_FR,
   MINECRAFT_BIOME_FR,
   biomeLabel,
+  vanillaBiomesForTag,
+  minecraftBiomeLabel,
 } from "@/data/biomes";
 import { cn } from "@/lib/utils";
 import type { PokemonTypeId } from "@/types";
@@ -115,6 +119,32 @@ function humanizeBiome(id: string): string {
   const tag = `is_${id}`;
   if (BIOME_LABELS_FR[tag]) return BIOME_LABELS_FR[tag];
   return biomeLabel(id);
+}
+
+/**
+ * Expand the raw `entry.spawn.biomes` (a mix of `#cobblemon:is_*` tag
+ * refs and concrete `minecraft:*` ids) into the list of vanilla
+ * Minecraft biomes the player can actually find — those are the names
+ * that match F3 / the in-game biome readout. Modded biomes are
+ * dropped on purpose: most players run vanilla + Cobblemon and the
+ * raw modded ids ("biomesoplenty:ominous_woods") aren't actionable.
+ */
+function getVanillaBiomes(biomes: string[]): string[] {
+  const set = new Set<string>();
+  for (const raw of biomes) {
+    if (raw.startsWith("minecraft:")) {
+      set.add(raw);
+      continue;
+    }
+    if (raw.startsWith("#")) {
+      // Tag ref: "#cobblemon:is_spooky" → key "is_spooky"
+      const key = raw.replace(/^#?\w+:/, "");
+      for (const b of vanillaBiomesForTag(key)) set.add(b);
+    }
+  }
+  return Array.from(set).sort((a, b) =>
+    minecraftBiomeLabel(a).localeCompare(minecraftBiomeLabel(b), "fr"),
+  );
 }
 
 const FR_TYPE_LABEL: Record<PokemonTypeId, string> = {
@@ -470,22 +500,44 @@ function PokemonSnackCard({ entry }: { entry: PokesnackEntry }) {
             </div>
           </div>
         </div>
-        <CardDescription className="mt-2">
-          {entry.spawn.biomes.length > 0 ? (
-            <span>
-              Trouvable dans :{" "}
-              <strong className="text-foreground">
-                {entry.spawn.biomesFr.slice(0, 4).map(humanizeBiome).join(", ")}
-              </strong>
-              {entry.spawn.biomes.length > 4 && ` (+${entry.spawn.biomes.length - 4})`}
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-300">
-              <AlertCircle className="size-3" />
-              Aucun spawn naturel — probablement événementiel, drop ou interaction spéciale.
-            </span>
-          )}
-        </CardDescription>
+        {entry.spawn.biomes.length > 0 && (() => {
+          const vanilla = getVanillaBiomes(entry.spawn.biomes);
+          // Fall back to the abstract Cobblemon tag labels only when no
+          // vanilla biome resolves (e.g. modded-only tag) — otherwise
+          // the player sees actionable F3-style biome names.
+          if (vanilla.length === 0) {
+            return (
+              <CardDescription className="mt-2">
+                Catégorie de biomes :{" "}
+                <strong className="text-foreground">
+                  {entry.spawn.biomesFr.slice(0, 4).map(humanizeBiome).join(", ")}
+                </strong>
+                {entry.spawn.biomes.length > 4 && ` (+${entry.spawn.biomes.length - 4})`}
+                <span className="ml-1 text-[10px] italic text-muted-foreground/70">
+                  (biomes modés uniquement)
+                </span>
+              </CardDescription>
+            );
+          }
+          return (
+            <CardDescription className="mt-2 flex flex-col gap-0.5">
+              <span>
+                Biomes Minecraft :{" "}
+                <strong className="text-foreground">
+                  {vanilla.slice(0, 6).map(minecraftBiomeLabel).join(", ")}
+                </strong>
+                {vanilla.length > 6 && ` (+${vanilla.length - 6})`}
+              </span>
+              <span
+                className="font-mono text-[10px] text-muted-foreground/70"
+                title={vanilla.join(", ")}
+              >
+                {vanilla.slice(0, 6).join(", ")}
+                {vanilla.length > 6 && ` …`}
+              </span>
+            </CardDescription>
+          );
+        })()}
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-3">
@@ -522,8 +574,13 @@ function PokemonSnackCard({ entry }: { entry: PokesnackEntry }) {
           </div>
         )}
 
-        {/* Confidence footer */}
-        <div className="flex flex-wrap items-center gap-2 border-t pt-2 text-[10px] text-muted-foreground">
+        {/* Confidence footer — `mt-auto` pins it to the bottom of
+            the card so every card's confidence row sits on the same
+            line regardless of whether the "Conditions de spawn"
+            block is present. Without this the footer floats up
+            against the recipe section on cards with no notes,
+            breaking the grid rhythm. */}
+        <div className="mt-auto flex flex-wrap items-center gap-2 border-t pt-2 text-[10px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <ConfidenceDot level={entry.confidence.pokemonData} />
             Données Pokémon
@@ -579,22 +636,61 @@ function RecipeBlock({ recipe }: { recipe: SnackRecipe }) {
           className="min-w-fit"
         />
       </div>
-      <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
-        {/* Slot index in the key — same berry can legitimately
-            appear twice in a recipe (e.g. double Wacan in
-            shock-cracker) and React needs a unique key per slot. */}
-        {recipe.ingredients.map((id, idx) =>
-          id ? (
-            <span
-              key={`${id}-${idx}`}
-              className="inline-flex items-center gap-1 rounded border bg-muted/40 px-1.5 py-0.5"
-            >
-              <ArrowRight className="size-3 opacity-50" />
-              {getSeasoning(id)?.name.fr ?? itemMeta(id).label}
-            </span>
-          ) : null,
-        )}
-      </div>
+      {/* Per-seasoning effect breakdown. One row per non-empty slot,
+          listing exactly what the seasoning contributes to the
+          spawn / shiny / bite-rate / nature effects of the snack so
+          the player can read the recipe without cross-referencing
+          the seasoning wiki. */}
+      <SeasoningEffects ingredients={recipe.ingredients} />
+    </div>
+  );
+}
+
+function SeasoningEffects({ ingredients }: { ingredients: (string | null)[] }) {
+  const filled = ingredients
+    .map((id, idx) => ({ id, idx }))
+    .filter((s): s is { id: string; idx: number } => Boolean(s.id));
+  if (filled.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-1.5 rounded-md border bg-muted/30 p-2 text-[11px]">
+      {filled.map(({ id, idx }) => {
+        const seasoning = getSeasoning(id);
+        const label = seasoning?.name.fr ?? itemMeta(id).label;
+        const effects = seasoning ? formatSeasoningEffects(seasoning) : [];
+        return (
+          <div
+            // Same id can show up in multiple slots (a recipe with two
+            // identical berries) — key on slot index so React keeps
+            // them straight.
+            key={`${id}-${idx}`}
+            className="flex flex-wrap items-center gap-1.5"
+          >
+            <ArrowRight className="size-3 shrink-0 opacity-50" />
+            {/* Inline seasoning sprite between the arrow and the
+                FR label — same artwork the recipe slot above uses,
+                so the player can match the icon to the slot at a
+                glance instead of reading the name. */}
+            <ItemIcon item={id} size="size-4" />
+            <span className="font-medium text-foreground">{label}</span>
+            {effects.length > 0 ? (
+              <span className="flex flex-wrap gap-1 text-muted-foreground">
+                {effects.map((e, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center rounded bg-background px-1.5 py-0.5"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="italic text-muted-foreground/70">
+                aucun effet listé
+              </span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -1020,9 +1020,12 @@ function toKey(id: string): string {
  */
 const ALLOWED_CATEGORIES = new Set<ItemCategory>([
   "ball", "held", "evolution", "healing", "berry", "tm", "key",
-  "natural", "food", "vitamin", "utility",
+  "natural", "food", "vitamin",
 ]);
 function narrowCategory(c: string): ItemCategory {
+  // `utility` was a wiki category we never populated — fold any
+  // stragglers into `held` so the items page never shows an empty
+  // section. Same for anything unrecognised.
   return (ALLOWED_CATEGORIES as Set<string>).has(c)
     ? (c as ItemCategory)
     : "held";

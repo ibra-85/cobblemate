@@ -4,7 +4,7 @@
     "fullId": "cobblemon:aguav_berry",
     "name": {
       "en": "Aguav Berry",
-      "fr": "Aguav Berry"
+      "fr": "Baie Gowav"
     },
     "color": null,
     "effects": {
@@ -35,7 +35,7 @@
     "fullId": "cobblemon:apicot_berry",
     "name": {
       "en": "Apicot Berry",
-      "fr": "Apicot Berry"
+      "fr": "Baie Abriko"
     },
     "color": null,
     "effects": {
@@ -66,7 +66,7 @@
     "fullId": "cobblemon:aspear_berry",
     "name": {
       "en": "Aspear Berry",
-      "fr": "Aspear Berry"
+      "fr": "Baie Willia"
     },
     "color": null,
     "effects": {
@@ -129,7 +129,7 @@
     "fullId": "cobblemon:belue_berry",
     "name": {
       "en": "Belue Berry",
-      "fr": "Belue Berry"
+      "fr": "Baie Myrte"
     },
     "color": null,
     "effects": {
@@ -160,7 +160,7 @@
     "fullId": "cobblemon:berry_sweet",
     "name": {
       "en": "Berry Sweet",
-      "fr": "Berry Sweet"
+      "fr": "Friandise baie"
     },
     "color": "blue",
     "effects": {
@@ -183,7 +183,7 @@
     "fullId": "cobblemon:big_root",
     "name": {
       "en": "Big Root",
-      "fr": "Big Root"
+      "fr": "Grosse racine"
     },
     "color": "brown",
     "effects": {
@@ -206,7 +206,7 @@
     "fullId": "cobblemon:blue_mint_leaf",
     "name": {
       "en": "Blue Mint Leaf",
-      "fr": "Blue Mint Leaf"
+      "fr": "Feuille de menthe bleue"
     },
     "color": "blue",
     "effects": {
@@ -229,7 +229,7 @@
     "fullId": "cobblemon:bluk_berry",
     "name": {
       "en": "Bluk Berry",
-      "fr": "Bluk Berry"
+      "fr": "Baie Remu"
     },
     "color": null,
     "effects": {
@@ -286,7 +286,7 @@
     "fullId": "cobblemon:cheri_berry",
     "name": {
       "en": "Cheri Berry",
-      "fr": "Cheri Berry"
+      "fr": "Baie Ceriz"
     },
     "color": null,
     "effects": {
@@ -323,7 +323,7 @@
     "fullId": "cobblemon:chesto_berry",
     "name": {
       "en": "Chesto Berry",
-      "fr": "Chesto Berry"
+      "fr": "Baie Maron"
     },
     "color": null,
     "effects": {
@@ -360,7 +360,7 @@
     "fullId": "cobblemon:chilan_berry",
     "name": {
       "en": "Chilan Berry",
-      "fr": "Baie Chilan"
+      "fr": "Baie Zalis"
     },
     "color": null,
     "effects": {
@@ -386,7 +386,7 @@
     "fullId": "cobblemon:chople_berry",
     "name": {
       "en": "Chople Berry",
-      "fr": "Baie Chople"
+      "fr": "Baie Pomroz"
     },
     "color": null,
     "effects": {
@@ -412,7 +412,7 @@
     "fullId": "cobblemon:clover_sweet",
     "name": {
       "en": "Clover Sweet",
-      "fr": "Clover Sweet"
+      "fr": "Friandise trèfle"
     },
     "color": "green",
     "effects": {
@@ -435,7 +435,7 @@
     "fullId": "cobblemon:coba_berry",
     "name": {
       "en": "Coba Berry",
-      "fr": "Baie Coba"
+      "fr": "Baie Cobaba"
     },
     "color": null,
     "effects": {
@@ -461,7 +461,7 @@
     "fullId": "cobblemon:colbur_berry",
     "name": {
       "en": "Colbur Berry",
-      "fr": "Baie Colbur"
+      "fr": "Baie Lampou"
     },
     "color": null,
     "effects": {
@@ -487,7 +487,7 @@
     "fullId": "cobblemon:cornn_berry",
     "name": {
       "en": "Cornn Berry",
-      "fr": "Cornn Berry"
+      "fr": "Baie Siam"
     },
     "color": null,
     "effects": {
@@ -518,7 +518,7 @@
     "fullId": "cobblemon:custap_berry",
     "name": {
       "en": "Custap Berry",
-      "fr": "Custap Berry"
+      "fr": "Baie Chérim"
     },
     "color": null,
     "effects": {
@@ -541,7 +541,7 @@
     "fullId": "cobblemon:cyan_mint_leaf",
     "name": {
       "en": "Cyan Mint Leaf",
-      "fr": "Cyan Mint Leaf"
+      "fr": "Feuille de menthe cyan"
     },
     "color": "cyan",
     "effects": {
@@ -564,7 +564,7 @@
     "fullId": "cobblemon:durin_berry",
     "name": {
       "en": "Durin Berry",
-      "fr": "Durin Berry"
+      "fr": "Baie Durin"
     },
     "color": null,
     "effects": {
@@ -595,7 +595,7 @@
     "fullId": "cobblemon:eggant_berry",
     "name": {
       "en": "Eggant Berry",
-      "fr": "Eggant Berry"
+      "fr": "Baie Eggant"
     },
     "color": null,
     "effects": {
@@ -626,7 +626,7 @@
     "fullId": "cobblemon:energy_root",
     "name": {
       "en": "Energy Root",
-      "fr": "Energy Root"
+      "fr": "Racine d'énergie"
     },
     "color": "brown",
     "effects": {
@@ -649,7 +649,7 @@
     "fullId": "cobblemon:enigma_berry",
     "name": {
       "en": "Enigma Berry",
-      "fr": "Enigma Berry"
+      "fr": "Baie Enigma"
     },
     "color": null,
     "effects": {
@@ -657,7 +657,7 @@
       "rarityBoost": 0,
       "shinyMultiplier": 1,
       "biteRateModifier": 0,
-      "hiddenAbilityBoost": 0,
+      "hiddenAbilityBoost": 5,
       "alphaBoost": 0,
       "marksBoost": 0,
       "friendshipDelta": 0,
@@ -672,7 +672,7 @@
     "fullId": "cobblemon:figy_berry",
     "name": {
       "en": "Figy Berry",
-      "fr": "Figy Berry"
+      "fr": "Baie Figuy"
     },
     "color": null,
     "effects": {
@@ -703,7 +703,7 @@
     "fullId": "cobblemon:flower_sweet",
     "name": {
       "en": "Flower Sweet",
-      "fr": "Flower Sweet"
+      "fr": "Friandise fleur"
     },
     "color": "orange",
     "effects": {
@@ -726,7 +726,7 @@
     "fullId": "cobblemon:galarica_nuts",
     "name": {
       "en": "Galarica Nuts",
-      "fr": "Galarica Nuts"
+      "fr": "Noix Galarica"
     },
     "color": "orange",
     "effects": {
@@ -749,7 +749,7 @@
     "fullId": "cobblemon:ganlon_berry",
     "name": {
       "en": "Ganlon Berry",
-      "fr": "Ganlon Berry"
+      "fr": "Baie Lingan"
     },
     "color": null,
     "effects": {
@@ -780,7 +780,7 @@
     "fullId": "cobblemon:green_mint_leaf",
     "name": {
       "en": "Green Mint Leaf",
-      "fr": "Green Mint Leaf"
+      "fr": "Feuille de menthe verte"
     },
     "color": "green",
     "effects": {
@@ -803,7 +803,7 @@
     "fullId": "cobblemon:grepa_berry",
     "name": {
       "en": "Grepa Berry",
-      "fr": "Grepa Berry"
+      "fr": "Baie Resin"
     },
     "color": null,
     "effects": {
@@ -834,7 +834,7 @@
     "fullId": "cobblemon:haban_berry",
     "name": {
       "en": "Haban Berry",
-      "fr": "Baie Haban"
+      "fr": "Baie Fraigo"
     },
     "color": null,
     "effects": {
@@ -860,7 +860,7 @@
     "fullId": "cobblemon:hondew_berry",
     "name": {
       "en": "Hondew Berry",
-      "fr": "Hondew Berry"
+      "fr": "Baie Lonme"
     },
     "color": null,
     "effects": {
@@ -891,7 +891,7 @@
     "fullId": "cobblemon:hopo_berry",
     "name": {
       "en": "Hopo Berry",
-      "fr": "Hopo Berry"
+      "fr": "Baie Bouhlon"
     },
     "color": null,
     "effects": {
@@ -900,7 +900,7 @@
       "shinyMultiplier": 1,
       "biteRateModifier": 0,
       "hiddenAbilityBoost": 0,
-      "alphaBoost": 0,
+      "alphaBoost": 2,
       "marksBoost": 0,
       "friendshipDelta": 0,
       "dropsRerolls": 0
@@ -914,7 +914,7 @@
     "fullId": "cobblemon:iapapa_berry",
     "name": {
       "en": "Iapapa Berry",
-      "fr": "Iapapa Berry"
+      "fr": "Baie Papaya"
     },
     "color": null,
     "effects": {
@@ -945,7 +945,7 @@
     "fullId": "cobblemon:jaboca_berry",
     "name": {
       "en": "Jaboca Berry",
-      "fr": "Jaboca Berry"
+      "fr": "Baie Jaboca"
     },
     "color": null,
     "effects": {
@@ -976,7 +976,7 @@
     "fullId": "cobblemon:kasib_berry",
     "name": {
       "en": "Kasib Berry",
-      "fr": "Baie Kasib"
+      "fr": "Baie Sédra"
     },
     "color": null,
     "effects": {
@@ -1028,7 +1028,7 @@
     "fullId": "cobblemon:kee_berry",
     "name": {
       "en": "Kee Berry",
-      "fr": "Kee Berry"
+      "fr": "Baie Rangma"
     },
     "color": null,
     "effects": {
@@ -1059,7 +1059,7 @@
     "fullId": "cobblemon:kelpsy_berry",
     "name": {
       "en": "Kelpsy Berry",
-      "fr": "Kelpsy Berry"
+      "fr": "Baie Alga"
     },
     "color": null,
     "effects": {
@@ -1090,7 +1090,7 @@
     "fullId": "cobblemon:lansat_berry",
     "name": {
       "en": "Lansat Berry",
-      "fr": "Lansat Berry"
+      "fr": "Baie Lansat"
     },
     "color": null,
     "effects": {
@@ -1121,7 +1121,7 @@
     "fullId": "cobblemon:leppa_berry",
     "name": {
       "en": "Leppa Berry",
-      "fr": "Leppa Berry"
+      "fr": "Baie Mepo"
     },
     "color": null,
     "effects": {
@@ -1152,7 +1152,7 @@
     "fullId": "cobblemon:liechi_berry",
     "name": {
       "en": "Liechi Berry",
-      "fr": "Liechi Berry"
+      "fr": "Baie Lichii"
     },
     "color": null,
     "effects": {
@@ -1183,7 +1183,7 @@
     "fullId": "cobblemon:love_sweet",
     "name": {
       "en": "Love Sweet",
-      "fr": "Love Sweet"
+      "fr": "Friandise cœur"
     },
     "color": "pink",
     "effects": {
@@ -1206,7 +1206,7 @@
     "fullId": "cobblemon:lum_berry",
     "name": {
       "en": "Lum Berry",
-      "fr": "Lum Berry"
+      "fr": "Baie Prine"
     },
     "color": null,
     "effects": {
@@ -1243,7 +1243,7 @@
     "fullId": "cobblemon:mago_berry",
     "name": {
       "en": "Mago Berry",
-      "fr": "Mago Berry"
+      "fr": "Baie Mago"
     },
     "color": null,
     "effects": {
@@ -1274,7 +1274,7 @@
     "fullId": "cobblemon:magost_berry",
     "name": {
       "en": "Magost Berry",
-      "fr": "Magost Berry"
+      "fr": "Baie Mangou"
     },
     "color": null,
     "effects": {
@@ -1305,7 +1305,7 @@
     "fullId": "cobblemon:maranga_berry",
     "name": {
       "en": "Maranga Berry",
-      "fr": "Maranga Berry"
+      "fr": "Baie Éka"
     },
     "color": null,
     "effects": {
@@ -1336,7 +1336,7 @@
     "fullId": "cobblemon:medicinal_leek",
     "name": {
       "en": "Medicinal Leek",
-      "fr": "Medicinal Leek"
+      "fr": "Poireau médicinal"
     },
     "color": "magenta",
     "effects": {
@@ -1359,7 +1359,7 @@
     "fullId": "cobblemon:mental_herb",
     "name": {
       "en": "Mental Herb",
-      "fr": "Mental Herb"
+      "fr": "Herbe mentale"
     },
     "color": "light_blue",
     "effects": {
@@ -1382,7 +1382,7 @@
     "fullId": "cobblemon:micle_berry",
     "name": {
       "en": "Micle Berry",
-      "fr": "Micle Berry"
+      "fr": "Baie Micle"
     },
     "color": null,
     "effects": {
@@ -1405,7 +1405,7 @@
     "fullId": "cobblemon:mirror_herb",
     "name": {
       "en": "Mirror Herb",
-      "fr": "Mirror Herb"
+      "fr": "Herbe miroir"
     },
     "color": "lime",
     "effects": {
@@ -1428,7 +1428,7 @@
     "fullId": "cobblemon:moomoo_milk",
     "name": {
       "en": "Moomoo Milk",
-      "fr": "Moomoo Milk"
+      "fr": "Lait Meumeu"
     },
     "color": "white",
     "effects": {
@@ -1451,7 +1451,7 @@
     "fullId": "cobblemon:nanab_berry",
     "name": {
       "en": "Nanab Berry",
-      "fr": "Nanab Berry"
+      "fr": "Baie Nanab"
     },
     "color": null,
     "effects": {
@@ -1482,7 +1482,7 @@
     "fullId": "cobblemon:nomel_berry",
     "name": {
       "en": "Nomel Berry",
-      "fr": "Nomel Berry"
+      "fr": "Baie Tronci"
     },
     "color": null,
     "effects": {
@@ -1513,7 +1513,7 @@
     "fullId": "cobblemon:occa_berry",
     "name": {
       "en": "Occa Berry",
-      "fr": "Baie Occa"
+      "fr": "Baie Chocco"
     },
     "color": null,
     "effects": {
@@ -1539,7 +1539,7 @@
     "fullId": "cobblemon:oran_berry",
     "name": {
       "en": "Oran Berry",
-      "fr": "Oran Berry"
+      "fr": "Baie Oran"
     },
     "color": null,
     "effects": {
@@ -1562,7 +1562,7 @@
     "fullId": "cobblemon:pamtre_berry",
     "name": {
       "en": "Pamtre Berry",
-      "fr": "Pamtre Berry"
+      "fr": "Baie Palma"
     },
     "color": null,
     "effects": {
@@ -1593,7 +1593,7 @@
     "fullId": "cobblemon:passho_berry",
     "name": {
       "en": "Passho Berry",
-      "fr": "Baie Passho"
+      "fr": "Baie Pocpoc"
     },
     "color": null,
     "effects": {
@@ -1619,7 +1619,7 @@
     "fullId": "cobblemon:payapa_berry",
     "name": {
       "en": "Payapa Berry",
-      "fr": "Baie Payapa"
+      "fr": "Baie Yapap"
     },
     "color": null,
     "effects": {
@@ -1645,7 +1645,7 @@
     "fullId": "cobblemon:pecha_berry",
     "name": {
       "en": "Pecha Berry",
-      "fr": "Pecha Berry"
+      "fr": "Baie Pêcha"
     },
     "color": null,
     "effects": {
@@ -1682,7 +1682,7 @@
     "fullId": "cobblemon:pep_up_flower",
     "name": {
       "en": "Pep Up Flower",
-      "fr": "Pep Up Flower"
+      "fr": "Fleur revigorante"
     },
     "color": "white",
     "effects": {
@@ -1705,7 +1705,7 @@
     "fullId": "cobblemon:persim_berry",
     "name": {
       "en": "Persim Berry",
-      "fr": "Persim Berry"
+      "fr": "Baie Kika"
     },
     "color": null,
     "effects": {
@@ -1742,7 +1742,7 @@
     "fullId": "cobblemon:petaya_berry",
     "name": {
       "en": "Petaya Berry",
-      "fr": "Petaya Berry"
+      "fr": "Baie Pitaye"
     },
     "color": null,
     "effects": {
@@ -1773,7 +1773,7 @@
     "fullId": "cobblemon:pinap_berry",
     "name": {
       "en": "Pinap Berry",
-      "fr": "Pinap Berry"
+      "fr": "Baie Nanana"
     },
     "color": null,
     "effects": {
@@ -1804,7 +1804,7 @@
     "fullId": "cobblemon:pink_mint_leaf",
     "name": {
       "en": "Pink Mint Leaf",
-      "fr": "Pink Mint Leaf"
+      "fr": "Feuille de menthe rose"
     },
     "color": "pink",
     "effects": {
@@ -1827,7 +1827,7 @@
     "fullId": "cobblemon:poke_bait",
     "name": {
       "en": "Poke Bait",
-      "fr": "Poke Bait"
+      "fr": "Appât Poké"
     },
     "color": null,
     "effects": {
@@ -1850,7 +1850,7 @@
     "fullId": "cobblemon:pomeg_berry",
     "name": {
       "en": "Pomeg Berry",
-      "fr": "Pomeg Berry"
+      "fr": "Baie Grena"
     },
     "color": null,
     "effects": {
@@ -1881,7 +1881,7 @@
     "fullId": "cobblemon:power_herb",
     "name": {
       "en": "Power Herb",
-      "fr": "Power Herb"
+      "fr": "Herbe pouvoir"
     },
     "color": "red",
     "effects": {
@@ -1904,7 +1904,7 @@
     "fullId": "cobblemon:qualot_berry",
     "name": {
       "en": "Qualot Berry",
-      "fr": "Qualot Berry"
+      "fr": "Baie Qualot"
     },
     "color": null,
     "effects": {
@@ -1935,7 +1935,7 @@
     "fullId": "cobblemon:rabuta_berry",
     "name": {
       "en": "Rabuta Berry",
-      "fr": "Rabuta Berry"
+      "fr": "Baie Rabuta"
     },
     "color": null,
     "effects": {
@@ -1966,7 +1966,7 @@
     "fullId": "cobblemon:rawst_berry",
     "name": {
       "en": "Rawst Berry",
-      "fr": "Rawst Berry"
+      "fr": "Baie Fraive"
     },
     "color": null,
     "effects": {
@@ -1997,7 +1997,7 @@
     "fullId": "cobblemon:razz_berry",
     "name": {
       "en": "Razz Berry",
-      "fr": "Razz Berry"
+      "fr": "Baie Framby"
     },
     "color": null,
     "effects": {
@@ -2028,7 +2028,7 @@
     "fullId": "cobblemon:red_mint_leaf",
     "name": {
       "en": "Red Mint Leaf",
-      "fr": "Red Mint Leaf"
+      "fr": "Feuille de menthe rouge"
     },
     "color": "red",
     "effects": {
@@ -2051,7 +2051,7 @@
     "fullId": "cobblemon:revival_herb",
     "name": {
       "en": "Revival Herb",
-      "fr": "Revival Herb"
+      "fr": "Herbe rappel"
     },
     "color": "green",
     "effects": {
@@ -2074,7 +2074,7 @@
     "fullId": "cobblemon:ribbon_sweet",
     "name": {
       "en": "Ribbon Sweet",
-      "fr": "Ribbon Sweet"
+      "fr": "Friandise ruban"
     },
     "color": "purple",
     "effects": {
@@ -2097,7 +2097,7 @@
     "fullId": "cobblemon:rindo_berry",
     "name": {
       "en": "Rindo Berry",
-      "fr": "Baie Rindo"
+      "fr": "Baie Ratam"
     },
     "color": null,
     "effects": {
@@ -2123,7 +2123,7 @@
     "fullId": "cobblemon:roseli_berry",
     "name": {
       "en": "Roseli Berry",
-      "fr": "Baie Roseli"
+      "fr": "Baie Selro"
     },
     "color": null,
     "effects": {
@@ -2149,7 +2149,7 @@
     "fullId": "cobblemon:rowap_berry",
     "name": {
       "en": "Rowap Berry",
-      "fr": "Rowap Berry"
+      "fr": "Baie Pommo"
     },
     "color": null,
     "effects": {
@@ -2180,7 +2180,7 @@
     "fullId": "cobblemon:salac_berry",
     "name": {
       "en": "Salac Berry",
-      "fr": "Salac Berry"
+      "fr": "Baie Sailak"
     },
     "color": null,
     "effects": {
@@ -2211,7 +2211,7 @@
     "fullId": "cobblemon:shuca_berry",
     "name": {
       "en": "Shuca Berry",
-      "fr": "Baie Shuca"
+      "fr": "Baie Jouca"
     },
     "color": null,
     "effects": {
@@ -2237,7 +2237,7 @@
     "fullId": "cobblemon:sitrus_berry",
     "name": {
       "en": "Sitrus Berry",
-      "fr": "Sitrus Berry"
+      "fr": "Baie Sitrus"
     },
     "color": null,
     "effects": {
@@ -2260,7 +2260,7 @@
     "fullId": "cobblemon:spelon_berry",
     "name": {
       "en": "Spelon Berry",
-      "fr": "Spelon Berry"
+      "fr": "Baie Kiwan"
     },
     "color": null,
     "effects": {
@@ -2291,7 +2291,7 @@
     "fullId": "cobblemon:star_sweet",
     "name": {
       "en": "Star Sweet",
-      "fr": "Star Sweet"
+      "fr": "Friandise étoile"
     },
     "color": "yellow",
     "effects": {
@@ -2314,7 +2314,7 @@
     "fullId": "cobblemon:starf_berry",
     "name": {
       "en": "Starf Berry",
-      "fr": "Baie Starf"
+      "fr": "Baie Frista"
     },
     "color": null,
     "effects": {
@@ -2337,7 +2337,7 @@
     "fullId": "cobblemon:strawberry_sweet",
     "name": {
       "en": "Strawberry Sweet",
-      "fr": "Strawberry Sweet"
+      "fr": "Friandise fraise"
     },
     "color": "red",
     "effects": {
@@ -2360,7 +2360,7 @@
     "fullId": "cobblemon:sweet_heart",
     "name": {
       "en": "Sweet Heart",
-      "fr": "Sweet Heart"
+      "fr": "Cœur sucré"
     },
     "color": null,
     "effects": {
@@ -2383,7 +2383,7 @@
     "fullId": "cobblemon:tamato_berry",
     "name": {
       "en": "Tamato Berry",
-      "fr": "Tamato Berry"
+      "fr": "Baie Tamato"
     },
     "color": null,
     "effects": {
@@ -2414,7 +2414,7 @@
     "fullId": "cobblemon:tanga_berry",
     "name": {
       "en": "Tanga Berry",
-      "fr": "Baie Tanga"
+      "fr": "Baie Panga"
     },
     "color": null,
     "effects": {
@@ -2440,7 +2440,7 @@
     "fullId": "cobblemon:tasty_tail",
     "name": {
       "en": "Tasty Tail",
-      "fr": "Tasty Tail"
+      "fr": "Queue délicieuse"
     },
     "color": "pink",
     "effects": {
@@ -2463,7 +2463,7 @@
     "fullId": "cobblemon:touga_berry",
     "name": {
       "en": "Touga Berry",
-      "fr": "Touga Berry"
+      "fr": "Baie Touga"
     },
     "color": null,
     "effects": {
@@ -2494,7 +2494,7 @@
     "fullId": "cobblemon:vivichoke",
     "name": {
       "en": "Vivichoke",
-      "fr": "Vivichoke"
+      "fr": "Vivichaud"
     },
     "color": "green",
     "effects": {
@@ -2517,7 +2517,7 @@
     "fullId": "cobblemon:wacan_berry",
     "name": {
       "en": "Wacan Berry",
-      "fr": "Baie Wacan"
+      "fr": "Baie Parma"
     },
     "color": null,
     "effects": {
@@ -2543,7 +2543,7 @@
     "fullId": "cobblemon:watmel_berry",
     "name": {
       "en": "Watmel Berry",
-      "fr": "Watmel Berry"
+      "fr": "Baie Stekpa"
     },
     "color": null,
     "effects": {
@@ -2574,7 +2574,7 @@
     "fullId": "cobblemon:wepear_berry",
     "name": {
       "en": "Wepear Berry",
-      "fr": "Wepear Berry"
+      "fr": "Baie Repoi"
     },
     "color": null,
     "effects": {
@@ -2605,7 +2605,7 @@
     "fullId": "cobblemon:white_herb",
     "name": {
       "en": "White Herb",
-      "fr": "White Herb"
+      "fr": "Herbe blanche"
     },
     "color": "white",
     "effects": {
@@ -2628,7 +2628,7 @@
     "fullId": "cobblemon:white_mint_leaf",
     "name": {
       "en": "White Mint Leaf",
-      "fr": "White Mint Leaf"
+      "fr": "Feuille de menthe blanche"
     },
     "color": "white",
     "effects": {
@@ -2651,7 +2651,7 @@
     "fullId": "cobblemon:wiki_berry",
     "name": {
       "en": "Wiki Berry",
-      "fr": "Wiki Berry"
+      "fr": "Baie Wiki"
     },
     "color": null,
     "effects": {
@@ -2682,7 +2682,7 @@
     "fullId": "cobblemon:yache_berry",
     "name": {
       "en": "Yache Berry",
-      "fr": "Baie Yache"
+      "fr": "Baie Nanone"
     },
     "color": null,
     "effects": {
@@ -2754,7 +2754,7 @@
     "fullId": "minecraft:azure_bluet",
     "name": {
       "en": "Azure Bluet",
-      "fr": "Azure Bluet"
+      "fr": "Houstonie azurée"
     },
     "color": "light_gray",
     "effects": {
@@ -2777,7 +2777,7 @@
     "fullId": "minecraft:beef",
     "name": {
       "en": "Beef",
-      "fr": "Beef"
+      "fr": "Bœuf cru"
     },
     "color": "brown",
     "effects": {
@@ -2800,7 +2800,7 @@
     "fullId": "minecraft:beetroot",
     "name": {
       "en": "Beetroot",
-      "fr": "Beetroot"
+      "fr": "Betterave"
     },
     "color": "red",
     "effects": {
@@ -2823,7 +2823,7 @@
     "fullId": "minecraft:blue_orchid",
     "name": {
       "en": "Blue Orchid",
-      "fr": "Blue Orchid"
+      "fr": "Orchidée bleue"
     },
     "color": "light_blue",
     "effects": {
@@ -2846,7 +2846,7 @@
     "fullId": "minecraft:brown_mushroom",
     "name": {
       "en": "Brown Mushroom",
-      "fr": "Brown Mushroom"
+      "fr": "Champignon brun"
     },
     "color": "brown",
     "effects": {
@@ -2869,7 +2869,7 @@
     "fullId": "minecraft:carrot",
     "name": {
       "en": "Carrot",
-      "fr": "Carrot"
+      "fr": "Carotte"
     },
     "color": "orange",
     "effects": {
@@ -2892,7 +2892,7 @@
     "fullId": "minecraft:chicken",
     "name": {
       "en": "Chicken",
-      "fr": "Chicken"
+      "fr": "Poulet cru"
     },
     "color": "brown",
     "effects": {
@@ -2915,7 +2915,7 @@
     "fullId": "minecraft:chorus_flower",
     "name": {
       "en": "Chorus Flower",
-      "fr": "Chorus Flower"
+      "fr": "Fleur de chorus"
     },
     "color": "purple",
     "effects": {
@@ -2938,7 +2938,7 @@
     "fullId": "minecraft:cod",
     "name": {
       "en": "Cod",
-      "fr": "Cod"
+      "fr": "Morue crue"
     },
     "color": "brown",
     "effects": {
@@ -2961,7 +2961,7 @@
     "fullId": "minecraft:cornflower",
     "name": {
       "en": "Cornflower",
-      "fr": "Cornflower"
+      "fr": "Bleuet"
     },
     "color": "blue",
     "effects": {
@@ -2984,7 +2984,7 @@
     "fullId": "minecraft:dandelion",
     "name": {
       "en": "Dandelion",
-      "fr": "Dandelion"
+      "fr": "Pissenlit"
     },
     "color": "yellow",
     "effects": {
@@ -3007,7 +3007,7 @@
     "fullId": "minecraft:dead_bush",
     "name": {
       "en": "Dead Bush",
-      "fr": "Dead Bush"
+      "fr": "Buisson mort"
     },
     "color": "brown",
     "effects": {
@@ -3030,7 +3030,7 @@
     "fullId": "minecraft:dried_kelp",
     "name": {
       "en": "Dried Kelp",
-      "fr": "Dried Kelp"
+      "fr": "Varech séché"
     },
     "color": "gray",
     "effects": {
@@ -3053,7 +3053,7 @@
     "fullId": "minecraft:egg",
     "name": {
       "en": "Egg",
-      "fr": "Egg"
+      "fr": "Œuf"
     },
     "color": "white",
     "effects": {
@@ -3214,7 +3214,7 @@
     "fullId": "minecraft:lilac",
     "name": {
       "en": "Lilac",
-      "fr": "Lilac"
+      "fr": "Lilas"
     },
     "color": "magenta",
     "effects": {
@@ -3237,7 +3237,7 @@
     "fullId": "minecraft:lily_of_the_valley",
     "name": {
       "en": "Lily Of The Valley",
-      "fr": "Lily Of The Valley"
+      "fr": "Muguet"
     },
     "color": "white",
     "effects": {
@@ -3260,7 +3260,7 @@
     "fullId": "minecraft:milk_bucket",
     "name": {
       "en": "Milk Bucket",
-      "fr": "Milk Bucket"
+      "fr": "Seau de lait"
     },
     "color": "white",
     "effects": {
@@ -3283,7 +3283,7 @@
     "fullId": "minecraft:mutton",
     "name": {
       "en": "Mutton",
-      "fr": "Mutton"
+      "fr": "Mouton cru"
     },
     "color": "brown",
     "effects": {
@@ -3306,7 +3306,7 @@
     "fullId": "minecraft:orange_tulip",
     "name": {
       "en": "Orange Tulip",
-      "fr": "Orange Tulip"
+      "fr": "Tulipe orange"
     },
     "color": "orange",
     "effects": {
@@ -3329,7 +3329,7 @@
     "fullId": "minecraft:oxeye_daisy",
     "name": {
       "en": "Oxeye Daisy",
-      "fr": "Oxeye Daisy"
+      "fr": "Marguerite"
     },
     "color": "white",
     "effects": {
@@ -3352,7 +3352,7 @@
     "fullId": "minecraft:peony",
     "name": {
       "en": "Peony",
-      "fr": "Peony"
+      "fr": "Pivoine"
     },
     "color": "pink",
     "effects": {
@@ -3375,7 +3375,7 @@
     "fullId": "minecraft:pink_petals",
     "name": {
       "en": "Pink Petals",
-      "fr": "Pink Petals"
+      "fr": "Pétales roses"
     },
     "color": "pink",
     "effects": {
@@ -3398,7 +3398,7 @@
     "fullId": "minecraft:pink_tulip",
     "name": {
       "en": "Pink Tulip",
-      "fr": "Pink Tulip"
+      "fr": "Tulipe rose"
     },
     "color": "pink",
     "effects": {
@@ -3421,7 +3421,7 @@
     "fullId": "minecraft:pitcher_plant",
     "name": {
       "en": "Pitcher Plant",
-      "fr": "Pitcher Plant"
+      "fr": "Sarracénie"
     },
     "color": "cyan",
     "effects": {
@@ -3444,7 +3444,7 @@
     "fullId": "minecraft:poisonous_potato",
     "name": {
       "en": "Poisonous Potato",
-      "fr": "Poisonous Potato"
+      "fr": "Pomme de terre empoisonnée"
     },
     "color": "brown",
     "effects": {
@@ -3467,7 +3467,7 @@
     "fullId": "minecraft:poppy",
     "name": {
       "en": "Poppy",
-      "fr": "Poppy"
+      "fr": "Coquelicot"
     },
     "color": "red",
     "effects": {
@@ -3490,7 +3490,7 @@
     "fullId": "minecraft:porkchop",
     "name": {
       "en": "Porkchop",
-      "fr": "Porkchop"
+      "fr": "Porc cru"
     },
     "color": "brown",
     "effects": {
@@ -3513,7 +3513,7 @@
     "fullId": "minecraft:potato",
     "name": {
       "en": "Potato",
-      "fr": "Potato"
+      "fr": "Pomme de terre"
     },
     "color": "brown",
     "effects": {
@@ -3536,7 +3536,7 @@
     "fullId": "minecraft:pumpkin",
     "name": {
       "en": "Pumpkin",
-      "fr": "Pumpkin"
+      "fr": "Citrouille"
     },
     "color": "orange",
     "effects": {
@@ -3559,7 +3559,7 @@
     "fullId": "minecraft:rabbit",
     "name": {
       "en": "Rabbit",
-      "fr": "Rabbit"
+      "fr": "Lapin cru"
     },
     "color": "brown",
     "effects": {
@@ -3582,7 +3582,7 @@
     "fullId": "minecraft:red_mushroom",
     "name": {
       "en": "Red Mushroom",
-      "fr": "Red Mushroom"
+      "fr": "Champignon rouge"
     },
     "color": "red",
     "effects": {
@@ -3605,7 +3605,7 @@
     "fullId": "minecraft:red_tulip",
     "name": {
       "en": "Red Tulip",
-      "fr": "Red Tulip"
+      "fr": "Tulipe rouge"
     },
     "color": "red",
     "effects": {
@@ -3628,7 +3628,7 @@
     "fullId": "minecraft:rose_bush",
     "name": {
       "en": "Rose Bush",
-      "fr": "Rose Bush"
+      "fr": "Rosier"
     },
     "color": "red",
     "effects": {
@@ -3651,7 +3651,7 @@
     "fullId": "minecraft:rotten_flesh",
     "name": {
       "en": "Rotten Flesh",
-      "fr": "Rotten Flesh"
+      "fr": "Chair putréfiée"
     },
     "color": "brown",
     "effects": {
@@ -3674,7 +3674,7 @@
     "fullId": "minecraft:salmon",
     "name": {
       "en": "Salmon",
-      "fr": "Salmon"
+      "fr": "Saumon cru"
     },
     "color": "brown",
     "effects": {
@@ -3697,7 +3697,7 @@
     "fullId": "minecraft:spore_blossom",
     "name": {
       "en": "Spore Blossom",
-      "fr": "Spore Blossom"
+      "fr": "Fleur à spores"
     },
     "color": "pink",
     "effects": {
@@ -3720,7 +3720,7 @@
     "fullId": "minecraft:sugar",
     "name": {
       "en": "Sugar",
-      "fr": "Sugar"
+      "fr": "Sucre"
     },
     "color": "white",
     "effects": {
@@ -3743,7 +3743,7 @@
     "fullId": "minecraft:sunflower",
     "name": {
       "en": "Sunflower",
-      "fr": "Sunflower"
+      "fr": "Tournesol"
     },
     "color": "yellow",
     "effects": {
@@ -3789,7 +3789,7 @@
     "fullId": "minecraft:torchflower",
     "name": {
       "en": "Torchflower",
-      "fr": "Torchflower"
+      "fr": "Flammifleur"
     },
     "color": "orange",
     "effects": {
@@ -3812,7 +3812,7 @@
     "fullId": "minecraft:white_tulip",
     "name": {
       "en": "White Tulip",
-      "fr": "White Tulip"
+      "fr": "Tulipe blanche"
     },
     "color": "white",
     "effects": {
@@ -3835,7 +3835,7 @@
     "fullId": "minecraft:wildflowers",
     "name": {
       "en": "Wildflowers",
-      "fr": "Wildflowers"
+      "fr": "Fleurs sauvages"
     },
     "color": "yellow",
     "effects": {
@@ -3858,7 +3858,7 @@
     "fullId": "minecraft:wither_rose",
     "name": {
       "en": "Wither Rose",
-      "fr": "Wither Rose"
+      "fr": "Rose du Wither"
     },
     "color": "black",
     "effects": {

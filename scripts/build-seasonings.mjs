@@ -111,6 +111,7 @@ function condenseEffects(effects) {
 
   for (const e of effects) {
     const v = Number(e.value) || 0;
+    const chance = Number(e.chance) || 0;
     switch (e.type) {
       case "typing":
         if (v > 0) out.typeSpawnMultiplier = { type: e.subcategory, value: v };
@@ -129,9 +130,23 @@ function condenseEffects(effects) {
         // sign untouched so the UI can render "‑25 %".
         out.biteRateModifier += v;
         break;
-      case "ha_chance":   out.hiddenAbilityBoost += v; break;
-      case "alpha_chance":out.alphaBoost += v; break;
-      case "mark_chance": out.marksBoost += v; break;
+      // ─── Chance-based effects ─────────────────────────────────────
+      // Cobblemon's source data leaves `value: null` and encodes the
+      // strength as `chance` (Enigma Berry = 5 % HA, Hopo Berry =
+      // 2 % alpha, Kee Berry = 25 % female). Express these as
+      // percentages so the UI renders "Talent caché +5 %" rather
+      // than the previous "+0" (which made the seasoning look
+      // inert).
+      case "ha_chance":
+        out.hiddenAbilityBoost += v > 0 ? v : Math.round(chance * 100);
+        break;
+      case "alpha_chance":
+        out.alphaBoost += v > 0 ? v : Math.round(chance * 100);
+        break;
+      case "mark_chance":
+        // Micle Berry — `value: 5` means +5 % marks per spawn.
+        out.marksBoost += v > 0 ? v : Math.round(chance * 100);
+        break;
       case "friendship":  out.friendshipDelta += v; break;
       case "drops_reroll":out.dropsRerolls += v; break;
       default:

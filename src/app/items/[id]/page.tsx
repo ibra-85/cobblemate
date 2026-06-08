@@ -163,7 +163,7 @@ export default async function ItemDetailPage({
             </CardTitle>
             <CardDescription>
               Pourcentage = part de cet objet parmi les choix recordés pour
-              le mon (Smogon gen 9).
+              le pokémon.
             </CardDescription>
           </CardHeader>
           <CardContent>

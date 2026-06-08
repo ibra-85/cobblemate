@@ -7,15 +7,26 @@ import {
   Crown,
   Coins,
   Layers,
+  Atom,
+  Star,
+  ChefHat,
+  ArrowRight,
 } from "lucide-react";
 import {
   MinecraftCraftingTable,
+  ItemIcon,
   itemMeta,
 } from "@/components/site/minecraft-item";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { baitsForType } from "@/data/baits";
 import { POKE_SNACK_RECIPE } from "@/data/baits";
+import {
+  getPokesnackRecommendationsForPokemon,
+  getSeasoning,
+  formatSeasoningEffects,
+  type PokesnackEntry,
+} from "@/data/pokesnack-academy";
 import type { Pokemon } from "@/types";
 
 interface Props {
@@ -210,6 +221,14 @@ function recipeGrid(): (string | null)[] {
 }
 
 export function PokeSnackCooking({ pokemon }: Props) {
+  // Prefer the Academy dataset's hand-curated recommendations when
+  // they exist for this Pokémon — same recipes the /pokesnacks page
+  // surfaces, so both views stay in sync. Fall back to the
+  // algorithmic mode picker below when no Academy entry is found
+  // (legacy / unsupported mons).
+  const academy = getPokesnackRecommendationsForPokemon(pokemon.id);
+  if (academy) return <AcademyRecipes entry={academy} />;
+
   const availableModes = modesFor(pokemon);
   const [mode, setMode] = useState<Mode>("catch");
   const baseRecipe = recipeGrid();
@@ -284,3 +303,124 @@ export function PokeSnackCooking({ pokemon }: Props) {
   );
 }
 
+// ─── Academy-driven recipes ────────────────────────────────────────────
+
+const ACADEMY_TABS: {
+  id: keyof PokesnackEntry["recommendedSnacks"];
+  label: string;
+  icon: typeof Star;
+}[] = [
+  { id: "bestGeneral",  label: "Meilleur choix", icon: Star },
+  { id: "typeCoverage", label: "Couvre types",   icon: Sparkles },
+  { id: "rareSpawn",    label: "Spawn rare",     icon: Crown },
+  { id: "shinyHunt",    label: "Shiny hunt",     icon: Atom },
+  { id: "budget",       label: "Budget",         icon: ChefHat },
+];
+
+/**
+ * Render the same recipe layout as the `/pokesnacks` grid card —
+ * tab strip + Campfire-Pot widget + per-seasoning effect breakdown —
+ * but without the Pokémon header, so it slots into the
+ * `/pokedex/[id]` "PokéSnacks" section seamlessly. The Academy
+ * dataset is the single source of truth here so the two pages can
+ * never drift apart.
+ */
+function AcademyRecipes({ entry }: { entry: PokesnackEntry }) {
+  const [active, setActive] =
+    useState<keyof PokesnackEntry["recommendedSnacks"]>("bestGeneral");
+  const recipe = entry.recommendedSnacks[active];
+  const base = recipeGrid();
+  const seasoningSlots = recipe.ingredients.map((id) =>
+    id
+      ? { item: id, label: getSeasoning(id)?.name.fr ?? itemMeta(id).label }
+      : null,
+  );
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-1.5">
+        {ACADEMY_TABS.map((t) => {
+          const Icon = t.icon;
+          const isActive = t.id === active;
+          return (
+            <Button
+              key={t.id}
+              size="sm"
+              variant={isActive ? "default" : "outline"}
+              onClick={() => setActive(t.id)}
+              className="gap-1.5"
+            >
+              <Icon className="size-3.5" />
+              {t.label}
+            </Button>
+          );
+        })}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        <strong className="text-foreground">{recipe.label}.</strong>{" "}
+        {recipe.reason}
+      </p>
+      <div className="-mx-3 overflow-x-auto px-3 py-1">
+        <MinecraftCraftingTable
+          grid={base}
+          seasonings={seasoningSlots}
+          result="cobblemon:poke_snack"
+          resultLabel={`Poké Snack — ${recipe.label}`}
+          className="min-w-fit"
+        />
+      </div>
+      {/* Per-seasoning effect breakdown — same widget the
+          `/pokesnacks` cards use so the two views read identically. */}
+      <AcademySeasoningEffects ingredients={recipe.ingredients} />
+    </div>
+  );
+}
+
+function AcademySeasoningEffects({
+  ingredients,
+}: {
+  ingredients: (string | null)[];
+}) {
+  const filled = ingredients
+    .map((id, idx) => ({ id, idx }))
+    .filter((s): s is { id: string; idx: number } => Boolean(s.id));
+  if (filled.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-1.5 rounded-md border bg-muted/30 p-2 text-[11px]">
+      {filled.map(({ id, idx }) => {
+        const seasoning = getSeasoning(id);
+        const label = seasoning?.name.fr ?? itemMeta(id).label;
+        const effects = seasoning ? formatSeasoningEffects(seasoning) : [];
+        return (
+          <div
+            key={`${id}-${idx}`}
+            className="flex flex-wrap items-center gap-1.5"
+          >
+            <ArrowRight className="size-3 shrink-0 opacity-50" />
+            {/* Inline seasoning sprite — matches the recipe slot
+                above so the player can pair the icon to the
+                contribution without re-reading the name. */}
+            <ItemIcon item={id} size="size-4" />
+            <span className="font-medium text-foreground">{label}</span>
+            {effects.length > 0 ? (
+              <span className="flex flex-wrap gap-1 text-muted-foreground">
+                {effects.map((e, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center rounded bg-background px-1.5 py-0.5"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="italic text-muted-foreground/70">
+                aucun effet listé
+              </span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}

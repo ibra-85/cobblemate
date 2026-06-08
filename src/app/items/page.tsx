@@ -3,12 +3,6 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Cookie } from "lucide-react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -25,6 +19,10 @@ import { ItemIcon } from "@/components/site/minecraft-item";
 import { ITEMS } from "@/data/items";
 import { cn } from "@/lib/utils";
 import type { Item, ItemCategory } from "@/types";
+import {
+  ItemsFiltersBar,
+  type ItemsFilter,
+} from "@/features/items/filters-bar";
 
 /** Most curated items map to Cobblemon items. Prefix with the
  *  `cobblemon:` namespace + underscore the id so `ItemIcon` can
@@ -36,9 +34,9 @@ function cobblemonItemId(id: string): string {
 }
 
 const RARITY_TONE: Record<string, string> = {
-  common:      "bg-zinc-500/15 text-zinc-700 dark:text-zinc-300 border-zinc-500/30",
-  uncommon:    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-  rare:        "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30",
+  common:       "bg-zinc-500/15 text-zinc-700 dark:text-zinc-300 border-zinc-500/30",
+  uncommon:     "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
+  rare:         "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30",
   "ultra-rare": "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
 };
 
@@ -49,32 +47,73 @@ const RARITY_LABEL: Record<string, string> = {
   "ultra-rare": "Ultra rare",
 };
 
-const CATEGORIES: { id: ItemCategory | "all"; label: string }[] = [
-  { id: "all",       label: "Tout" },
-  { id: "ball",      label: "Apricorn Balls" },
-  { id: "held",      label: "Tenus" },
-  { id: "evolution", label: "Évolution" },
-  { id: "healing",   label: "Soins" },
-  { id: "vitamin",   label: "Vitamines" },
-  { id: "natural",   label: "Naturels" },
-  { id: "food",      label: "Nourriture" },
-  { id: "berry",     label: "Baies" },
-  { id: "utility",   label: "Utilitaires" },
+const RARITY_COLOR: Record<string, string> = {
+  common:       "#9ca3af",
+  uncommon:     "#22c55e",
+  rare:         "#3b82f6",
+  "ultra-rare": "#a855f7",
+};
+
+/**
+ * Categories surfaced in the filter dropdown. Every entry maps to a
+ * category id the merged `ITEMS` array uses — see `Item.category`.
+ * "Utility" used to live here but no item ever flowed into it
+ * (the wiki dataset has zero `utility`-tagged items and the curated
+ * list doesn't use the bucket either) so we drop it to keep the
+ * filter list honest.
+ */
+const CATEGORY_OPTIONS: { id: ItemCategory; label: string; color: string }[] = [
+  { id: "ball",      label: "Apricorn Balls",  color: "#ef4444" },
+  { id: "held",      label: "Tenus",           color: "#3b82f6" },
+  { id: "evolution", label: "Évolution",       color: "#a855f7" },
+  { id: "healing",   label: "Soins",           color: "#22c55e" },
+  { id: "vitamin",   label: "Vitamines",       color: "#f59e0b" },
+  { id: "natural",   label: "Naturels",        color: "#84cc16" },
+  { id: "food",      label: "Nourriture",      color: "#fb923c" },
+  { id: "berry",     label: "Baies",           color: "#ec4899" },
 ];
+
+const CATEGORY_LABEL = new Map(CATEGORY_OPTIONS.map((c) => [c.id, c.label]));
+
+// Pre-build filter options lists — never change at runtime.
+const FILTER_CATEGORY_OPTIONS = CATEGORY_OPTIONS.map((c) => ({
+  value: c.id,
+  label: c.label,
+  color: c.color,
+}));
+
+const FILTER_RARITY_OPTIONS = Object.entries(RARITY_LABEL).map(([id, label]) => ({
+  value: id,
+  label,
+  color: RARITY_COLOR[id],
+}));
 
 export default function ItemsPage() {
   const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<(typeof CATEGORIES)[number]["id"]>("all");
+  const [filters, setFilters] = useState<ItemsFilter[]>([]);
 
   const filteredItems = useMemo(() => {
     const q = query.toLowerCase().trim();
+    // Pre-build set lookups so the inner loop is O(F·N) instead of
+    // O(F·V·N) — same pattern the pokesnacks page uses, kept fast
+    // for the ~260-item catalog. The cost matters only when the
+    // user types quickly + has 2 filters active, but it's free
+    // to write cleanly.
+    const filterSets = filters
+      .filter((f) => f.values.length > 0)
+      .map((f) => ({ kind: f.kind, mode: f.mode, set: new Set(f.values) }));
     return ITEMS.filter((i) => {
-      if (tab !== "all" && i.category !== tab) return false;
       if (q && !i.name.toLowerCase().includes(q) && !i.id.includes(q))
         return false;
+      for (const f of filterSets) {
+        const fieldValue =
+          f.kind === "category" ? i.category : i.rarity ?? "";
+        const matches = f.set.has(fieldValue);
+        if (f.mode === "exclude" ? matches : !matches) return false;
+      }
       return true;
     });
-  }, [query, tab]);
+  }, [query, filters]);
 
   return (
     <div className="mx-auto flex w-full min-w-0 max-w-7xl flex-col gap-6">
@@ -89,9 +128,7 @@ export default function ItemsPage() {
         </p>
       </header>
 
-      {/* CTA — PokéSnacks now lives on its own page. We surface it as
-          a banner-style card so first-time visitors can find it
-          without hunting through tabs. */}
+      {/* CTA — PokéSnacks lives on its own page. */}
       <Link
         href="/pokesnacks"
         className="group flex items-center gap-3 rounded-lg border bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-transparent p-3 transition-colors hover:border-amber-500/40"
@@ -111,8 +148,10 @@ export default function ItemsPage() {
         </Button>
       </Link>
 
-      <div className="flex flex-col gap-3">
-        <InputGroup className="max-w-md">
+      {/* Search + chip filters — same UI pattern as /pokedex and
+          /pokesnacks. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <InputGroup className="min-w-0 flex-1 sm:max-w-md">
           <InputGroupAddon>
             <Search className="size-4 opacity-60" />
           </InputGroupAddon>
@@ -123,77 +162,57 @@ export default function ItemsPage() {
           />
         </InputGroup>
 
-        <Tabs
-          value={tab}
-          onValueChange={(v) =>
-            v && setTab(v as (typeof CATEGORIES)[number]["id"])
-          }
-        >
-          <TabsList>
-            {CATEGORIES.map((c) => (
-              <TabsTrigger key={c.id} value={c.id}>
-                {c.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value={tab} className="mt-4 flex flex-col gap-6">
-            {filteredItems.length > 0 ? (
-              // `auto-rows-fr` (fractional, not min) forces every row
-              // in the grid to be the same height — paired with
-              // `h-full` on each card, every card in a row stretches
-              // to match the tallest in that row. We also fix the
-              // description to a `min-h-[2.5rem]` slot so cards with
-              // shorter descriptions don't collapse the title row
-              // and break vertical alignment between rows.
-              <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {filteredItems.map((it) => (
-                  <ItemCard key={it.id} item={it} />
-                ))}
-              </div>
-            ) : (
-              <Empty>
-                <EmptyHeader>
-                  <EmptyTitle>Rien à afficher</EmptyTitle>
-                  <EmptyDescription>
-                    Aucun résultat pour ces filtres. Essaie une autre catégorie.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            )}
-          </TabsContent>
-        </Tabs>
+        <ItemsFiltersBar
+          filters={filters}
+          onChange={setFilters}
+          options={{
+            category: FILTER_CATEGORY_OPTIONS,
+            rarity: FILTER_RARITY_OPTIONS,
+          }}
+        />
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        <strong className="text-foreground">{filteredItems.length}</strong>{" "}
+        objet{filteredItems.length > 1 ? "s" : ""}
+        {query || filters.length > 0 ? " correspondant" : ""} sur {ITEMS.length}.
+      </p>
+
+      {filteredItems.length > 0 ? (
+        // `auto-rows-fr` (fractional, not min) forces every row in
+        // the grid to be the same height — paired with `h-full` on
+        // each card, every card in a row stretches to match the
+        // tallest in that row.
+        <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {filteredItems.map((it) => (
+            <ItemCard key={it.id} item={it} />
+          ))}
+        </div>
+      ) : (
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>Rien à afficher</EmptyTitle>
+            <EmptyDescription>
+              Aucun résultat. Retire un filtre ou essaie une autre recherche.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      )}
     </div>
   );
 }
 
 /**
- * Item catalogue card. Visual chrome inspired by the `CompetitorCard`
- * from the "Où le trouver" section — same `rounded-md`, accent
- * hover, hover-lift — so the items page reads as part of the same
- * design system as the Pokédex detail pages.
- *
- * The whole card is a `<Link>` to `/items/<id>`. Related-Pokémon
- * badges are rendered *outside* that link (as siblings inside the
- * outer container) to avoid the nested-anchor hydration error that
- * bit the evolution panel earlier — invalid HTML, dev mode warning,
- * and Safari renders the inner anchor as inert.
- */
-/**
  * Item catalogue card — same shape for every entry so the grid stays
  * uniform regardless of which optional fields the item carries.
  *
  * Visible info: icon, name, rarity badge, 2-line description, and a
- * "Recette" / "Drop" / "Loot" badge that signals what's on the
- * detail page. Everything else (obtain text, related Pokémon, the
- * recipe grid itself, holders) lives on `/items/[id]` to keep the
- * card heights consistent. The whole tile is one `<Link>` so taps
- * always go to the detail page — no nested anchors, no hydration
- * warnings.
+ * "Détails →" link. Everything else (obtain text, recipes, holders)
+ * lives on `/items/[id]` to keep the card heights consistent.
  */
 function ItemCard({ item }: { item: Item }) {
   const rawId = cobblemonItemId(item.id);
+  const catLabel = CATEGORY_LABEL.get(item.category);
   return (
     <Link
       href={`/items/${item.id}`}
@@ -208,11 +227,6 @@ function ItemCard({ item }: { item: Item }) {
               {item.name}
             </h3>
             {item.rarity && (
-              // `inline-flex items-center` + `leading-none` centres
-              // the uppercase label inside the pill — the old
-              // baseline/inline-block layout left the text glued to
-              // the top edge because uppercase letters have no
-              // descender to balance the cap-height.
               <span
                 className={cn(
                   "inline-flex shrink-0 items-center rounded-full border px-1.5 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wide",
@@ -228,11 +242,12 @@ function ItemCard({ item }: { item: Item }) {
           </p>
         </div>
       </div>
-      {/* Bottom strip — always shows "Détails →" on the right, plus a
-          green "Recette" pill on the left when the item has one. The
-          strip is always rendered so card heights stay aligned across
-          the grid regardless of which optional fields are present. */}
-      <div className="mt-auto flex justify-end">
+      <div className="mt-auto flex items-center justify-between">
+        {catLabel && (
+          <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/60">
+            {catLabel}
+          </span>
+        )}
         <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70 transition-colors group-hover/card:text-foreground">
           Détails →
         </span>

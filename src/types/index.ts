@@ -187,8 +187,7 @@ export type ItemCategory =
   // grid can segment the full ~250-item dataset.
   | "natural"   // Apricorns, herbs, leeks, tumblestone — plant + ore-style mats
   | "food"      // Roasted Leek, Lava Cookie, Ponigiri, …
-  | "vitamin"   // HP Up, Protein, Rare Candy, X-items, Mints
-  | "utility";  // Poké Rod, Campfire Pot, generic tooling
+  | "vitamin";  // HP Up, Protein, Rare Candy, X-items, Mints
 
 export interface Item {
   id: string;

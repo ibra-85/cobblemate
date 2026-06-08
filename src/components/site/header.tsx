@@ -39,13 +39,11 @@ import {
   allAbilitySlugs,
   lookupAbility,
 } from "@/data/abilities-pokeapi";
-import {
-  allHeldItemSlugs,
-  lookupItem,
-} from "@/data/items-pokeapi";
-import { frAbility, frItem } from "@/data/smogon";
+import { ITEMS } from "@/data/items";
+import generatedItems from "@/data/cobblemon-items-generated.json";
+import { frAbility } from "@/data/smogon";
 import { POKESNACKS } from "@/data/pokesnacks";
-import { SmogonItemIcon } from "@/features/pokedex/smogon-item-icon";
+import { ItemIcon } from "@/components/site/minecraft-item";
 import { MobileNav } from "@/components/site/mobile-nav";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { cn } from "@/lib/utils";
@@ -94,9 +92,20 @@ interface AbilityHit {
   labelEn: string;
 }
 interface ItemHit {
+  /** URL slug (the existing `id` from the merged catalog — uses
+   *  hyphens for curated items, underscores for wiki-only items;
+   *  `/items/[id]` handles both. */
   slug: string;
-  name: string;
+  /** Cobblemon `cobblemon:`-namespaced id, used to pull the right
+   *  inventory icon via `ItemIcon` (which hits the wiki/scraped
+   *  image dictionary built by `build-cobblemon-items.mjs`). */
+  iconId: string;
+  /** Display label — already in French (PokéAPI FR + overrides). */
   labelFr: string;
+  /** English name when known — surfaced as the secondary line so
+   *  power-users searching "Choice Scarf" or "Vivichoke" still hit
+   *  their entry even when the FR label diverges. */
+  labelEn?: string;
 }
 interface SnackHit {
   id: string;
@@ -190,23 +199,35 @@ export function Header() {
       }),
     [],
   );
-  const itemIndex = useMemo<
-    Array<ItemHit & { key: string }>
-  >(
-    () =>
-      allHeldItemSlugs().map((slug) => {
-        const it = lookupItem(slug);
-        const name = it?.nameEn ?? slug;
-        const labelFr = it ? frItem(it.nameEn).label : slug;
-        return {
-          slug,
-          name,
-          labelFr,
-          key: haystack(labelFr, name, slug),
-        };
-      }),
-    [],
-  );
+  const itemIndex = useMemo<Array<ItemHit & { key: string }>>(() => {
+    // English names live only in the wiki-scraped JSON — cross-
+    // reference each merged catalog id (curated uses hyphens,
+    // generated uses underscores) so we can search by both names.
+    const enByKey = new Map<string, string>();
+    for (const [slug, v] of Object.entries(
+      generatedItems as Record<string, { nameEn?: string }>,
+    )) {
+      if (v.nameEn) enByKey.set(slug, v.nameEn);
+    }
+    return ITEMS.map((it) => {
+      // `cobblemon:foo` is the form `ItemIcon` resolves through its
+      // wiki / Bulbapedia / SVG fallback chain. Hyphenated curated
+      // ids (`poke-ball`) need underscoring first.
+      const iconId = `cobblemon:${it.id.replace(/-/g, "_")}`;
+      const enKey = it.id.replace(/-/g, "_");
+      const labelEn = enByKey.get(enKey);
+      return {
+        slug: it.id,
+        iconId,
+        labelFr: it.name,
+        labelEn,
+        // Searchable haystack — FR + EN + id + category so "ball",
+        // "wool", "evolution" etc. surface relevant items even when
+        // the player doesn't remember the exact name.
+        key: haystack(it.name, labelEn, it.id, it.category),
+      };
+    });
+  }, []);
   const snackIndex = useMemo<
     Array<SnackHit & { key: string }>
   >(
@@ -476,12 +497,12 @@ export function Header() {
                     }}
                   >
                     <span className="grid size-5 shrink-0 place-items-center">
-                      <SmogonItemIcon name={it.name} size={18} />
+                      <ItemIcon item={it.iconId} size="size-5" />
                     </span>
                     <span className="truncate">{it.labelFr}</span>
-                    {it.name && it.name !== it.labelFr && (
+                    {it.labelEn && it.labelEn !== it.labelFr && (
                       <CommandShortcut className="italic">
-                        {it.name}
+                        {it.labelEn}
                       </CommandShortcut>
                     )}
                   </CommandItem>
