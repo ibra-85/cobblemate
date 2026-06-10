@@ -201,7 +201,11 @@ export function TeamShareDialog({
           }
         />
       )}
-      <DialogContent className="sm:max-w-lg">
+      {/* `max-h-[90dvh]` + flex layout keeps the dialog inside the
+          viewport even when the JSON `<details>` is expanded — the
+          inner Tabs panel scrolls instead of the whole dialog
+          spilling past the top/bottom edges. */}
+      <DialogContent className="flex max-h-[90dvh] flex-col overflow-hidden sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Partage d&apos;équipe</DialogTitle>
           <DialogDescription>
@@ -211,7 +215,7 @@ export function TeamShareDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="export">
+        <Tabs defaultValue="export" className="flex min-h-0 flex-1 flex-col">
           <TabsList className="w-full">
             <TabsTrigger value="export" className="flex-1">
               <Download data-icon="inline-start" />
@@ -223,7 +227,7 @@ export function TeamShareDialog({
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="export" className="flex flex-col gap-3">
+          <TabsContent value="export" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1">
             <p className="text-xs text-muted-foreground">
               {filledSlots}/6 Pokémon dans cette équipe.
             </p>
@@ -261,7 +265,7 @@ export function TeamShareDialog({
                 fit nicely (PM message limits, embedded posts). */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Code CBM1
+                Code CBM2 (compact)
               </label>
               <Textarea
                 value={code}
@@ -322,9 +326,10 @@ export function TeamShareDialog({
             </details>
           </TabsContent>
 
-          <TabsContent value="import" className="flex flex-col gap-3">
+          <TabsContent value="import" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1">
             <p className="text-xs text-muted-foreground">
               Colle un lien de partage, un code{" "}
+              <code className="rounded bg-muted px-1 font-mono">CBM2:…</code> /{" "}
               <code className="rounded bg-muted px-1 font-mono">CBM1:…</code> ou
               un export JSON. Le format est détecté automatiquement.
             </p>

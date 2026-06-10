@@ -1,4 +1,4 @@
-import { Swords, Calculator, Grid3x3 } from "lucide-react";
+import { Swords, Calculator, Grid3x3, Flame } from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/tabs";
 import { BattleHelper } from "@/features/battle-helper/battle-helper";
 import { TeamVsTeam } from "@/features/battle-helper/team-vs-team";
+import { RaidMode } from "@/features/battle-helper/raid-mode";
 import { DamageCalc } from "@/features/calc/damage-calc";
 
 export const metadata = { title: "Combat · CobbleMate" };
@@ -30,7 +31,9 @@ export default async function BattlePage({
   const pick = (k: string) => (Array.isArray(sp[k]) ? sp[k][0] : sp[k]);
   const tab = pick("tab");
   const initialTab =
-    tab === "calc" || tab === "vs-team" || tab === "assistant" ? tab : "assistant";
+    tab === "calc" || tab === "vs-team" || tab === "assistant" || tab === "raid"
+      ? tab
+      : "assistant";
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -60,6 +63,10 @@ export default async function BattlePage({
             <Grid3x3 data-icon="inline-start" />
             Team vs Team
           </TabsTrigger>
+          <TabsTrigger value="raid">
+            <Flame data-icon="inline-start" />
+            Raid (type)
+          </TabsTrigger>
           <TabsTrigger value="calc">
             <Calculator data-icon="inline-start" />
             Calc dégâts
@@ -71,6 +78,9 @@ export default async function BattlePage({
         </TabsContent>
         <TabsContent value="vs-team" className="mt-4">
           <TeamVsTeam />
+        </TabsContent>
+        <TabsContent value="raid" className="mt-4">
+          <RaidMode />
         </TabsContent>
         <TabsContent value="calc" className="mt-4">
           <DamageCalc

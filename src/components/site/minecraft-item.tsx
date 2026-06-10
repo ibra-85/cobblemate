@@ -324,6 +324,13 @@ export function itemImageUrl(itemId: string): string | null {
     if (exact) return exact;
     const ingredient = INGREDIENT_IMAGE_BY_SLUG.get(name);
     if (ingredient) return ingredient;
+    // Gen-9 strategic items the wiki doesn't carry (Booster Energy,
+    // Cornerstone Mask, Adamant Crystal, …) ship through the
+    // Bulbapedia bundle. The cobblemon: branch would otherwise fall
+    // through to a 404'd Special:FilePath redirect and only the SVG
+    // sprite would show up.
+    if (LOCAL_ITEM_IDS.has(name)) return `${LOCAL_ITEMS}/${name}.png`;
+    if (BULBAPEDIA_ITEM_IDS.has(name)) return `${BULBAPEDIA_ITEMS}/${name}.png`;
     return fallbackImageUrl(`cobblemon:${name}`);
   }
 
@@ -619,10 +626,25 @@ const FR_GROUP_LABELS: Record<string, string> = {
   any_apricorn:        "Tout Noigrume",
   any_apricorn_sprout: "Toute Pousse de Noigrume",
   any_seed:            "Toute Graine",
+  any_seeds:           "Toute Graine",
   any_flower:          "Toute Fleur",
   any_fish:            "Tout Poisson",
   any_pottery_sherd:   "Tout Tesson de Poterie",
   any_pokemon_egg:     "Tout Œuf de Pokémon",
+  any_button:          "Tout Bouton",
+  any_evolution_stone: "Toute Pierre d'Évolution",
+  any_sandwich_vegetable: "Tout Légume à Sandwich",
+  any_super_potion_ingredient: "Tout Ingrédient de Super Potion",
+  // Multi-option slots the scraper couldn't reduce to an "any_*"
+  // family — it concatenates the variant slugs instead. Spell out
+  // the actual alternatives so the tooltip stays meaningful.
+  water_bucket_or_any_milk: "Seau d'Eau ou Tout Lait",
+  fire_stone_fire_gem:      "Pierre Feu ou Gemme Feu",
+  soft_sand_rock_gem_ground_gem: "Sable Doux, Gemme Roche ou Gemme Sol",
+  stone_deepslate_blackstone_tuff:
+    "Pierre, Ardoise des abîmes, Pierre noire ou Tuf",
+  red_apricorn_yellow_apricorn_green_apricorn_blue_apricorn_pink_apricorn_black_apricorn_white_apricorn:
+    "Tout Noigrume",
 };
 
 export function itemMeta(id: string): ItemMeta {

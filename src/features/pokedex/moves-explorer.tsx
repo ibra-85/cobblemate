@@ -16,6 +16,7 @@ import { lookupMove } from "@/data/moves";
 import { getSpeciesExtras, type MovesByMethod } from "@/data/species-extras";
 import type { Move, PokemonTypeId } from "@/types";
 import { cn } from "@/lib/utils";
+import { foldDiacritics } from "@/lib/search";
 
 const TYPE_OPTIONS: PokemonTypeId[] = [
   "normal","fire","water","electric","grass","ice","fighting","poison",
@@ -85,7 +86,7 @@ export function MovesExplorer({ pokemonId }: Props) {
       const fallback = humanizeMoveId(moveId);
       const nameFr = move?.name ?? fallback;
       const nameEn = move?.nameEn ?? fallback;
-      const haystack = `${nameFr} ${nameEn} ${moveId}`.toLowerCase();
+      const haystack = foldDiacritics(`${nameFr} ${nameEn} ${moveId}`);
       return { method, level, moveId, move, nameFr, nameEn, haystack };
     };
     for (const { level, move } of moves.level) rows.push(make("level", move, level));
@@ -96,7 +97,7 @@ export function MovesExplorer({ pokemonId }: Props) {
   }, [moves]);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = foldDiacritics(query.trim());
     return allRows.filter((r) => {
       if (!activeMethods.has(r.method)) return false;
       if (activeCategory !== "all" && r.move?.category !== activeCategory) return false;
@@ -108,7 +109,7 @@ export function MovesExplorer({ pokemonId }: Props) {
   }, [allRows, query, activeMethods, activeCategory, activeTypes]);
 
   const methodCounts = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = foldDiacritics(query.trim());
     const counts: Record<MethodKey, number> = {
       level: 0, tm: 0, egg: 0, tutor: 0, legacy: 0, special: 0,
     };

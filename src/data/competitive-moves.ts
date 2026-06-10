@@ -1,5 +1,6 @@
 import type { Move, PokemonTypeId } from "@/types";
 import { ALL_MOVE_IDS, lookupMove } from "./moves";
+import { foldDiacritics } from "@/lib/search";
 
 /**
  * Curated registry of competitive moves — the *strategic* ones that
@@ -914,15 +915,15 @@ export function searchMoves(
   query: string,
   learnsetFilter?: Set<string>,
 ): CompetitiveMove[] {
-  const q = query.trim().toLowerCase();
+  const q = foldDiacritics(query.trim());
   const qId = q.replace(/[-\s]/g, "");
   return COMPETITIVE_MOVES.filter((m) => {
     if (learnsetFilter && !learnsetFilter.has(m.id)) return false;
     if (!q) return true;
     if (m.id.includes(qId)) return true;
-    if (m.nameFr.toLowerCase().includes(q)) return true;
-    if (m.nameEn.toLowerCase().includes(q)) return true;
-    for (const alias of m.aliases) if (alias.includes(q)) return true;
+    if (foldDiacritics(m.nameFr).includes(q)) return true;
+    if (foldDiacritics(m.nameEn).includes(q)) return true;
+    for (const alias of m.aliases) if (foldDiacritics(alias).includes(q)) return true;
     return false;
   });
 }
@@ -993,7 +994,7 @@ export function searchPickableMoves(
   query: string,
   learnsetFilter?: Set<string>,
 ): PickableMove[] {
-  const q = query.trim().toLowerCase();
+  const q = foldDiacritics(query.trim());
   const qId = q.replace(/[-\s]/g, "");
   const source: Iterable<string> =
     learnsetFilter && learnsetFilter.size > 0
@@ -1012,15 +1013,15 @@ export function searchPickableMoves(
       results.push(m);
       continue;
     }
-    if (m.nameFr.toLowerCase().includes(q)) {
+    if (foldDiacritics(m.nameFr).includes(q)) {
       results.push(m);
       continue;
     }
-    if (m.nameEn.toLowerCase().includes(q)) {
+    if (foldDiacritics(m.nameEn).includes(q)) {
       results.push(m);
       continue;
     }
-    if (m.aliases.some((a) => a.includes(q))) {
+    if (m.aliases.some((a) => foldDiacritics(a).includes(q))) {
       results.push(m);
     }
   }

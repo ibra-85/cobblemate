@@ -21,6 +21,7 @@ import { TypeBadge } from "@/components/site/type-badge";
 import { TYPES_META } from "@/data/types";
 import type { Move, PokemonTypeId } from "@/types";
 import { cn } from "@/lib/utils";
+import { foldDiacritics } from "@/lib/search";
 
 const CATEGORY_LABEL_FR: Record<Move["category"], string> = {
   physical: "Physique",
@@ -70,12 +71,12 @@ export function MovePicker({ moves, value, onPick, suggested }: Props) {
   const selected = value ? moves.find((m) => m.id === value) ?? null : null;
 
   const results = useMemo(() => {
-    const q = deferredQuery.trim().toLowerCase();
+    const q = foldDiacritics(deferredQuery.trim());
     if (!q) return moves;
     return moves.filter((m) => {
-      const fr = m.name.toLowerCase();
-      const en = (m.nameEn ?? "").toLowerCase();
-      const typeLabel = TYPES_META[m.type]?.label?.toLowerCase() ?? "";
+      const fr = foldDiacritics(m.name);
+      const en = foldDiacritics(m.nameEn ?? "");
+      const typeLabel = foldDiacritics(TYPES_META[m.type]?.label ?? "");
       return (
         fr.includes(q) ||
         en.includes(q) ||

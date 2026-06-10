@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import type { MoveLearners } from "@/data/move-learners";
+import { foldDiacritics } from "@/lib/search";
 
 type MethodKey = keyof MoveLearners;
 
@@ -35,7 +36,7 @@ const METHOD_ORDER: MethodKey[] = ["level", "tm", "egg", "tutor", "legacy", "spe
  */
 export function LearnersPanel({ learners }: { learners: MoveLearners }) {
   const [query, setQuery] = useState("");
-  const q = query.trim().toLowerCase();
+  const q = foldDiacritics(query.trim());
 
   // Surface only the methods that have entries, in the canonical order.
   const tabs = useMemo(
@@ -80,7 +81,7 @@ export function LearnersPanel({ learners }: { learners: MoveLearners }) {
   }
 
   const filter = (list: typeof resolved[MethodKey]) =>
-    q ? list.filter((e) => e.name.toLowerCase().includes(q)) : list;
+    q ? list.filter((e) => foldDiacritics(e.name).includes(q)) : list;
 
   return (
     <Card>

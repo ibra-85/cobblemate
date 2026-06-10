@@ -218,17 +218,152 @@ export function minecraftBiomeLabel(id: string): string {
 }
 
 /**
+ * Hardcoded fallback that maps each Cobblemon `is_*` tag to the
+ * vanilla Minecraft biomes the tag is meant to cover. Necessary
+ * because the generated `BIOME_TAGS` data references upstream tags
+ * (`minecraft:is_jungle`, `c:is_jungle`) without expanding them —
+ * so Bulbasaur's `#cobblemon:is_jungle` resolves to zero vanilla
+ * biomes in the generated data alone.
+ *
+ * Curated against the 1.20+ vanilla biome inventory. Whenever Mojang
+ * ships a new biome, add it here so the wishlist and pokesnacks UIs
+ * keep pointing players at the right place to hunt.
+ */
+const VANILLA_FALLBACK: Record<string, string[]> = {
+  // ─── Jungles / tropical ─────────────────────────────────────────
+  is_jungle:           ["minecraft:jungle", "minecraft:bamboo_jungle", "minecraft:sparse_jungle"],
+  is_bamboo:           ["minecraft:bamboo_jungle"],
+  is_tropical_island:  ["minecraft:jungle", "minecraft:sparse_jungle"],
+  is_lush:             ["minecraft:jungle", "minecraft:bamboo_jungle", "minecraft:lush_caves"],
+
+  // ─── Forests / taïgas ───────────────────────────────────────────
+  is_forest:           ["minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest",
+                        "minecraft:old_growth_birch_forest", "minecraft:dark_forest",
+                        "minecraft:windswept_forest", "minecraft:taiga", "minecraft:snowy_taiga",
+                        "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga",
+                        "minecraft:grove"],
+  is_dark_forest:      ["minecraft:dark_forest"],
+  is_dark:             ["minecraft:dark_forest", "minecraft:deep_dark"],
+  is_spooky:           ["minecraft:dark_forest"],
+  is_taiga:            ["minecraft:taiga", "minecraft:snowy_taiga",
+                        "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga"],
+  is_snowy_taiga:      ["minecraft:snowy_taiga"],
+  is_snowy_forest:     ["minecraft:snowy_taiga"],
+  is_cherry_blossom:   ["minecraft:cherry_grove"],
+  is_floral:           ["minecraft:flower_forest", "minecraft:sunflower_plains",
+                        "minecraft:meadow", "minecraft:cherry_grove"],
+  is_spring:           ["minecraft:flower_forest", "minecraft:cherry_grove"],
+  is_summer:           ["minecraft:plains", "minecraft:sunflower_plains"],
+  is_autumn:           ["minecraft:forest", "minecraft:birch_forest"],
+
+  // ─── Plaines / herbages ─────────────────────────────────────────
+  is_plains:           ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:snowy_plains"],
+  is_grassland:        ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow"],
+  is_shrubland:        ["minecraft:plains", "minecraft:savanna"],
+  is_sparse:           ["minecraft:sparse_jungle", "minecraft:savanna"],
+
+  // ─── Savane / aride ─────────────────────────────────────────────
+  is_savanna:          ["minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna"],
+  is_desert:           ["minecraft:desert"],
+  is_badlands:         ["minecraft:badlands", "minecraft:wooded_badlands", "minecraft:eroded_badlands"],
+  is_arid:             ["minecraft:desert", "minecraft:badlands", "minecraft:wooded_badlands",
+                        "minecraft:eroded_badlands", "minecraft:savanna",
+                        "minecraft:savanna_plateau", "minecraft:windswept_savanna"],
+  is_sandy:            ["minecraft:desert", "minecraft:beach", "minecraft:badlands"],
+
+  // ─── Eau ────────────────────────────────────────────────────────
+  is_ocean:            ["minecraft:ocean", "minecraft:deep_ocean",
+                        "minecraft:warm_ocean", "minecraft:lukewarm_ocean", "minecraft:deep_lukewarm_ocean",
+                        "minecraft:cold_ocean", "minecraft:deep_cold_ocean",
+                        "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean"],
+  is_warm_ocean:       ["minecraft:warm_ocean", "minecraft:lukewarm_ocean", "minecraft:deep_lukewarm_ocean"],
+  is_lukewarm_ocean:   ["minecraft:lukewarm_ocean", "minecraft:deep_lukewarm_ocean"],
+  is_temperate_ocean:  ["minecraft:ocean", "minecraft:deep_ocean"],
+  is_cold_ocean:       ["minecraft:cold_ocean", "minecraft:deep_cold_ocean"],
+  is_frozen_ocean:     ["minecraft:frozen_ocean", "minecraft:deep_frozen_ocean"],
+  is_deep_ocean:       ["minecraft:deep_ocean", "minecraft:deep_lukewarm_ocean",
+                        "minecraft:deep_cold_ocean", "minecraft:deep_frozen_ocean"],
+  is_river:            ["minecraft:river", "minecraft:frozen_river"],
+  is_freshwater:       ["minecraft:river"],
+  is_beach:            ["minecraft:beach", "minecraft:snowy_beach"],
+  is_coast:            ["minecraft:beach", "minecraft:stony_shore", "minecraft:snowy_beach"],
+  is_swamp:            ["minecraft:swamp", "minecraft:mangrove_swamp"],
+
+  // ─── Froid / neige ──────────────────────────────────────────────
+  is_snowy:            ["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:snowy_beach",
+                        "minecraft:snowy_slopes", "minecraft:frozen_peaks", "minecraft:ice_spikes",
+                        "minecraft:frozen_river", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean",
+                        "minecraft:grove"],
+  is_cold:             ["minecraft:taiga", "minecraft:snowy_taiga", "minecraft:snowy_plains",
+                        "minecraft:snowy_beach", "minecraft:cold_ocean", "minecraft:frozen_ocean",
+                        "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills",
+                        "minecraft:windswept_forest", "minecraft:grove"],
+  is_freezing:         ["minecraft:frozen_peaks", "minecraft:snowy_slopes",
+                        "minecraft:ice_spikes", "minecraft:frozen_river"],
+  is_glacial:          ["minecraft:frozen_peaks", "minecraft:ice_spikes",
+                        "minecraft:frozen_river", "minecraft:frozen_ocean"],
+
+  // ─── Climat tempéré / chaud ─────────────────────────────────────
+  is_temperate:        ["minecraft:plains", "minecraft:forest", "minecraft:birch_forest",
+                        "minecraft:dark_forest", "minecraft:meadow", "minecraft:flower_forest",
+                        "minecraft:sunflower_plains", "minecraft:river"],
+  is_thermal:          ["minecraft:basalt_deltas"],
+
+  // ─── Montagnes ──────────────────────────────────────────────────
+  is_mountain:         ["minecraft:windswept_hills", "minecraft:windswept_gravelly_hills",
+                        "minecraft:snowy_slopes", "minecraft:frozen_peaks", "minecraft:jagged_peaks",
+                        "minecraft:stony_peaks", "minecraft:meadow", "minecraft:grove"],
+  is_hills:            ["minecraft:windswept_hills", "minecraft:windswept_gravelly_hills"],
+  is_peak:             ["minecraft:frozen_peaks", "minecraft:jagged_peaks", "minecraft:stony_peaks"],
+  is_highlands:        ["minecraft:meadow", "minecraft:grove"],
+  is_plateau:          ["minecraft:savanna_plateau", "minecraft:wooded_badlands"],
+
+  // ─── Cavernes ───────────────────────────────────────────────────
+  is_cave:             ["minecraft:lush_caves", "minecraft:dripstone_caves", "minecraft:deep_dark"],
+  is_dripstone:        ["minecraft:dripstone_caves"],
+  is_deep_dark:        ["minecraft:deep_dark"],
+
+  // ─── Spécifique ─────────────────────────────────────────────────
+  is_mushroom:         ["minecraft:mushroom_fields"],
+  is_magical:          ["minecraft:cherry_grove", "minecraft:flower_forest"],
+  is_volcanic:         ["minecraft:basalt_deltas"],
+  is_island:           ["minecraft:mushroom_fields"],
+
+  // ─── Nether / End ───────────────────────────────────────────────
+  is_nether:           ["minecraft:nether_wastes", "minecraft:crimson_forest",
+                        "minecraft:warped_forest", "minecraft:soul_sand_valley",
+                        "minecraft:basalt_deltas"],
+  is_nether_wasteland: ["minecraft:nether_wastes"],
+  is_end:              ["minecraft:the_end", "minecraft:end_highlands", "minecraft:end_midlands",
+                        "minecraft:end_barrens", "minecraft:small_end_islands"],
+  is_sky:              ["minecraft:the_end", "minecraft:end_highlands"],
+};
+
+/**
  * Vanilla Minecraft biomes that a Cobblemon `is_*` tag resolves to.
  * Filters out modded biomes (BiomesOPlenty, Terralith, Wythers…) so
  * the UI shows only the concrete places the player can reach in
  * vanilla — and keeps the list manageable: `is_overworld` resolves
  * to ~100 biomes total but only ~30 are vanilla. Sorted by FR label
  * for stable display order.
+ *
+ * Merges three sources, deduped:
+ *   1. Direct hits in BIOME_TAGS (`minecraft:foo` directly listed)
+ *   2. The hardcoded `VANILLA_FALLBACK` table — covers the most
+ *      common cases where the generated data references an upstream
+ *      tag (`minecraft:is_jungle`) without expanding it.
+ *   3. Any nested tag refs that themselves resolve via the fallback.
  */
 export function vanillaBiomesForTag(key: string): string[] {
-  const all = BIOME_TAGS[key]?.biomes ?? [];
-  const vanilla = all.filter((b) => b.startsWith("minecraft:"));
-  return [...vanilla].sort((a, b) =>
+  const set = new Set<string>();
+  const direct = BIOME_TAGS[key]?.biomes ?? [];
+  for (const b of direct) {
+    if (b.startsWith("minecraft:")) set.add(b);
+  }
+  // Fallback table — fills the gap when the generated data references
+  // an upstream tag without resolving it.
+  for (const b of VANILLA_FALLBACK[key] ?? []) set.add(b);
+  return [...set].sort((a, b) =>
     minecraftBiomeLabel(a).localeCompare(minecraftBiomeLabel(b), "fr"),
   );
 }

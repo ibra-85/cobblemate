@@ -61,6 +61,7 @@ import { TYPES_META } from "@/data/types";
 import { lookupMove } from "@/data/moves";
 import { allLearnableMoveIds, getMoveLearners } from "@/data/move-learners";
 import { cn } from "@/lib/utils";
+import { foldDiacritics } from "@/lib/search";
 import type { PokemonTypeId, MoveCategory } from "@/types";
 
 const CATEGORY_BADGE: Record<MoveCategory, string> = {
@@ -125,7 +126,7 @@ function buildRows(): MoveRow[] {
         accuracy: m.accuracy,
         pp: m.pp,
         learners,
-        haystack: `${m.name} ${nameEn} ${id}`.toLowerCase(),
+        haystack: foldDiacritics(`${m.name} ${nameEn} ${id}`),
       } satisfies MoveRow;
     })
     .filter((r): r is MoveRow => r !== null);
@@ -143,7 +144,7 @@ export default function MovesListingPage() {
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = foldDiacritics(query.trim());
     const list = allRows.filter((r) => {
       if (types.size > 0 && !types.has(r.type)) return false;
       if (categories.size > 0 && !categories.has(r.category)) return false;

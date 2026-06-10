@@ -11,6 +11,7 @@ import datasetRaw from "./pokesnacks.generated.json";
 import { BEST_GENERAL_OVERRIDES } from "./overrides";
 import { baitsForType } from "@/data/baits";
 import { getSpeciesExtras, type EvYield } from "@/data/species-extras";
+import { foldDiacritics } from "@/lib/search";
 import type { PokemonTypeId } from "@/types";
 
 // ─── Confidence flags ───────────────────────────────────────────
@@ -545,15 +546,15 @@ export function getAllFormsForDex(dex: number): PokesnackEntry[] {
 
 /** Cheap exact-match Pokémon lookup helpers for the UI search box. */
 export function searchPokemon(query: string, limit = 30): PokesnackEntry[] {
-  const q = query.trim().toLowerCase();
+  const q = foldDiacritics(query.trim());
   if (!q) return [];
   const out: PokesnackEntry[] = [];
   for (const e of POKESNACK_ENTRIES) {
     if (out.length >= limit) break;
     if (
       e.slug.includes(q) ||
-      e.name.en.toLowerCase().includes(q) ||
-      e.name.fr.toLowerCase().includes(q)
+      foldDiacritics(e.name.en).includes(q) ||
+      foldDiacritics(e.name.fr).includes(q)
     ) {
       out.push(e);
     }

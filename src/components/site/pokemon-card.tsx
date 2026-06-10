@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Check, CircleDashed } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
@@ -10,6 +10,7 @@ import type { Pokemon } from "@/types";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import { displayNameWithEnglish } from "@/lib/pokemon-form";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { useCaught } from "@/hooks/use-caught";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -21,6 +22,8 @@ export function PokemonCard({ pokemon, hrefQuery }: Props) {
   const href = `/pokedex/${pokemon.id}${hrefQuery ? `?${hrefQuery}` : ""}`;
   const { has, toggle, hydrated } = useWishlist();
   const wished = has(pokemon.id);
+  const caughtApi = useCaught();
+  const caught = caughtApi.has(pokemon.id);
 
   const primaryType = pokemon.types[0];
   const primaryColor = primaryType ? TYPES_META[primaryType].color : undefined;
@@ -28,7 +31,14 @@ export function PokemonCard({ pokemon, hrefQuery }: Props) {
   return (
     <div className="group relative">
       <Link href={href}>
-        <Card className="relative h-full overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:border-foreground/30">
+        <Card
+          className={cn(
+            "relative h-full overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:border-foreground/30",
+            // Same emerald "caught" tint as the wishlist cards so the
+            // living-dex state reads identically across the app.
+            caught && "border-emerald-500/40 bg-emerald-500/[0.04] dark:bg-emerald-400/[0.05]",
+          )}
+        >
           {/* Type-tinted background accent — subtle gradient from primary type color */}
           <div
             aria-hidden
@@ -109,6 +119,33 @@ export function PokemonCard({ pokemon, hrefQuery }: Props) {
           aria-label={wished ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
         >
           <Heart className={cn("size-3.5", wished && "fill-current")} />
+        </button>
+      )}
+
+      {/* Living-dex toggle — mirrors the wishlist heart on the other
+          corner. Caught mons keep the check visible; uncaught ones
+          reveal the dashed circle on hover only. */}
+      {caughtApi.hydrated && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            caughtApi.toggle(pokemon.id);
+          }}
+          className={cn(
+            "absolute left-2 top-2 z-10 grid size-7 place-items-center rounded-full border bg-background/90 backdrop-blur transition",
+            caught
+              ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400"
+              : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-foreground",
+          )}
+          aria-label={caught ? "Marquer comme non capturé" : "Marquer comme capturé"}
+        >
+          {caught ? (
+            <Check className="size-3.5" />
+          ) : (
+            <CircleDashed className="size-3.5" />
+          )}
         </button>
       )}
     </div>

@@ -1,21 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, MapPin, Clock, CloudSun, Layers, Key, Target, CircleDot } from "lucide-react";
+import {
+  ChevronDown, MapPin, Clock, CloudSun, Layers, Key, Target, CircleDot,
+  Bone, Plus, ArrowRight,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
+import { MinecraftPanel, MinecraftSlot } from "@/components/site/minecraft-item";
+import { VanillaBiomeList } from "@/components/site/vanilla-biome-list";
 import { POKEMON_BY_ID } from "@/data/pokemon";
+import { getFossilRecipe, fossilItemName } from "@/data/fossils";
 import { SPAWNS_BY_BIOME, type SpawnAggregate } from "@/data/spawns";
-import {
-  biomeLabel,
-  minecraftBiomeLabel,
-  vanillaBiomesForTag,
-} from "@/data/biomes";
+import { biomeLabel } from "@/data/biomes";
 import { getSpeciesExtras } from "@/data/species-extras";
+import { POKESNACK_ENTRIES } from "@/data/pokesnack-academy";
 import type { Pokemon, Rarity } from "@/types";
+
+const ACADEMY_BY_SLUG = new Map<string, (typeof POKESNACK_ENTRIES)[number]>(
+  POKESNACK_ENTRIES.map((e) => [e.slug, e]),
+);
+
+/**
+ * Cobblemon tag keys this Pokémon spawns in, merged from BOTH data
+ * sources we ship:
+ *
+ *  - Legacy `SpawnAggregate.biomes` — built from the mod's
+ *    `spawn_pool_world/`. Uses bare keys (`is_jungle`).
+ *  - Academy `PokesnackEntry.spawn.biomes` — built from the Academy
+ *    dex. Uses prefixed tags (`#cobblemon:is_jungle`).
+ *
+ * Academy regularly carries categories the legacy build missed (e.g.
+ * Bulbasaur is also `is_tropical_island` on the server). Merging
+ * preserves the legacy metadata (level range, weather, …) while
+ * surfacing every biome the player can actually find the mon in.
+ */
+function mergeBiomeTags(legacy: string[], slug: string): string[] {
+  const set = new Set<string>(legacy);
+  const academy = ACADEMY_BY_SLUG.get(slug);
+  if (academy) {
+    for (const raw of academy.spawn.biomes) {
+      // "#cobblemon:is_jungle" → "is_jungle" so it matches the legacy
+      // key shape and resolves through `vanillaBiomesForTag` /
+      // `biomeLabel` without special-casing.
+      if (raw.startsWith("#")) {
+        const key = raw.replace(/^#?\w+:/, "");
+        if (key) set.add(key);
+      } else if (!raw.includes(":")) {
+        set.add(raw);
+      }
+      // Concrete `minecraft:foo` / modded ids are intentionally
+      // dropped: the legacy guide groups by *tag*, then drills into
+      // vanilla biomes via VanillaBiomeList.
+    }
+  }
+  return [...set];
+}
 
 const TIME_LABEL: Record<string, string> = {
   any: "Toute heure", day: "Jour", night: "Nuit", dusk: "Crépuscule", dawn: "Aube",
@@ -59,7 +102,21 @@ interface Props {
  *    whether the pool is crowded.
  */
 export function CatchingGuide({ pokemon, spawn }: Props) {
-  if (!spawn) {
+  // Even without a legacy SpawnAggregate, the Academy data may carry
+  // biomes (the legacy build occasionally lacks an entry where Academy
+  // has one — Bulbasaur's `is_tropical_island` is the canonical
+  // example). Try the Academy union before declaring "no natural
+  // spawn".
+  const merged = mergeBiomeTags(spawn?.biomes ?? [], pokemon.id);
+  const fossils = getFossilRecipe(pokemon.id);
+
+  if (!spawn && merged.length === 0) {
+    // Fossil species don't spawn in the wild — the revival recipe IS
+    // the "where to find it" answer, so it replaces the generic
+    // no-spawn notice entirely.
+    if (fossils) {
+      return <FossilGuide pokemon={pokemon} fossils={fossils} naturalSpawn={false} />;
+    }
     return (
       <div className="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground">
         Ce Pokémon n&apos;a pas de spawn naturel — il est obtenu via évolution,
@@ -68,14 +125,19 @@ export function CatchingGuide({ pokemon, spawn }: Props) {
     );
   }
 
-  const cobblemonBiomes = spawn.biomes.filter(
+  const cobblemonBiomes = merged.filter(
     (b) => /(^|\/)is_/.test(b) && !b.includes(":"),
   );
 
   if (cobblemonBiomes.length === 0) {
     return (
-      <div className="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground">
-        Pas de catégorie de biome lisible (uniquement des biomes spécifiques modés).
+      <div className="flex flex-col gap-4">
+        {fossils && (
+          <FossilGuide pokemon={pokemon} fossils={fossils} naturalSpawn={false} />
+        )}
+        <div className="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground">
+          Pas de catégorie de biome lisible (uniquement des biomes spécifiques modés).
+        </div>
       </div>
     );
   }
@@ -84,11 +146,16 @@ export function CatchingGuide({ pokemon, spawn }: Props) {
   // distinguishable (the data is aggregated, all biomes share the same
   // rarity list).
   const rarityOrder: Rarity[] = ["ultra-rare", "rare", "uncommon", "common"];
-  const headlineRarity = rarityOrder.find((r) => spawn.rarities.includes(r));
+  const headlineRarity = spawn
+    ? rarityOrder.find((r) => spawn.rarities.includes(r))
+    : undefined;
 
   return (
     <div className="flex flex-col gap-4">
-      <SpawnMetaStrip spawn={spawn} pokemonId={pokemon.id} />
+      {fossils && (
+        <FossilGuide pokemon={pokemon} fossils={fossils} naturalSpawn />
+      )}
+      {spawn && <SpawnMetaStrip spawn={spawn} pokemonId={pokemon.id} />}
 
       {cobblemonBiomes.map((biome, i) => (
         <div key={biome}>
@@ -97,10 +164,89 @@ export function CatchingGuide({ pokemon, spawn }: Props) {
             pokemon={pokemon}
             biome={biome}
             rarity={headlineRarity}
-            levelRange={spawn.levelRange}
+            levelRange={spawn?.levelRange ?? null}
           />
         </div>
       ))}
+    </div>
+  );
+}
+
+/**
+ * "Pokémon fossile" — revival walkthrough for species obtained via the
+ * resurrection machine. Shows the exact fossil item(s) to insert
+ * (Galar species combine TWO pieces — Dracovish = Fossile Dragon +
+ * Fossile Poisson) as Minecraft-style slots, then the four in-game
+ * steps. Replaces the generic "no natural spawn" notice for these
+ * species; when the mon ALSO spawns naturally, it renders above the
+ * biome guide with an adapted intro.
+ */
+function FossilGuide({
+  pokemon,
+  fossils,
+  naturalSpawn,
+}: {
+  pokemon: Pokemon;
+  fossils: string[];
+  /** Whether the species also has wild spawns (changes the intro). */
+  naturalSpawn: boolean;
+}) {
+  const names = fossils.map(fossilItemName);
+  const plural = fossils.length > 1;
+  return (
+    <div className="flex flex-col gap-3 rounded-md border bg-muted/40 p-4">
+      <div className="flex items-center gap-2 text-sm">
+        <Bone className="size-4 text-muted-foreground" />
+        <span className="font-medium">Pokémon fossile</span>
+        <span className="text-muted-foreground">
+          {naturalSpawn
+            ? "— peut aussi être ressuscité en machine"
+            : plural
+              ? `— ${pokemon.name} se ressuscite en combinant deux fossiles`
+              : `— ${pokemon.name} se ressuscite à partir d'un fossile`}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <MinecraftPanel className="rounded-sm">
+          <div className="flex items-center gap-2">
+            {fossils.map((f, i) => (
+              <Fragment key={f}>
+                {i > 0 && (
+                  <Plus className="size-4 shrink-0 text-[#373737]" />
+                )}
+                <MinecraftSlot item={f} title={fossilItemName(f)} />
+              </Fragment>
+            ))}
+            <ArrowRight className="size-5 shrink-0 text-[#373737]" />
+            <div className="size-12">
+              <PokemonSprite pokemon={pokemon} />
+            </div>
+          </div>
+        </MinecraftPanel>
+        <span className="text-sm font-medium">{names.join(" + ")}</span>
+      </div>
+
+      <ol className="flex list-decimal flex-col gap-1 pl-5 text-xs text-muted-foreground">
+        <li>
+          Obtenez {plural ? "les deux fossiles" : "le fossile"} en brossant le
+          sable et le gravier suspects des structures fossiles (pinceau
+          d&apos;archéologie).
+        </li>
+        <li>
+          Assemblez la machine de résurrection : Analyseur de fossiles + Cuve
+          de restauration + Moniteur de données.
+        </li>
+        <li>
+          Insérez {plural ? "les fossiles" : "le fossile"} dans
+          l&apos;analyseur, puis remplissez la cuve de matières organiques
+          (64 points — graines, nourriture, plantes…).
+        </li>
+        <li>
+          Après ~12 minutes, capturez {pokemon.name} avec une Poké Ball sur la
+          cuve — ou cassez-la pour le relâcher sauvage.
+        </li>
+      </ol>
     </div>
   );
 }
@@ -327,56 +473,3 @@ function CompetitorCard({
   );
 }
 
-/**
- * Inline list of the concrete vanilla Minecraft biomes a Cobblemon
- * `is_*` tag resolves to. Categories like "Magique" or "Overworld"
- * are too abstract to tell the player *where* to actually look — this
- * spells out the real biome names ("Plaines", "Forêt fleurie", …) so
- * the player can recognise them in-game.
- *
- * Modded biomes (BiomesOPlenty, Terralith, Wythers, …) are filtered
- * out by `vanillaBiomesForTag` — keeping the list manageable and
- * pinned to what the player will see in F3 on a vanilla world.
- *
- * Above 12 biomes (e.g. `is_overworld` spans ~30) we collapse to the
- * first 12 + a `+N de plus` toggle so the strip never dominates the
- * card.
- */
-function VanillaBiomeList({ biome }: { biome: string }) {
-  const ids = vanillaBiomesForTag(biome);
-  const [showAll, setShowAll] = useState(false);
-  const VISIBLE_INITIAL = 12;
-  if (ids.length === 0) return null;
-  const visible = showAll ? ids : ids.slice(0, VISIBLE_INITIAL);
-  const hidden = ids.length - visible.length;
-  return (
-    <div className="flex flex-wrap items-center gap-1">
-      {visible.map((id) => (
-        <span
-          key={id}
-          className="rounded-md border bg-muted/30 px-2 py-0.5 text-[11px] text-muted-foreground"
-        >
-          {minecraftBiomeLabel(id)}
-        </span>
-      ))}
-      {hidden > 0 && !showAll && (
-        <button
-          type="button"
-          onClick={() => setShowAll(true)}
-          className="rounded-md border border-dashed border-muted-foreground/40 bg-transparent px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-accent/40 hover:text-foreground"
-        >
-          +{hidden} de plus
-        </button>
-      )}
-      {showAll && ids.length > VISIBLE_INITIAL && (
-        <button
-          type="button"
-          onClick={() => setShowAll(false)}
-          className="rounded-md border border-dashed border-muted-foreground/40 bg-transparent px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-accent/40 hover:text-foreground"
-        >
-          Réduire
-        </button>
-      )}
-    </div>
-  );
-}

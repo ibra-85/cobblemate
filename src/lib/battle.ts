@@ -184,3 +184,90 @@ export function buildBattleRecommendation(
     threatTypes: Array.from(moveTypes),
   };
 }
+
+// ─── Raid mode: rank a candidate pool against a TYPE COMBO ──────────
+//
+// The use case: Cobblemon server "raid portals" advertise level + type
+// only (no specific species), the raid mon has inflated HP and self-
+// boosts each turn. The player needs the best 3 or 6 from their team
+// (or from the whole roster) that:
+//   - hit the type combo for ×2+ STAB (high single-turn damage matters
+//     more than sustain since the raid scales every turn);
+//   - take ≤×1 from the raid's STAB so they survive at least a few
+//     turns of incoming boosted hits.
+//
+// We reuse the existing CounterScore shape so the battle UI can render
+// the result with the same cards / sprites as the standard mode.
+
+export interface RaidRanking {
+  /** Defender type combo we ranked against. */
+  defenderTypes: PokemonTypeId[];
+  /** Ranked by composite score (offense*2 - incoming + BST/600). */
+  ranked: CounterScore[];
+  /** Types that hit the combo for >1×. Shown as "vulnérable à". */
+  weaknesses: PokemonTypeId[];
+  /** Types the combo resists. Shown so the player avoids those moves. */
+  resistances: PokemonTypeId[];
+  immunities: PokemonTypeId[];
+}
+
+/**
+ * Compute the ranked counter list for an arbitrary type combo over a
+ * candidate pool. When `pool` is omitted, the whole dex is scored so
+ * the UI can also offer "Top du roster" for players whose team is
+ * weak against the raid.
+ */
+export function rankAgainstTypes(
+  defenderTypes: PokemonTypeId[],
+  pool: Pokemon[] = POKEMON,
+  movesOverride?: Map<string, string[]>,
+): RaidRanking {
+  const ranked = pool
+    .map<CounterScore>((p) => {
+      // Offense: max effectiveness our STAB pushes onto the defender's type combo.
+      const bestOffense = Math.max(
+        ...p.types.map((t) =>
+          calculateTypeEffectiveness(t as PokemonTypeId, defenderTypes),
+        ),
+      );
+      // Incoming: defender's only known threat is its STAB (no species,
+      // so we can't read notableMoves). Worst-case max effectiveness
+      // they can hit us for.
+      const worstIncoming = Math.max(
+        ...defenderTypes.map((t) =>
+          calculateTypeEffectiveness(t, p.types),
+        ),
+      );
+
+      const movePool = movesOverride?.get(p.id) ?? p.notableMoves;
+      const moves = movePool
+        .map((id) => lookupMove(id))
+        .filter((m): m is Move => m !== null);
+      const bestMove = moves
+        .filter((m) => m.category !== "status" && m.power)
+        .sort((a, b) => {
+          const ea = calculateTypeEffectiveness(a.type, defenderTypes) * (a.power ?? 0);
+          const eb = calculateTypeEffectiveness(b.type, defenderTypes) * (b.power ?? 0);
+          return eb - ea;
+        })[0];
+
+      const score = bestOffense * 2 - worstIncoming + baseStatTotal(p) / 600;
+      return { pokemon: p, bestOffense, worstIncoming, score, bestMove };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return {
+    defenderTypes,
+    ranked,
+    weaknesses: ALL_TYPES.filter(
+      (t) => calculateTypeEffectiveness(t, defenderTypes) > 1,
+    ),
+    resistances: ALL_TYPES.filter((t) => {
+      const m = calculateTypeEffectiveness(t, defenderTypes);
+      return m > 0 && m < 1;
+    }),
+    immunities: ALL_TYPES.filter(
+      (t) => calculateTypeEffectiveness(t, defenderTypes) === 0,
+    ),
+  };
+}

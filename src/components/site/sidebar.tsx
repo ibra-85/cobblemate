@@ -12,6 +12,8 @@ import {
   Zap,
   Wand2,
   Cookie,
+  Map,
+  Dumbbell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSavedTeams } from "@/hooks/use-saved-teams";
@@ -21,6 +23,8 @@ import { NotesPanel } from "@/features/notes/notes-panel";
 export const NAV = [
   { href: "/",             label: "Dashboard", icon: LayoutDashboard, badge: "none" as const },
   { href: "/pokedex",      label: "Pokédex",   icon: BookOpen,        badge: "none" as const },
+  { href: "/biomes",       label: "Biomes",    icon: Map,             badge: "none" as const },
+  { href: "/ev-training",  label: "Farm d'EV", icon: Dumbbell,        badge: "none" as const },
   { href: "/moves",        label: "Attaques",  icon: Zap,             badge: "none" as const },
   { href: "/abilities",    label: "Talents",   icon: Wand2,           badge: "none" as const },
   { href: "/team-builder", label: "Builder",   icon: Users,           badge: "teams" as const },

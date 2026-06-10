@@ -14,6 +14,8 @@ import {
   LayoutGrid,
   Rows3,
   ArrowDownUp,
+  Check,
+  CircleDashed,
 } from "lucide-react";
 import {
   InputGroup,
@@ -44,9 +46,12 @@ import type { Pokemon } from "@/types";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import { searchPokemon } from "@/lib/search";
 import { cn } from "@/lib/utils";
+import { useCaught } from "@/hooks/use-caught";
 import { FiltersBar, type ActiveFilter } from "./filters-bar";
 
 type SortKey = "dex" | "name" | "bst" | "hp" | "attack" | "defense" | "spAtk" | "spDef" | "speed";
+
+type CaughtStatus = "all" | "caught" | "uncaught";
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "dex",     label: "N° National Dex" },
@@ -58,6 +63,16 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "spAtk",   label: "Atk. Spé" },
   { value: "spDef",   label: "Déf. Spé" },
   { value: "speed",   label: "Vitesse" },
+];
+
+const STATUS_OPTIONS: {
+  value: CaughtStatus;
+  label: string;
+  icon: React.ReactNode;
+}[] = [
+  { value: "all",      label: "Tous",     icon: null },
+  { value: "uncaught", label: "Restants", icon: <CircleDashed className="size-3.5 text-muted-foreground" /> },
+  { value: "caught",   label: "Capturés", icon: <Check className="size-3.5 text-emerald-600 dark:text-emerald-400" /> },
 ];
 
 const ROSTER_BST = POKEMON.map((p) => baseStatTotal(p));
@@ -77,10 +92,12 @@ export function PokedexExplorer() {
   // filtered list catches up on the next idle frame.
   const deferredQuery = useDeferredValue(query);
   const [filters, setFilters] = useState<ActiveFilter[]>([]);
+  const [status, setStatus] = useState<CaughtStatus>("all");
   const [sortKey, setSortKey] = useState<SortKey>("dex");
   const [sortDesc, setSortDesc] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const caught = useCaught();
 
   const generations = useMemo(
     () => Array.from(new Set(POKEMON.map((p) => p.generation))).sort(),
@@ -90,6 +107,12 @@ export function PokedexExplorer() {
   const filtered = useMemo(() => {
     let list = POKEMON;
     if (deferredQuery) list = searchPokemon(deferredQuery, list);
+
+    if (status !== "all") {
+      list = list.filter((p) =>
+        status === "caught" ? caught.has(p.id) : !caught.has(p.id),
+      );
+    }
 
     for (const f of filters) {
       if (f.kind === "power") {
@@ -115,7 +138,7 @@ export function PokedexExplorer() {
       else cmp = a.baseStats[sortKey] - b.baseStats[sortKey];
       return sortDesc ? -cmp : cmp;
     });
-  }, [deferredQuery, filters, sortKey, sortDesc]);
+  }, [deferredQuery, filters, status, caught, sortKey, sortDesc]);
 
   // Reset the visible window whenever the result set changes — otherwise
   // scrolling deep into a long roster, then narrowing filters, would
@@ -129,7 +152,10 @@ export function PokedexExplorer() {
   // `react-hooks/set-state-in-effect` cascade-render rule.
   // `JSON.stringify(filters)` already encodes both length and content;
   // no need to prepend the length separately.
-  const filterSignature = `${deferredQuery}|${JSON.stringify(filters)}|${sortKey}|${sortDesc}|${view}`;
+  // `status` is part of the signature; the caught id *set* deliberately
+  // isn't — ticking a card off mid-scroll shouldn't yank the window
+  // back to the top.
+  const filterSignature = `${deferredQuery}|${JSON.stringify(filters)}|${status}|${sortKey}|${sortDesc}|${view}`;
   const [prevFilterSignature, setPrevFilterSignature] = useState(filterSignature);
   if (prevFilterSignature !== filterSignature) {
     setPrevFilterSignature(filterSignature);
@@ -158,17 +184,20 @@ export function PokedexExplorer() {
     [filtered, visibleCount],
   );
 
-  const hasAny = query.length > 0 || filters.length > 0;
+  const hasAny = query.length > 0 || filters.length > 0 || status !== "all";
 
   function resetAll() {
     setQuery("");
     setFilters([]);
+    setStatus("all");
     setSortKey("dex");
     setSortDesc(false);
   }
 
   return (
     <div className="flex flex-col gap-5">
+      <DexProgress caught={caught} />
+
       {/* Single-row toolbar: search + filters + sort + view */}
       <div className="flex flex-wrap items-center gap-2">
         <InputGroup className="min-w-[14rem] flex-1 sm:max-w-xs">
@@ -199,6 +228,35 @@ export function PokedexExplorer() {
             powerMax: BST_MAX,
           }}
         />
+
+        {/* Living-dex status — Tous / Restants / Capturés. */}
+        <Select
+          value={status}
+          onValueChange={(v) => v && setStatus(v as CaughtStatus)}
+        >
+          <SelectTrigger
+            className="min-w-[8.5rem] bg-background"
+            aria-label="Filtrer par statut de capture"
+          >
+            <SelectValue placeholder="Statut">
+              {(value) =>
+                STATUS_OPTIONS.find((o) => o.value === value)?.label ?? "Statut"
+              }
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {STATUS_OPTIONS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  <span className="flex items-center gap-2">
+                    {o.icon}
+                    {o.label}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
         <div className="ml-auto flex items-center gap-2">
           <Select value={sortKey} onValueChange={(v) => v && setSortKey(v as SortKey)}>
@@ -328,6 +386,92 @@ export function PokedexExplorer() {
   );
 }
 
+/**
+ * Living-dex header — overall capture progress + per-generation
+ * breakdown. Counts only ids that still exist in the roster so a
+ * stale localStorage entry (renamed form, removed mon) can't push
+ * the bar past 100 %. Hidden numbers flash 0 during SSR then settle
+ * once the localStorage store hydrates — same trade-off as the
+ * wishlist header.
+ */
+function DexProgress({ caught }: { caught: ReturnType<typeof useCaught> }) {
+  const stats = useMemo(() => {
+    const byGen = new Map<number, { total: number; caught: number }>();
+    let caughtTotal = 0;
+    for (const p of POKEMON) {
+      const g = byGen.get(p.generation) ?? { total: 0, caught: 0 };
+      g.total++;
+      if (caught.has(p.id)) {
+        g.caught++;
+        caughtTotal++;
+      }
+      byGen.set(p.generation, g);
+    }
+    return {
+      caughtTotal,
+      byGen: [...byGen.entries()].sort((a, b) => a[0] - b[0]),
+    };
+  }, [caught]);
+
+  const total = POKEMON.length;
+  const pct = (stats.caughtTotal / Math.max(1, total)) * 100;
+
+  return (
+    <div className="flex flex-col gap-2.5 rounded-xl border bg-card p-4">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h2 className="font-heading text-sm font-semibold">Living dex</h2>
+        <span className="text-sm text-muted-foreground">
+          <strong className="font-mono text-foreground">{stats.caughtTotal}</strong>
+          {" / "}
+          <span className="font-mono">{total}</span> capturés
+          {stats.caughtTotal > 0 && (
+            <span className="ml-1 font-mono text-emerald-600 dark:text-emerald-400">
+              ({pct.toFixed(1).replace(".", ",")} %)
+            </span>
+          )}
+        </span>
+        {stats.caughtTotal === 0 && (
+          <span className="text-xs text-muted-foreground">
+            Survole une carte et clique le rond pointillé pour marquer un
+            Pokémon capturé.
+          </span>
+        )}
+      </div>
+
+      <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-emerald-500 transition-[width] duration-300"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {stats.byGen.map(([gen, g]) => {
+          const done = g.caught === g.total && g.total > 0;
+          return (
+            <span
+              key={gen}
+              title={`Génération ${gen} : ${g.caught} / ${g.total}`}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 font-mono text-[10px] tabular-nums",
+                done
+                  ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                  : "text-muted-foreground",
+              )}
+            >
+              G{gen}
+              <span className={cn(g.caught > 0 && !done && "text-foreground")}>
+                {g.caught}/{g.total}
+              </span>
+              {done && <Check className="size-3" />}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // Filter matcher — kept colocated for clarity; pure functions of the data.
 function matchFilter(
   p: Pokemon,
@@ -365,11 +509,13 @@ function matchFilter(
 }
 
 function CompactList({ list }: { list: Pokemon[] }) {
+  const caught = useCaught();
   return (
     <div className="overflow-x-auto rounded-xl border">
       <table className="w-full text-sm">
         <thead className="border-b bg-muted/40 text-xs uppercase text-muted-foreground">
           <tr>
+            <th className="w-10 p-3" aria-label="Capturé" />
             <th className="p-3 text-left">Pokémon</th>
             <th className="p-3 text-left">Types</th>
             <th className="p-3 text-right">HP</th>
@@ -382,8 +528,39 @@ function CompactList({ list }: { list: Pokemon[] }) {
           </tr>
         </thead>
         <tbody>
-          {list.map((p) => (
-            <tr key={p.id} className="border-b last:border-0 hover:bg-accent/40">
+          {list.map((p) => {
+            const isCaught = caught.has(p.id);
+            return (
+            <tr
+              key={p.id}
+              className={cn(
+                "border-b last:border-0 hover:bg-accent/40",
+                isCaught && "bg-emerald-500/[0.04] dark:bg-emerald-400/[0.05]",
+              )}
+            >
+              <td className="p-3">
+                {caught.hydrated && (
+                  <button
+                    type="button"
+                    onClick={() => caught.toggle(p.id)}
+                    className={cn(
+                      "grid size-6 place-items-center rounded-full border transition",
+                      isCaught
+                        ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400"
+                        : "text-muted-foreground/50 hover:text-foreground",
+                    )}
+                    aria-label={
+                      isCaught ? "Marquer comme non capturé" : "Marquer comme capturé"
+                    }
+                  >
+                    {isCaught ? (
+                      <Check className="size-3.5" />
+                    ) : (
+                      <CircleDashed className="size-3.5" />
+                    )}
+                  </button>
+                )}
+              </td>
               <td className="p-3">
                 <Link
                   href={`/pokedex/${p.id}`}
@@ -413,7 +590,8 @@ function CompactList({ list }: { list: Pokemon[] }) {
                 </Badge>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

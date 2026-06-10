@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TypeBadges } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { WishlistButton } from "@/components/site/wishlist-button";
+import { CaughtButton } from "@/components/site/caught-button";
 import { CompareDialog } from "@/features/pokedex/compare-dialog";
 import { PokemonDetailsModal } from "@/features/pokedex/pokemon-details-modal";
 import { getSpeciesExtras } from "@/data/species-extras";
@@ -12,7 +13,20 @@ import { displayNameWithEnglish } from "@/lib/pokemon-form";
 import { abilityDisplayFr } from "@/lib/ability-utils";
 import { baseStatTotal } from "@/lib/pokemon-utils";
 import type { SpawnAggregate } from "@/data/spawns";
+import { POKESNACK_ENTRIES } from "@/data/pokesnack-academy";
 import type { Pokemon, Rarity } from "@/types";
+
+// Cross-reference index — Academy carries spawn info for mons the
+// legacy `SPAWNS_BY_ID` dataset misses (e.g. Iron Hands has no entry
+// in spawns-generated.json but Academy lists `is_mountain`). The
+// "Pas de spawn naturel" line keys on the legacy dataset alone; gate
+// it through Academy too so the hero doesn't lie when only Academy
+// has data.
+const ACADEMY_HAS_SPAWN = new Set<string>(
+  POKESNACK_ENTRIES
+    .filter((e) => e.spawn.biomes.length > 0)
+    .map((e) => e.slug),
+);
 
 const CATEGORY_LABEL: Record<string, { label: string; tone: string }> = {
   legendary:   { label: "Légendaire",   tone: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40" },
@@ -108,6 +122,11 @@ export function PokemonHero({ pokemon, spawn }: Props) {
           {/* Icon actions on the right edge of the same line */}
           <div className="ml-auto flex items-center gap-1">
             <PokemonDetailsModal pokemon={pokemon} iconOnly />
+            <CaughtButton
+              pokemonId={pokemon.id}
+              pokemonName={pokemon.name}
+              size="icon"
+            />
             <WishlistButton
               pokemonId={pokemon.id}
               pokemonName={pokemon.name}
@@ -198,7 +217,7 @@ function DetailRows({
     ),
   });
 
-  if (!spawn) {
+  if (!spawn && !ACADEMY_HAS_SPAWN.has(pokemon.id)) {
     rows.push({
       label: "Spawn",
       value: <span className="italic text-muted-foreground">Pas de spawn naturel</span>,

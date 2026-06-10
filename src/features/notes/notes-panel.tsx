@@ -11,6 +11,7 @@ import {
   GripVertical,
 } from "lucide-react";
 import { formatRelativeTime } from "@/lib/format-time";
+import { foldDiacritics } from "@/lib/search";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -59,10 +60,10 @@ export function NotesPanel({ variant = "default" }: Props) {
   // when the user clears the search.
   const filtered = search.trim()
     ? notes.filter((n) => {
-        const q = search.toLowerCase();
+        const q = foldDiacritics(search);
         return (
-          n.title.toLowerCase().includes(q) ||
-          n.body.toLowerCase().includes(q)
+          foldDiacritics(n.title).includes(q) ||
+          foldDiacritics(n.body).includes(q)
         );
       })
     : notes;

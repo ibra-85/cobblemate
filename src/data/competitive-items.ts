@@ -42,6 +42,7 @@ export type ItemCategoryHint =
   | "species-specific";
 
 import { lookupItem } from "./items-pokeapi";
+import { foldDiacritics } from "@/lib/search";
 
 export interface CompetitiveItem {
   id: string;
@@ -786,15 +787,15 @@ function humaniseItemId(id: string): string {
  * id-shaped queries also work.
  */
 export function searchItems(query: string): CompetitiveItem[] {
-  const q = query.trim().toLowerCase();
+  const q = foldDiacritics(query.trim());
   if (!q) return COMPETITIVE_ITEMS;
   const qId = q.replace(/[-\s]/g, "_");
   return COMPETITIVE_ITEMS.filter((it) => {
     if (it.id.includes(qId)) return true;
-    if (it.nameFr.toLowerCase().includes(q)) return true;
-    if (it.nameEn.toLowerCase().includes(q)) return true;
+    if (foldDiacritics(it.nameFr).includes(q)) return true;
+    if (foldDiacritics(it.nameEn).includes(q)) return true;
     for (const alias of it.aliases) {
-      if (alias.includes(q)) return true;
+      if (foldDiacritics(alias).includes(q)) return true;
     }
     return false;
   });

@@ -10,7 +10,10 @@ export default function WishlistPage() {
           Wishlist de capture
         </h1>
         <p className="text-sm text-muted-foreground">
-          Les Pokémon que tu veux encore attraper, avec leurs spawns et snacks.
+          Les Pokémon que tu veux attraper — biomes Minecraft vanilla,
+          recette &laquo;&nbsp;Meilleur choix&nbsp;&raquo; (EV-attractor) et EV yield
+          pour chacun. Marque les captures, filtre par type/rareté, ou
+          groupe par biome pour planifier tes sessions de chasse.
         </p>
       </header>
       <WishlistView />

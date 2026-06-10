@@ -18,6 +18,7 @@ import {
 import { ItemIcon } from "@/components/site/minecraft-item";
 import { ITEMS } from "@/data/items";
 import { cn } from "@/lib/utils";
+import { foldDiacritics } from "@/lib/search";
 import type { Item, ItemCategory } from "@/types";
 import {
   ItemsFiltersBar,
@@ -93,7 +94,7 @@ export default function ItemsPage() {
   const [filters, setFilters] = useState<ItemsFilter[]>([]);
 
   const filteredItems = useMemo(() => {
-    const q = query.toLowerCase().trim();
+    const q = foldDiacritics(query.trim());
     // Pre-build set lookups so the inner loop is O(F·N) instead of
     // O(F·V·N) — same pattern the pokesnacks page uses, kept fast
     // for the ~260-item catalog. The cost matters only when the
@@ -103,7 +104,7 @@ export default function ItemsPage() {
       .filter((f) => f.values.length > 0)
       .map((f) => ({ kind: f.kind, mode: f.mode, set: new Set(f.values) }));
     return ITEMS.filter((i) => {
-      if (q && !i.name.toLowerCase().includes(q) && !i.id.includes(q))
+      if (q && !foldDiacritics(i.name).includes(q) && !i.id.includes(q))
         return false;
       for (const f of filterSets) {
         const fieldValue =

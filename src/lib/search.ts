@@ -3,11 +3,33 @@ import { SPAWNS, SPAWNS_BY_ID, type SpawnAggregate } from "@/data/spawns";
 import { POKESNACKS } from "@/data/pokesnacks";
 import type { Pokemon, PokemonTypeId, Rarity } from "@/types";
 
-const norm = (s: string) =>
-  s
+/**
+ * Lowercases, strips combining diacritical marks (NFD-decompose +
+ * remove U+0300..U+036F), and normalises separators (hyphens, slashes,
+ * underscores → space; collapse runs of spaces). Used by every search
+ * box on the site so:
+ *
+ *   - `electrik` matches `Électrik`
+ *   - `flotte meche` matches `Flotte-Mèche`
+ *   - `zeroid` matches `Zéroïd`
+ *
+ * Apply to BOTH the indexed haystack AND the user query — folding
+ * only one side never matches a folded character against an accented
+ * one.
+ */
+export function foldDiacritics(s: string): string {
+  return s
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "");
+    .replace(/[̀-ͯ]/g, "")
+    // Collapse any non-alphanumeric run to a single space — covers
+    // hyphens, underscores, slashes, colons (`Type: Null`),
+    // parentheses (`Pikachu (Cosplay)`), apostrophes, etc.
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+const norm = foldDiacritics;
 
 export function searchPokemon(query: string, list: Pokemon[] = POKEMON): Pokemon[] {
   const q = norm(query.trim());

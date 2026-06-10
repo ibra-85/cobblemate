@@ -59,6 +59,7 @@ import {
   PokesnacksFiltersBar,
   type PokesnackFilter,
 } from "@/features/pokesnacks/filters-bar";
+import { foldDiacritics } from "@/lib/search";
 
 // ─── Constants ──────────────────────────────────────────────────
 
@@ -184,7 +185,9 @@ interface IndexedEntry {
 }
 const SEARCH_INDEX: IndexedEntry[] = POKESNACK_ENTRIES_FILTERED.map((e) => ({
   entry: e,
-  haystack: `${e.slug} ${e.name.en} ${e.name.fr} ${e.types.join(" ")} ${e.nationalDex ?? ""}`.toLowerCase(),
+  haystack: foldDiacritics(
+    `${e.slug} ${e.name.en} ${e.name.fr} ${e.types.join(" ")} ${e.nationalDex ?? ""}`,
+  ),
 }));
 
 // Pre-build the biome facet list once — it never changes.
@@ -235,7 +238,7 @@ export default function PokeSnacksPage() {
   // value set so the inner loop is two `Set.has` lookups instead of
   // an N-allocs switch on every entry.
   const filtered = useMemo(() => {
-    const q = deferredQuery.trim().toLowerCase();
+    const q = foldDiacritics(deferredQuery.trim());
     const activeFilters = filters.filter((f) => f.values.length > 0);
     // Pre-build set lookups once per memo run — the original code
     // called `values.includes()` inside the per-entry loop which is

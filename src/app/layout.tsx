@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/site/theme-provider";
 import { WishlistProvider } from "@/hooks/use-wishlist";
+import { CaughtProvider } from "@/hooks/use-caught";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
@@ -36,6 +37,7 @@ export default function RootLayout({
       <body className="min-h-full bg-background font-sans text-foreground">
         <ThemeProvider>
           <WishlistProvider>
+            <CaughtProvider>
             <TooltipProvider delay={0}>
               <div className="flex min-h-screen">
                 <Sidebar />
@@ -56,6 +58,7 @@ export default function RootLayout({
               </div>
               <Toaster richColors closeButton />
             </TooltipProvider>
+            </CaughtProvider>
           </WishlistProvider>
         </ThemeProvider>
       </body>

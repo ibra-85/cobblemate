@@ -13,6 +13,10 @@ import {
   Calculator,
   Wand2,
   Cookie,
+  // Aliased — a bare `Map` import would shadow the global Map
+  // constructor used by the search indexes below.
+  Map as MapIcon,
+  Dumbbell,
 } from "lucide-react";
 import {
   Command,
@@ -47,6 +51,7 @@ import { ItemIcon } from "@/components/site/minecraft-item";
 import { MobileNav } from "@/components/site/mobile-nav";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { cn } from "@/lib/utils";
+import { foldDiacritics } from "@/lib/search";
 import type { PokemonTypeId, Pokesnack } from "@/types";
 
 const CATEGORY_BADGE_LABEL: Record<string, string> = {
@@ -56,6 +61,8 @@ const CATEGORY_BADGE_LABEL: Record<string, string> = {
 const QUICK_ACTIONS = [
   { href: "/",                label: "Dashboard",      icon: LayoutDashboard, hint: "Vue d'ensemble" },
   { href: "/pokedex",         label: "Pokédex",        icon: BookOpen,        hint: "Parcourir 1186 Pokémon" },
+  { href: "/biomes",          label: "Biomes",         icon: MapIcon,         hint: "Qui spawne dans ce biome ?" },
+  { href: "/ev-training",     label: "Farm d'EV",      icon: Dumbbell,        hint: "Quelles cibles K.O. pour chaque stat" },
   { href: "/battle",          label: "Combat",         icon: Swords,          hint: "Assistant + matrice team-vs-team" },
   { href: "/battle?tab=calc", label: "Calc de dégâts", icon: Calculator,      hint: "Simuler un coup" },
   { href: "/team-builder",    label: "Team Builder",   icon: Users,           hint: "Composer son équipe" },
@@ -119,7 +126,10 @@ interface SnackHit {
  * shape so we don't need a fancy fuzzy library for ~2.5k rows.
  */
 function haystack(...parts: (string | number | undefined | null)[]): string {
-  return parts.filter(Boolean).join(" ").toLowerCase();
+  // Fold diacritics + lowercase so "electrik" matches "Électrik" and
+  // "flotte meche" matches "Flotte-Mèche". Cheaper to do this once at
+  // index-build time than per-keystroke per-row.
+  return foldDiacritics(parts.filter(Boolean).join(" "));
 }
 
 export function Header() {
@@ -251,7 +261,7 @@ export function Header() {
   // is roughly free at this scale. The cap is per-category which
   // also caps how many `CommandItem`s React mounts at once.
   const results = useMemo(() => {
-    const q = deferredQuery.trim().toLowerCase();
+    const q = foldDiacritics(deferredQuery.trim());
     if (!q) {
       return {
         pokemon: [] as PokemonHit[],

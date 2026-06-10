@@ -25,6 +25,7 @@ import {
   allAbilitySlugs,
 } from "@/data/abilities-pokeapi";
 import { frAbility } from "@/data/smogon";
+import { foldDiacritics } from "@/lib/search";
 
 type SortKey = "name" | "learners";
 
@@ -60,7 +61,7 @@ function buildRows(): AbilityRow[] {
       shortEffect: a.shortEffect,
       learners: learners.length,
       hiddenLearners: hidden,
-      haystack: `${nameFr} ${a.nameEn} ${slug}`.toLowerCase(),
+      haystack: foldDiacritics(`${nameFr} ${a.nameEn} ${slug}`),
     });
   }
   return out;
@@ -74,7 +75,7 @@ export default function AbilitiesListingPage() {
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = foldDiacritics(query.trim());
     const list = allRows.filter((r) => !q || r.haystack.includes(q));
     list.sort((a, b) => {
       const dir = sortDesc ? -1 : 1;
