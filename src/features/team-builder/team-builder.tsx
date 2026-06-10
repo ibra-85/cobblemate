@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   Check,
   ChevronDown,
@@ -34,6 +34,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { POKEMON_BY_ID } from "@/data/pokemon";
 import { cn } from "@/lib/utils";
@@ -59,7 +67,31 @@ import { TeamShareDialog } from "./team-share-dialog";
 import { TeamStatsCard } from "./team-stats-card";
 import { toast } from "sonner";
 
-const EMPTY = (): TeamSlot[] => Array.from({ length: 6 }, () => ({ pokemonId: null }));
+const EMPTY = (size: number = 6): TeamSlot[] =>
+  Array.from({ length: size }, () => ({ pokemonId: null }));
+
+/** Team formats the builder supports. The slot-array length IS the
+ *  format — saved teams and share codes carry it implicitly. */
+const TEAM_SIZES = [3, 4, 5, 6] as const;
+
+/**
+ * Resize the slot grid. Growing appends empty slots; shrinking drops
+ * empty slots from the end first. Returns `null` when the new size
+ * can't hold the current lineup (more filled slots than `size`) —
+ * the caller surfaces a toast instead of silently dropping mons.
+ */
+function resizeSlots(prev: TeamSlot[], size: number): TeamSlot[] | null {
+  if (size >= prev.length) {
+    return [...prev, ...EMPTY(size - prev.length)];
+  }
+  const filled = prev.filter((s) => s.pokemonId).length;
+  if (filled > size) return null;
+  const out = [...prev];
+  for (let i = out.length - 1; i >= 0 && out.length > size; i--) {
+    if (!out[i]!.pokemonId) out.splice(i, 1);
+  }
+  return out;
+}
 
 /** Pretty-print a signed integer ("+5" / "−12" / "±0"). Uses the
  *  Unicode minus so the diff lines look typographically clean in the
@@ -122,32 +154,33 @@ export function TeamBuilder({
   // here so the menu item can open it without nesting two triggers.
   const [shareOpen, setShareOpen] = useState(false);
 
-  // One-shot URL → team hydration. The ref tracks the last id we've
-  // honoured, so:
+  // One-shot URL → team hydration, as a render-time "prev value"
+  // comparison (the React-19 recommended shape — setState during
+  // render instead of inside an effect, see pokedex-explorer's
+  // filterSignature for the same pattern). The sentinel tracks the
+  // last id we've honoured, so:
   //  - `teams` updates from `useSavedTeams` (e.g. user hits Save)
   //    don't re-trigger the load and wipe in-progress edits
   //  - a same-route navigation that changes `?team=` *does* trigger
-  //    a fresh load (ref value differs from new prop)
-  //  - `?team=` absent → ref captures `undefined` and we leave the
-  //    blank slate alone
-  const lastLoadedTeamId = useRef<string | undefined>(undefined);
-  useEffect(() => {
-    if (!hydrated) return;
-    if (initialTeamId === lastLoadedTeamId.current) return;
-    lastLoadedTeamId.current = initialTeamId;
-    if (initialTeamId) {
-      const target = teams.find((t) => t.id === initialTeamId);
-      if (target) {
-        setEditingId(target.id);
-        setSlots(target.slots);
-        setName(target.name);
-      }
+  //    a fresh load (sentinel differs from new prop)
+  //  - `?team=` absent → nothing to do, `initialLoadDone` was seeded
+  //    true by the useState initialiser above
+  const [loadedTeamId, setLoadedTeamId] = useState<string | undefined>(
+    undefined,
+  );
+  if (hydrated && initialTeamId && loadedTeamId !== initialTeamId) {
+    setLoadedTeamId(initialTeamId);
+    const target = teams.find((t) => t.id === initialTeamId);
+    if (target) {
+      setEditingId(target.id);
+      setSlots(target.slots);
+      setName(target.name);
     }
     // Flip the loading flag regardless of whether the team was found
     // — a missing id (deleted team, typo'd URL) should fall through
     // to the blank builder, not leave the skeleton stuck on screen.
     setInitialLoadDone(true);
-  }, [hydrated, initialTeamId, teams]);
+  }
 
   // Load the form from a saved team. Called from the row click below
   // instead of via an effect on `editingId` — the click already has
@@ -284,8 +317,26 @@ export function TeamBuilder({
   function newTeam() {
     setEditingId(null);
     setImportedFromShare(false);
-    setSlots(EMPTY());
+    // Keep the current format — a player building 3v3 teams chains
+    // several of them; re-picking the size on every "Nouvelle équipe"
+    // would be friction.
+    setSlots(EMPTY(slots.length));
     setName("Équipe sans titre");
+  }
+
+  /** Switch the team format (3–6 slots). Refuses to shrink below the
+   *  current lineup instead of silently dropping Pokémon. */
+  function changeTeamSize(size: number) {
+    if (size === slots.length) return;
+    const next = resizeSlots(slots, size);
+    if (!next) {
+      const filled = slots.filter((s) => s.pokemonId).length;
+      toast.error(
+        `${filled} Pokémon dans l'équipe — retire-en avant de passer à ${size} slots.`,
+      );
+      return;
+    }
+    setSlots(next);
   }
 
   function duplicateTeam(t: SavedTeam) {
@@ -332,7 +383,8 @@ export function TeamBuilder({
     // each Pokémon's top Smogon set already applied (talent, item,
     // moves, nature, EVs, IVs) so the user lands on a fully-
     // configured team without an extra "Optimiser sets" click.
-    const best = optimizeTeam();
+    // Respects the current format — a 3-slot grid gets a 3-mon team.
+    const best = optimizeTeam(slots.length);
     setEditingId(null);
     setImportedFromShare(false);
     setSlots(best);
@@ -541,6 +593,31 @@ export function TeamBuilder({
             onChange={(e) => setName(e.target.value)}
             className="max-w-xs"
           />
+          {/* Format selector — 3v3 à 6v6. The slot-array length IS
+              the format, so saved teams / share codes round-trip it
+              without any schema change. */}
+          <Select
+            value={String(slots.length)}
+            onValueChange={(v) => v && changeTeamSize(Number(v))}
+          >
+            <SelectTrigger
+              className="w-[8.5rem] bg-background"
+              aria-label="Taille de l'équipe"
+            >
+              <SelectValue>
+                {(value) => `${value} Pokémon`}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {TEAM_SIZES.map((n) => (
+                  <SelectItem key={n} value={String(n)}>
+                    {n} Pokémon
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           {importedFromShare && (
             <span
               className="inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-amber-700 dark:text-amber-300"
@@ -893,7 +970,7 @@ function SavedTeamRow({
           )}
         </span>
         <span className="text-xs text-muted-foreground">
-          {filled}/6 · {formatRelativeTime(team.updatedAt)}
+          {filled}/{team.slots.length} · {formatRelativeTime(team.updatedAt)}
         </span>
       </button>
       <div className="flex items-center gap-0.5">

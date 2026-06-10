@@ -975,7 +975,14 @@ export function computeBreakdown(
   );
   const { weak, resist, immune } = analyzeTeamWeaknesses(team);
   const { covered } = analyzeTeamCoverage(team);
-  const teamFactor = team.length / 6;
+  // Target size = the slot-grid length (the builder supports 3–6
+  // formats). A full 3-mon team on a 3-slot grid is *complete* — no
+  // "Équipe incomplète" malus. Slot-less callers keep the legacy
+  // 6-mon assumption; the max() guard protects against a slots array
+  // shorter than the resolved team (shouldn't happen, but a factor
+  // > 1 would silently inflate every axis).
+  const targetSize = Math.max(team.length, slots?.length ?? 6);
+  const teamFactor = team.length / targetSize;
 
   const offense = scoreOffense(team, profiles, movePools, covered);
   const defense = scoreDefense(team, profiles, weak, resist, immune);
@@ -1197,7 +1204,10 @@ export function findBestReplacements(
   }
 
   // "Add to empty slot" branch — no replacement, no loss penalty.
-  if (team.length < 6) {
+  // Gate on the actual grid size (3–6) so a full 3-mon team doesn't
+  // get "add a 4th" suggestions it has no slot for.
+  const targetSize = baseSlots?.length ?? 6;
+  if (team.length < targetSize) {
     const evals: Eval[] = [];
     for (const cand of pool) {
       const candSlot: TeamSlot = {
@@ -1205,8 +1215,12 @@ export function findBestReplacements(
         ...topSetPatchFor(cand),
       };
       const test = [...team, cand];
+      // Fill the first empty slot instead of compacting the array —
+      // the grid length doubles as the target team size for the
+      // completeness scaling, so dropping empty slots here would
+      // score the addition as if the team were suddenly "full".
       const testSlots = projectedSlots
-        ? [...projectedSlots.filter((s) => s.pokemonId), candSlot]
+        ? fillFirstEmpty(projectedSlots, candSlot)
         : undefined;
       const newScore = testSlots
         ? scoreTeam(test, testSlots)
@@ -1272,6 +1286,16 @@ export function findBestReplacements(
   }
 
   return result;
+}
+
+/** Slot array with the first empty position filled by `slot` — keeps
+ *  the grid length intact (it doubles as the target team size). */
+function fillFirstEmpty(baseSlots: TeamSlot[], slot: TeamSlot): TeamSlot[] {
+  const idx = baseSlots.findIndex((s) => !s.pokemonId);
+  if (idx === -1) return [...baseSlots, slot];
+  const out = baseSlots.slice();
+  out[idx] = slot;
+  return out;
 }
 
 /** Build a slot array with one slot swapped to a new value. Used by
@@ -1623,10 +1647,10 @@ function bstOf(p: Pokemon): number {
 }
 
 /**
- * Hill-climbing team generator. Returns a 6-slot list with each
- * Pokémon's top Smogon set **already applied** (talent, item, moves,
- * nature, EVs, IVs) so the caller can spread it directly into the
- * builder without a separate "Optimiser sets" pass.
+ * Hill-climbing team generator. Returns a `size`-slot list (3–6 in
+ * the builder) with each Pokémon's top Smogon set **already applied**
+ * (talent, item, moves, nature, EVs, IVs) so the caller can spread it
+ * directly into the builder without a separate "Optimiser sets" pass.
  *
  * Scoring uses `optimizerScore` which:
  *  1. Composes a set-aware analysis (each member's top Smogon set
@@ -1637,6 +1661,7 @@ function bstOf(p: Pokemon): number {
  *     mons with curated sets and meaningful usage.
  */
 export function optimizeTeam(
+  size: number = 6,
   restarts: number = 50,
   shortlistSize: number = 25,
 ): TeamSlot[] {
@@ -1646,12 +1671,12 @@ export function optimizeTeam(
   const earlyExitThreshold = 100;
 
   for (let r = 0; r < restarts; r++) {
-    let team = randomTeam(pool, 6);
+    let team = randomTeam(pool, size);
     let score = optimizerScore(team);
 
     for (let pass = 0; pass < 3; pass++) {
       let improved = false;
-      for (let slot = 0; slot < 6; slot++) {
+      for (let slot = 0; slot < size; slot++) {
         const candidates = sampleDistinct(pool, shortlistSize, team);
         let bestSwapScore = score;
         let bestSwap: Pokemon | null = null;

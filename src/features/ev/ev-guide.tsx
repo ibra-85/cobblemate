@@ -2,9 +2,21 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, MapPin, Sparkles } from "lucide-react";
+import { ChevronDown, MapPin, Search, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TypeBadge } from "@/components/site/type-badge";
 import { PokemonSprite } from "@/components/site/pokemon-sprite";
 import { ItemIcon } from "@/components/site/minecraft-item";
@@ -14,6 +26,7 @@ import { SPECIES_EXTRAS_BY_ID, type EvYield } from "@/data/species-extras";
 import { lookupItem } from "@/data/items-pokeapi";
 import { biomeLabel } from "@/data/biomes";
 import { cn } from "@/lib/utils";
+import { foldDiacritics } from "@/lib/search";
 import type { Pokemon, PokemonTypeId, Rarity } from "@/types";
 
 type EvStat = keyof EvYield;
@@ -125,17 +138,50 @@ function buildCandidates(stat: EvStat): Candidate[] {
 export function EvGuide() {
   const [stat, setStat] = useState<EvStat>("attack");
   const [showAll, setShowAll] = useState(false);
+  const [query, setQuery] = useState("");
+  const [rarities, setRarities] = useState<Set<Rarity>>(new Set());
+  const [pureOnly, setPureOnly] = useState(false);
 
   const candidates = useMemo(() => buildCandidates(stat), [stat]);
-  const visible = showAll ? candidates : candidates.slice(0, INITIAL_VISIBLE);
-  const hidden = candidates.length - visible.length;
+
+  const filtered = useMemo(() => {
+    const q = foldDiacritics(query.trim());
+    return candidates.filter((c) => {
+      if (q && !foldDiacritics(`${c.pokemon.name} ${c.pokemon.id}`).includes(q)) {
+        return false;
+      }
+      if (rarities.size > 0 && !rarities.has(c.rarity)) return false;
+      if (pureOnly && c.allYields.some(([s]) => s !== stat)) return false;
+      return true;
+    });
+  }, [candidates, query, rarities, pureOnly, stat]);
+
+  const visible = showAll ? filtered : filtered.slice(0, INITIAL_VISIBLE);
+  const hidden = filtered.length - visible.length;
+  const hasFilters = query !== "" || rarities.size > 0 || pureOnly;
+
+  function toggleRarity(r: Rarity) {
+    setRarities((prev) => {
+      const next = new Set(prev);
+      if (next.has(r)) next.delete(r);
+      else next.add(r);
+      return next;
+    });
+  }
+
+  function resetFilters() {
+    setQuery("");
+    setRarities(new Set());
+    setPureOnly(false);
+  }
 
   const powerItem = POWER_ITEM_BY_STAT[stat];
   const powerItemName = lookupItem(powerItem)?.nameFr ?? powerItem;
 
   return (
     <div className="flex flex-col gap-5">
-      {/* ─── Stat picker ───────────────────────────────────────────── */}
+      {/* ─── Stat picker — tinted, not solid, so the row doesn't
+            scream against the rest of the muted UI. ───────────────── */}
       <div className="flex flex-wrap gap-1.5">
         {STAT_ORDER.map((s) => {
           const meta = STAT_META[s];
@@ -151,20 +197,115 @@ export function EvGuide() {
               aria-pressed={active}
               className={cn(
                 "inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors",
-                active
-                  ? "border-transparent text-white"
-                  : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+                !active &&
+                  "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
               )}
-              style={active ? { backgroundColor: meta.color } : undefined}
+              style={
+                active
+                  ? {
+                      // ~12 % tint + colored border/text — same visual
+                      // weight as the "Légendaire"/"Paradoxe" badges.
+                      backgroundColor: `${meta.color}1f`,
+                      borderColor: `${meta.color}66`,
+                      color: meta.color,
+                    }
+                  : undefined
+              }
             >
               <span
                 className="size-2.5 rounded-full"
-                style={{ backgroundColor: active ? "#ffffff90" : meta.color }}
+                style={{ backgroundColor: meta.color }}
               />
               {meta.label}
             </button>
           );
         })}
+      </div>
+
+      {/* ─── Search + filters over the candidate pool ─────────────── */}
+      <div className="flex flex-wrap items-center gap-2">
+        <InputGroup className="min-w-[12rem] flex-1 sm:max-w-xs">
+          <InputGroupAddon>
+            <Search className="size-4 opacity-60" />
+          </InputGroupAddon>
+          <InputGroupInput
+            placeholder="Rechercher un Pokémon…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query && (
+            <InputGroupAddon
+              className="cursor-pointer"
+              onClick={() => setQuery("")}
+            >
+              <X className="size-4 opacity-60 hover:opacity-100" />
+            </InputGroupAddon>
+          )}
+        </InputGroup>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  rarities.size === 0 && "border-dashed text-muted-foreground",
+                )}
+              >
+                Rareté
+                {rarities.size > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-1 px-1.5 font-mono text-[10px]"
+                  >
+                    {rarities.size}
+                  </Badge>
+                )}
+              </Button>
+            }
+          />
+          <DropdownMenuContent className="min-w-44" align="start">
+            {(["ultra-rare", "rare", "uncommon", "common"] as Rarity[]).map((r) => (
+              <DropdownMenuCheckboxItem
+                key={r}
+                checked={rarities.has(r)}
+                onCheckedChange={() => toggleRarity(r)}
+                closeOnClick={false}
+              >
+                <span className={cn("size-2.5 rounded-full", RARITY_TONE[r])} />
+                {RARITY_LABEL[r]}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Button
+          variant="outline"
+          size="sm"
+          aria-pressed={pureOnly}
+          onClick={() => setPureOnly((v) => !v)}
+          className={cn(
+            !pureOnly && "border-dashed text-muted-foreground",
+            pureOnly &&
+              "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+          )}
+          title="Masquer les cibles qui donnent aussi des EVs d'autres stats"
+        >
+          Rendement pur
+        </Button>
+
+        {hasFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetFilters}
+            className="text-muted-foreground"
+          >
+            <X data-icon="inline-start" />
+            Réinitialiser
+          </Button>
+        )}
       </div>
 
       {/* ─── Booster strip — power item + vitamins reminder ────────── */}
@@ -192,14 +333,26 @@ export function EvGuide() {
           </span>
         </h2>
         <span className="text-xs text-muted-foreground">
-          {candidates.length} Pokémon sauvages donnent des EVs {STAT_META[stat].short}
+          {hasFilters ? (
+            <>
+              <strong className="text-foreground">{filtered.length}</strong> /{" "}
+              {candidates.length} cibles correspondant aux filtres
+            </>
+          ) : (
+            <>
+              {candidates.length} Pokémon sauvages donnent des EVs{" "}
+              {STAT_META[stat].short}
+            </>
+          )}
         </span>
       </div>
 
-      {candidates.length === 0 ? (
+      {filtered.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center text-sm text-muted-foreground">
-            Aucun Pokémon sauvage ne donne d&apos;EVs de cette stat.
+            {hasFilters
+              ? "Aucune cible ne correspond à ces filtres — essaie d'en retirer un."
+              : "Aucun Pokémon sauvage ne donne d'EVs de cette stat."}
           </CardContent>
         </Card>
       ) : (
@@ -296,8 +449,14 @@ function CandidateCard({
       </div>
 
       <span
-        className="shrink-0 rounded-md px-2 py-1 font-mono text-sm font-bold text-white"
-        style={{ backgroundColor: STAT_META[stat].color }}
+        className="shrink-0 rounded-md border px-2 py-1 font-mono text-sm font-bold"
+        style={{
+          // Tinted like the stat picker — the payout stays the focal
+          // point without the solid flashy block.
+          backgroundColor: `${STAT_META[stat].color}1f`,
+          borderColor: `${STAT_META[stat].color}66`,
+          color: STAT_META[stat].color,
+        }}
       >
         +{yield_}
       </span>
